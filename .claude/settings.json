@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init)",
+      "Bash(git config user.email \"dev@coachletstrain.ia\")",
+      "Bash(git config user.name \"Coach Lets Train IA\")",
+      "Bash(git add .gitignore .env.example docs/ .aios-core/core-config.yaml .claude/settings.json .cursor/ .github/ .gemini/ .antigravity/ .codex/)"
+    ]
+  },
+  "language": "english"
+}
