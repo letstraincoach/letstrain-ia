@@ -1,4 +1,4 @@
-# Padrões de Código - Coach Lets Train IA
+# Padrões de Código - Lets Train
 
 ## Linguagem e Formatação
 > Ex: TypeScript, ESLint, Prettier, etc.

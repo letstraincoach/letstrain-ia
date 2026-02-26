@@ -1,4 +1,4 @@
-# Tech Stack — Coach Lets Train IA
+# Tech Stack — Lets Train
 
 ## Frontend
 - **Next.js 15** (App Router) — Framework full-stack

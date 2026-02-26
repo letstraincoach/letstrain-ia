@@ -1,9 +1,9 @@
-# Árvore de Código - Coach Lets Train IA
+# Árvore de Código - Lets Train
 
 ## Estrutura de Diretórios
 
 ```
-coach-lets-train-ia/
+lets-train/
 ├── docs/               # Documentação do projeto
 │   ├── prd.md          # Requisitos do produto
 │   ├── architecture.md # Arquitetura do sistema

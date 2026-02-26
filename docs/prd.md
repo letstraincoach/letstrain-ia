@@ -1,4 +1,4 @@
-# Coach Lets Train IA — Product Requirements Document (PRD)
+# Lets Train — Product Requirements Document (PRD)
 
 ## Change Log
 | Data | Versão | Descrição | Autor |
@@ -17,7 +17,7 @@
 - Testar e validar adesão por segmento (condomínio vs. academia) via tráfego pago
 
 ### Background Context
-Coach Lets Train IA nasce da observação de duas dores que têm a mesma raiz: a ausência de orientação profissional de qualidade acessível. No condomínio, a academia fica vazia porque os moradores não sabem usar os equipamentos disponíveis. Na academia convencional, o aluno paga mensalidade mas treina sozinho com um treino genérico que nunca muda. Em ambos os casos, a falta de metodologia e progressão leva ao abandono.
+Lets Train nasce da observação de duas dores que têm a mesma raiz: a ausência de orientação profissional de qualidade acessível. No condomínio, a academia fica vazia porque os moradores não sabem usar os equipamentos disponíveis. Na academia convencional, o aluno paga mensalidade mas treina sozinho com um treino genérico que nunca muda. Em ambos os casos, a falta de metodologia e progressão leva ao abandono.
 
 A solução é um app que age como um personal trainer de bolso: coleta o perfil do usuário, mapeia os equipamentos disponíveis, entende o contexto do dia (tempo, energia, alimentação) e gera um treino personalizado seguindo a metodologia Time Efficient da Lets Train — treinos rápidos, objetivos e scientificamente embasados.
 

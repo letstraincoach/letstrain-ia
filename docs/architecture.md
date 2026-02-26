@@ -1,4 +1,4 @@
-# Arquitetura Técnica — Coach Lets Train IA
+# Arquitetura Técnica — Lets Train
 
 ## Change Log
 | Data | Versão | Descrição | Autor |
@@ -88,7 +88,7 @@ Arquitetura full-stack monolítica serverless em monorepo Next.js, com Supabase 
 ## 3. Estrutura de Diretórios
 
 ```
-coach-lets-train-ia/
+lets-train/
 ├── src/
 │   ├── app/                          # Next.js App Router
 │   │   ├── (auth)/                   # Grupo: login, cadastro, recuperar senha

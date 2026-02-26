@@ -1,4 +1,4 @@
-# Project Brief — Coach Lets Train IA
+# Project Brief — Lets Train
 
 ## Versão
 | Data | Versão | Descrição | Autor |
@@ -29,7 +29,7 @@ Mesmo quem paga mensalidade de academia fica desamparado:
 
 ## 2. Solução
 
-**Coach Lets Train IA** é um aplicativo de coaching de treino personalizado por inteligência artificial, baseado na metodologia Time Efficient da Lets Train.
+**Lets Train** é um aplicativo de coaching de treino personalizado por inteligência artificial, baseado na metodologia Time Efficient da Lets Train.
 
 O app entrega **treinos diários personalizados** considerando:
 - O perfil físico e objetivos do usuário (anamnese)
@@ -63,7 +63,7 @@ O app entrega **treinos diários personalizados** considerando:
 
 ## 4. Proposta de Valor
 
-| | Personal Trainer | Academia Premium | **Coach Lets Train IA** |
+| | Personal Trainer | Academia Premium | **Lets Train** |
 |---|---|---|---|
 | **Custo/mês** | R$800–2.000 | R$150–300 | **R$29,90** |
 | **Personalização** | Alta | Baixa | **Alta (IA + contexto diário)** |
