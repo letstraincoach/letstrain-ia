@@ -1,8 +1,13 @@
 {
-  "language": "english",
   "permissions": {
     "allow": [
-      "Bash(powershell.exe -Command \":*)"
+      "Bash(powershell.exe -Command \":*)",
+      "Bash(powershell.exe -Command '$env:PATH = \"\"C:\\\\Program Files\\\\nodejs;\"\" + $env:PATH; npm install 2>&1')",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command '$env:PATH = \"\"C:\\\\Program Files\\\\nodejs;\"\" + $env:PATH; & \"\"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\"\" install 2>&1')",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command '$env:PATH = \"\"C:\\\\Program Files\\\\nodejs;\"\" + $env:PATH; & \"\"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\"\" show next version 2>&1')",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command '$env:PATH = \"\"C:\\\\Program Files\\\\nodejs;\"\" + $env:PATH; & \"\"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\"\" install next@latest eslint-config-next@latest 2>&1')",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command '$env:PATH = \"\"C:\\\\Program Files\\\\nodejs;\"\" + $env:PATH; & \"\"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\"\" run typecheck 2>&1')"
     ]
-  }
+  },
+  "language": "english"
 }

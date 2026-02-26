@@ -1,14 +1,43 @@
 {
-    "name": "coach-lets-train-ia",
-    "version": "1.0.0",
-    "description": "Coach Lets Train IA — Projeto AIOS",
-    "private": true,
-    "scripts": {
-        "lint": "echo \"No linter configured yet\"",
-        "test": "echo \"No tests configured yet\"",
-        "build": "echo \"No build configured yet\""
-    },
-    "engines": {
-        "node": ">=18.0.0"
-    }
+  "name": "lets-train",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "db:types": "supabase gen types typescript --linked > src/types/database.types.ts"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.47.10",
+    "framer-motion": "^11.15.0",
+    "next": "^16.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.54.2",
+    "zod": "^3.24.1",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^16.1.6",
+    "eslint-config-prettier": "^9.1.0",
+    "postcss": "^8",
+    "prettier": "^3.4.2",
+    "supabase": "^2.2.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
