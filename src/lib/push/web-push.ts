@@ -1,12 +1,16 @@
 import webpush from 'web-push'
 import { createServiceClient } from '@/lib/supabase/service'
 
-// Inicializar VAPID uma vez no módulo
-webpush.setVapidDetails(
-  'mailto:contato@letstrain.app',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-)
+// Lazy init — evita validação no build time quando env vars não estão disponíveis
+let vapidInitialized = false
+function ensureVapid() {
+  if (vapidInitialized) return
+  const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+  const priv = process.env.VAPID_PRIVATE_KEY
+  if (!pub || !priv) return
+  webpush.setVapidDetails('mailto:contato@letstrain.app', pub, priv)
+  vapidInitialized = true
+}
 
 export interface PushPayload {
   title: string
@@ -20,6 +24,7 @@ export interface PushPayload {
  * Falhas individuais de endpoint são ignoradas (subscription expirada, etc.).
  */
 export async function sendPushToUser(userId: string, payload: PushPayload): Promise<void> {
+  ensureVapid()
   const supabase = createServiceClient()
 
   const { data: subscriptions } = await supabase

@@ -50,5 +50,4 @@ next-env.d.ts
 dev_error.txt
 dev_output.txt
 
-# Local scripts
-src/proxy.ts
+.vercel

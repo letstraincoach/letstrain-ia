@@ -1,0 +1,6 @@
+scripts/
+dev_error.txt
+dev_output.txt
+src/proxy.ts
+*.tsbuildinfo
+supabase/.temp/
