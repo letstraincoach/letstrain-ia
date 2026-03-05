@@ -35,3 +35,20 @@ Thumbs.db
 .aios-core/local/
 .claude/settings.local.json
 .aios/install-log.txt
+
+# TypeScript build cache
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# Supabase CLI cache
+supabase/.temp/
+
+# Next.js generated
+next-env.d.ts
+
+# Dev temp files
+dev_error.txt
+dev_output.txt
+
+# Local scripts
+src/proxy.ts

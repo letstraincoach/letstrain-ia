@@ -1,5 +1,5 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
+import { Geist } from 'next/font/google'
 import './globals.css'
 
 const geistSans = Geist({
@@ -7,17 +7,40 @@ const geistSans = Geist({
   subsets: ['latin'],
 })
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#0a0a0a',
+}
 
 export const metadata: Metadata = {
-  title: 'Lets Train',
-  description: 'Seu personal trainer no bolso. Treinos personalizados com metodologia real.',
+  title: {
+    default: 'Lets Train',
+    template: '%s | Lets Train',
+  },
+  description: 'Seu personal trainer no bolso. Treinos personalizados com IA e metodologia real.',
   manifest: '/manifest.json',
-  themeColor: '#0a0a0a',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Lets Train',
+  },
+  openGraph: {
+    type: 'website',
+    siteName: 'Lets Train',
+    title: 'Lets Train — Personal Trainer IA',
+    description: 'Treinos diários personalizados por IA. Progressão automática. R$29,90/mês.',
+    locale: 'pt_BR',
+  },
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/icon-192.png',
+  },
 }
 
 export default function RootLayout({
@@ -27,7 +50,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} antialiased`}>
         {children}
       </body>
     </html>

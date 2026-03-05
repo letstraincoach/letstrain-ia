@@ -1,6 +1,13 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Rotas que exigem auth + assinatura ativa
+const PROTECTED_ROUTES = ['/dashboard', '/workout', '/progress', '/settings']
+// Rotas que exigem auth mas não assinatura (onboarding + página de assinatura)
+const AUTH_ONLY_ROUTES = ['/assinatura', '/quiz', '/local', '/nivel', '/equipamentos', '/desempenho']
+// Rotas de autenticação (redirect para dashboard se já logado)
+const AUTH_PAGES = ['/login', '/cadastro', '/recuperar-senha', '/nova-senha']
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -28,22 +35,37 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const path = request.nextUrl.pathname
-  const isAuthPage = path.startsWith('/login') || path.startsWith('/cadastro') || path.startsWith('/recuperar-senha')
-  const isOnboardingPage = path.startsWith('/onboarding')
-  const isAppPage =
-    path.startsWith('/dashboard') ||
-    path.startsWith('/workout') ||
-    path.startsWith('/progress') ||
-    path.startsWith('/settings')
+  const isAuthPage = AUTH_PAGES.some((p) => path.startsWith(p))
+  const isAuthOnlyRoute = AUTH_ONLY_ROUTES.some((p) => path.startsWith(p))
+  const isProtectedRoute = PROTECTED_ROUTES.some((p) => path.startsWith(p))
 
-  // Sem sessão tentando acessar área protegida → login
-  if (!user && (isAppPage || isOnboardingPage)) {
+  // Sem sessão → redirecionar para login
+  if (!user && (isProtectedRoute || isAuthOnlyRoute)) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Com sessão tentando acessar login/cadastro → dashboard
+  // Já logado tentando acessar página de auth → dashboard
   if (user && isAuthPage) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // Verificação de assinatura (rotas protegidas do app)
+  if (user && isProtectedRoute) {
+    // Grace period de 3 dias após vencimento
+    const gracePeriodEnd = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+
+    const { data: sub } = await supabase
+      .from('subscriptions')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('status', 'ativa')
+      .gte('fim', gracePeriodEnd)
+      .limit(1)
+      .maybeSingle()
+
+    if (!sub) {
+      return NextResponse.redirect(new URL('/assinatura', request.url))
+    }
   }
 
   return supabaseResponse
@@ -51,6 +73,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|api/health|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|manifest\\.json|sw\\.js)$).*)',
   ],
 }
