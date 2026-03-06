@@ -8,6 +8,7 @@ import type { Json } from '@/types/database.types'
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 interface CheckinPayload {
+  local_treino?: string
   ultima_refeicao: string
   tempo_disponivel: number
   disposicao: number
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
     lesao_cronica: profile.lesao_cronica ?? false,
     lesao_descricao: profile.lesao_descricao,
     doenca_cardiaca: profile.doenca_cardiaca ?? false,
-    local_treino: profile.local_treino as Parameters<typeof buildWorkoutPrompt>[0]['local_treino'],
+    local_treino: (checkin.local_treino ?? profile.local_treino) as Parameters<typeof buildWorkoutPrompt>[0]['local_treino'],
     equipamentos,
     ultima_refeicao: checkin.ultima_refeicao,
     tempo_disponivel: checkin.tempo_disponivel,
@@ -134,7 +135,7 @@ export async function POST(request: Request) {
       user_id: user.id,
       data: new Date().toISOString().split('T')[0],
       nivel: profile.nivel_atual,
-      local_treino: profile.local_treino ?? 'condominio',
+      local_treino: checkin.local_treino ?? profile.local_treino ?? 'condominio',
       duracao_estimada: generatedWorkout.duracao_estimada,
       checkin_ultima_refeicao: checkin.ultima_refeicao,
       checkin_tempo_disponivel: checkin.tempo_disponivel,

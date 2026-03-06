@@ -4,7 +4,10 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
 
+export type TrainingLocation = 'condominio' | 'academia' | 'hotel'
+
 export interface CheckinData {
+  local_treino: TrainingLocation
   ultima_refeicao: string
   tempo_disponivel: number
   disposicao: number
@@ -14,6 +17,12 @@ interface CheckinFormProps {
   onSubmit: (data: CheckinData) => void
   loading?: boolean
 }
+
+const LOCAL_OPTIONS: { value: TrainingLocation; label: string; emoji: string; detail: string }[] = [
+  { value: 'condominio', label: 'Condomínio / Casa', emoji: '🏠', detail: 'Equipamentos básicos' },
+  { value: 'academia', label: 'Academia', emoji: '🏋️', detail: 'Equipamentos completos' },
+  { value: 'hotel', label: 'Hotel / Viagem', emoji: '✈️', detail: 'Sem equipamentos' },
+]
 
 const REFEICAO_OPTIONS = [
   { value: 'menos_1h', label: 'Há menos de 1h', emoji: '🍽️', detail: 'Acabei de comer' },
@@ -36,13 +45,15 @@ function disposicaoLabel(value: number): string {
 
 export default function CheckinForm({ onSubmit, loading = false }: CheckinFormProps) {
   const [step, setStep] = useState(0)
+  const [local, setLocal] = useState<TrainingLocation | null>(null)
   const [refeicao, setRefeicao] = useState<string | null>(null)
   const [tempo, setTempo] = useState(45)
   const [disposicao, setDisposicao] = useState(7)
 
   function handleSubmit() {
-    if (!refeicao) return
+    if (!refeicao || !local) return
     onSubmit({
+      local_treino: local,
       ultima_refeicao: refeicao,
       tempo_disponivel: tempo,
       disposicao,
@@ -50,9 +61,9 @@ export default function CheckinForm({ onSubmit, loading = false }: CheckinFormPr
   }
 
   const steps = [
-    // Step 0 — Última refeição
+    // Step 0 — Local do treino
     <motion.div
-      key="refeicao"
+      key="local"
       className="flex flex-col gap-6 w-full"
       initial={{ opacity: 0, x: 30 }}
       animate={{ opacity: 1, x: 0 }}
@@ -60,17 +71,17 @@ export default function CheckinForm({ onSubmit, loading = false }: CheckinFormPr
       transition={{ duration: 0.3 }}
     >
       <div>
-        <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Pergunta 1 de 3</p>
-        <h2 className="text-xl font-bold">Quando foi sua última refeição?</h2>
+        <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Pergunta 1 de 4</p>
+        <h2 className="text-xl font-bold">Onde você vai treinar hoje?</h2>
       </div>
       <div className="flex flex-col gap-3">
-        {REFEICAO_OPTIONS.map((opt) => {
-          const selected = refeicao === opt.value
+        {LOCAL_OPTIONS.map((opt) => {
+          const selected = local === opt.value
           return (
             <button
               key={opt.value}
               type="button"
-              onClick={() => { setRefeicao(opt.value); setTimeout(() => setStep(1), 200) }}
+              onClick={() => { setLocal(opt.value); setTimeout(() => setStep(1), 200) }}
               className={`flex items-center gap-4 rounded-2xl border p-4 text-left transition-all duration-200 active:scale-[0.98]
                 ${selected
                   ? 'border-[#FF8C00] bg-[#FF8C00]/10'
@@ -88,7 +99,52 @@ export default function CheckinForm({ onSubmit, loading = false }: CheckinFormPr
       </div>
     </motion.div>,
 
-    // Step 1 — Tempo disponível
+    // Step 1 — Última refeição
+    <motion.div
+      key="refeicao"
+      className="flex flex-col gap-6 w-full"
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -30 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div>
+        <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Pergunta 2 de 4</p>
+        <h2 className="text-xl font-bold">Quando foi sua última refeição?</h2>
+      </div>
+      <div className="flex flex-col gap-3">
+        {REFEICAO_OPTIONS.map((opt) => {
+          const selected = refeicao === opt.value
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { setRefeicao(opt.value); setTimeout(() => setStep(2), 200) }}
+              className={`flex items-center gap-4 rounded-2xl border p-4 text-left transition-all duration-200 active:scale-[0.98]
+                ${selected
+                  ? 'border-[#FF8C00] bg-[#FF8C00]/10'
+                  : 'border-white/10 bg-white/[0.03] hover:border-white/20'
+                }`}
+            >
+              <span className="text-2xl">{opt.emoji}</span>
+              <div>
+                <p className="font-semibold text-sm">{opt.label}</p>
+                <p className="text-xs text-white/40">{opt.detail}</p>
+              </div>
+            </button>
+          )
+        })}
+      </div>
+      <button
+        type="button"
+        onClick={() => setStep(0)}
+        className="text-sm text-white/30 hover:text-white/60 transition-colors"
+      >
+        ← Voltar
+      </button>
+    </motion.div>,
+
+    // Step 2 — Tempo disponível
     <motion.div
       key="tempo"
       className="flex flex-col gap-6 w-full"
@@ -98,7 +154,7 @@ export default function CheckinForm({ onSubmit, loading = false }: CheckinFormPr
       transition={{ duration: 0.3 }}
     >
       <div>
-        <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Pergunta 2 de 3</p>
+        <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Pergunta 3 de 4</p>
         <h2 className="text-xl font-bold">Quanto tempo você tem para treinar hoje?</h2>
       </div>
 
@@ -125,19 +181,19 @@ export default function CheckinForm({ onSubmit, loading = false }: CheckinFormPr
         </div>
       </div>
 
-      <Button fullWidth onClick={() => setStep(2)}>
+      <Button fullWidth onClick={() => setStep(3)}>
         Próximo →
       </Button>
       <button
         type="button"
-        onClick={() => setStep(0)}
+        onClick={() => setStep(1)}
         className="text-sm text-white/30 hover:text-white/60 transition-colors"
       >
         ← Voltar
       </button>
     </motion.div>,
 
-    // Step 2 — Disposição
+    // Step 3 — Disposição
     <motion.div
       key="disposicao"
       className="flex flex-col gap-6 w-full"
@@ -147,7 +203,7 @@ export default function CheckinForm({ onSubmit, loading = false }: CheckinFormPr
       transition={{ duration: 0.3 }}
     >
       <div>
-        <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Pergunta 3 de 3</p>
+        <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Pergunta 4 de 4</p>
         <h2 className="text-xl font-bold">De 1 a 10, qual sua disposição hoje?</h2>
       </div>
 
@@ -180,7 +236,7 @@ export default function CheckinForm({ onSubmit, loading = false }: CheckinFormPr
       </Button>
       <button
         type="button"
-        onClick={() => setStep(1)}
+        onClick={() => setStep(2)}
         className="text-sm text-white/30 hover:text-white/60 transition-colors"
         disabled={loading}
       >
@@ -193,7 +249,7 @@ export default function CheckinForm({ onSubmit, loading = false }: CheckinFormPr
     <div className="flex flex-col items-center w-full max-w-sm gap-2">
       {/* Barra de progresso */}
       <div className="flex gap-1.5 mb-4 w-full">
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2, 3].map((i) => (
           <div
             key={i}
             className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= step ? 'bg-[#FF8C00]' : 'bg-white/10'}`}

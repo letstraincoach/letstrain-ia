@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { LEVEL_CONFIG } from '@/lib/training/levels.config'
 import type { TrainingLevel } from '@/types/database.types'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

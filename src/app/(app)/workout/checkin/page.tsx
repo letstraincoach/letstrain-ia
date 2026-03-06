@@ -56,7 +56,7 @@ export default function CheckinPage() {
         </button>
         <h1 className="text-2xl font-bold">Check-in de hoje</h1>
         <p className="mt-1 text-sm text-white/50">
-          3 perguntas rápidas para personalizar seu treino.
+          4 perguntas rápidas para personalizar seu treino.
         </p>
       </div>
 
