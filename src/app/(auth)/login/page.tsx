@@ -87,7 +87,7 @@ export default function LoginPage() {
       {/* Logo */}
       <div className="mb-8 flex flex-col items-center gap-2">
         <LetsTrainLogo size="lg" />
-        <p className="text-sm text-white/50">Metodologia real. Resultado de verdade.</p>
+        <p className="text-sm text-white/50">Metodologia real, resultados de verdade!</p>
       </div>
 
       {/* Card */}
