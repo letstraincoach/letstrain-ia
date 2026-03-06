@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { createClient } from '@/lib/supabase/client'
 import { cadastroSchema, type CadastroFormData } from '@/lib/validations/auth'
 import Button from '@/components/ui/Button'
+import LetsTrainLogo from '@/components/ui/LetsTrainLogo'
 import Input from '@/components/ui/Input'
 
 export default function CadastroPage() {
@@ -68,11 +69,9 @@ export default function CadastroPage() {
   return (
     <div className="w-full max-w-sm px-6">
       {/* Logo */}
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Lets <span className="text-[#FF8C00]">Train</span>
-        </h1>
-        <p className="mt-2 text-sm text-white/50">Comece hoje, treino feito sob medida pra você</p>
+      <div className="mb-8 flex flex-col items-center gap-2">
+        <LetsTrainLogo size="lg" />
+        <p className="text-sm text-white/50">Comece hoje, treino feito sob medida pra você</p>
       </div>
 
       {/* Card */}

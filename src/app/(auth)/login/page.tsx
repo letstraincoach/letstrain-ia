@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 import { loginSchema, type LoginFormData } from '@/lib/validations/auth'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
+import LetsTrainLogo from '@/components/ui/LetsTrainLogo'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -84,11 +85,9 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-sm px-6">
       {/* Logo */}
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Lets <span className="text-[#FF8C00]">Train</span>
-        </h1>
-        <p className="mt-2 text-sm text-white/50">Seu personal trainer no bolso</p>
+      <div className="mb-8 flex flex-col items-center gap-2">
+        <LetsTrainLogo size="lg" />
+        <p className="text-sm text-white/50">Seu personal trainer no bolso</p>
       </div>
 
       {/* Card */}

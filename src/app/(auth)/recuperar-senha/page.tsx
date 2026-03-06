@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { recuperarSenhaSchema, type RecuperarSenhaFormData } from '@/lib/validations/auth'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
+import LetsTrainLogo from '@/components/ui/LetsTrainLogo'
 
 export default function RecuperarSenhaPage() {
   const [sent, setSent] = useState(false)
@@ -68,10 +69,8 @@ export default function RecuperarSenhaPage() {
   return (
     <div className="w-full max-w-sm px-6">
       {/* Logo */}
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Lets <span className="text-[#FF8C00]">Train</span>
-        </h1>
+      <div className="mb-8 flex justify-center">
+        <LetsTrainLogo size="lg" />
       </div>
 
       {/* Card */}

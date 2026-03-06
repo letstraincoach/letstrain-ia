@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import LetsTrainLogo from '@/components/ui/LetsTrainLogo'
 
 const MESSAGES = [
   'Analisando seu perfil e equipamentos...',
@@ -23,12 +24,23 @@ export default function WorkoutGeneratingLoader() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8 px-6">
-      {/* Spinner animado */}
-      <div className="relative h-20 w-20">
-        <div className="absolute inset-0 rounded-full border-4 border-white/10" />
-        <div className="absolute inset-0 rounded-full border-4 border-t-[#FF8C00] border-r-transparent border-b-transparent border-l-transparent animate-spin" />
-        <div className="absolute inset-3 rounded-full border-4 border-t-transparent border-r-[#FF8C00]/40 border-b-transparent border-l-transparent animate-spin [animation-direction:reverse] [animation-duration:1.5s]" />
-        <span className="absolute inset-0 flex items-center justify-center text-2xl">💪</span>
+      {/* Logo animada */}
+      <div className="relative flex items-center justify-center">
+        {/* Anel externo girando */}
+        <div className="absolute w-24 h-24 rounded-full border-4 border-white/5" />
+        <motion.div
+          className="absolute w-24 h-24 rounded-full border-4 border-t-[#FF8C00] border-r-transparent border-b-transparent border-l-transparent"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: 'linear' }}
+        />
+        {/* Anel interno girando ao contrário */}
+        <motion.div
+          className="absolute w-16 h-16 rounded-full border-4 border-t-transparent border-r-[#FF8C00]/40 border-b-transparent border-l-transparent"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+        />
+        {/* Logo centralizada */}
+        <LetsTrainLogo size="xs" iconOnly />
       </div>
 
       {/* Mensagem rotativa */}
