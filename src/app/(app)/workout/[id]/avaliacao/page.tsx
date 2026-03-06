@@ -148,7 +148,7 @@ export default function AvaliacaoPage() {
       <LevelUpScreen
         previousLevel={levelUpData.previous}
         newLevel={levelUpData.next}
-        onContinue={() => achievements.length > 0 ? setScreen('achievements') : setScreen('celebration')}
+        onContinue={() => achievements.length > 0 ? setScreen('achievements') : router.push('/atualizar-medidas')}
       />
     )
   }
@@ -157,7 +157,7 @@ export default function AvaliacaoPage() {
     return (
       <AchievementBanner
         achievements={achievements}
-        onDone={() => setScreen('celebration')}
+        onDone={() => levelUpData ? router.push('/atualizar-medidas') : setScreen('celebration')}
       />
     )
   }
