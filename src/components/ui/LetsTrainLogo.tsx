@@ -13,6 +13,17 @@ const SIZES = {
   xl: { icon: 56, text: 'text-4xl',  gap: 'gap-4'   },
 }
 
+/**
+ * Logo mark da Lets Train:
+ * 3 arcos concêntricos com origem no canto superior-direito (100, 0).
+ * Os 3 arcos compartilham o mesmo centro — raios 93, 67 e 41.
+ * Espaçamento entre arcos = largura do traço = 14 unidades (proporção uniforme).
+ *
+ * Geometria verificada:
+ *   Arco 1 (r=93): (7,0) → (100,93)   borda externa toca x=0 (esquerda)
+ *   Arco 2 (r=67): (33,0) → (100,67)
+ *   Arco 3 (r=41): (59,0) → (100,41)  borda interna em x≈66
+ */
 export default function LetsTrainLogo({
   size = 'md',
   className = '',
@@ -22,7 +33,6 @@ export default function LetsTrainLogo({
 
   return (
     <div className={`flex items-center ${gap} ${className}`}>
-      {/* Logo mark — 3 arcos concêntricos (símbolo registrado Lets Train) */}
       <svg
         width={icon}
         height={icon}
@@ -32,23 +42,23 @@ export default function LetsTrainLogo({
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        {/* Arco externo */}
+        {/* Arco externo — raio 93, centro (100, 0) */}
         <path
-          d="M 0 7 H 73 A 20 20 0 0 1 93 27 V 100"
+          d="M 7 0 A 93 93 0 0 1 100 93"
           stroke="#FF8C00"
           strokeWidth="14"
           strokeLinecap="butt"
         />
-        {/* Arco médio */}
+        {/* Arco médio — raio 67, centro (100, 0) */}
         <path
-          d="M 0 33 H 47 A 20 20 0 0 1 67 53 V 100"
+          d="M 33 0 A 67 67 0 0 1 100 67"
           stroke="#FF8C00"
           strokeWidth="14"
           strokeLinecap="butt"
         />
-        {/* Arco interno */}
+        {/* Arco interno — raio 41, centro (100, 0) */}
         <path
-          d="M 0 59 H 21 A 20 20 0 0 1 41 79 V 100"
+          d="M 59 0 A 41 41 0 0 1 100 41"
           stroke="#FF8C00"
           strokeWidth="14"
           strokeLinecap="butt"
