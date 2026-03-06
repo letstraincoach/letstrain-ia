@@ -53,13 +53,20 @@ export default async function DashboardPage() {
 
   const firstName = profile?.nome?.split(' ')[0] ?? 'Atleta'
 
+  // Saudação por horário — fuso Brasília (UTC-3)
+  const brasiliaHour = (new Date().getUTCHours() - 3 + 24) % 24
+  const saudacao =
+    brasiliaHour >= 5 && brasiliaHour < 12 ? 'Bom dia' :
+    brasiliaHour >= 12 && brasiliaHour < 18 ? 'Boa tarde' :
+    'Boa noite'
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] px-6 py-10">
       <div className="max-w-sm mx-auto flex flex-col gap-6">
 
         {/* Saudação */}
         <div>
-          <p className="text-sm text-white/50">Bom dia,</p>
+          <p className="text-sm text-white/50">{saudacao},</p>
           <h1 className="text-2xl font-bold">{firstName} 👋</h1>
         </div>
 
