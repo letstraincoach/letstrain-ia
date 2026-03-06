@@ -75,6 +75,100 @@ function riscoClassif(imc: number, gordura: number, idade: number) {
   return               { label: 'Baixo',     cor: '#4ADE80', emoji: '✅' }
 }
 
+// ── Lets Body Score ───────────────────────────────────────────────────────────
+
+function calcLetsBodyScore(
+  gorduraPct: number,
+  peso: number,
+  pesoIdealFitness: number,
+  ffmi: number,
+  idade: number,
+  sexo: Sexo,
+) {
+  // C1 — Composição corporal (0–40)
+  let c1: number
+  if (sexo === 'masculino') {
+    if (gorduraPct >= 10 && gorduraPct <= 18) c1 = 40
+    else if (gorduraPct > 18) c1 = 40 - (gorduraPct - 18) * 2.2
+    else c1 = 40 - (10 - gorduraPct) * 2
+  } else {
+    if (gorduraPct >= 18 && gorduraPct <= 28) c1 = 40
+    else if (gorduraPct > 28) c1 = 40 - (gorduraPct - 28) * 2
+    else c1 = 40 - (18 - gorduraPct) * 1.5
+  }
+  c1 = Math.max(0, Math.min(40, c1))
+
+  // C2 — Peso funcional (0–20)
+  const dif = Math.abs(peso - pesoIdealFitness) / pesoIdealFitness
+  const c2 = Math.max(0, Math.min(20, 20 - dif * 100 * 0.8))
+
+  // C3 — Estrutura muscular (0–20)
+  let c3: number
+  if (sexo === 'masculino') {
+    if (ffmi >= 21.5) c3 = 20
+    else if (ffmi >= 19) c3 = 18
+    else if (ffmi >= 17) c3 = 14
+    else c3 = 10
+  } else {
+    if (ffmi >= 18) c3 = 20
+    else if (ffmi >= 16) c3 = 18
+    else if (ffmi >= 14) c3 = 14
+    else c3 = 10
+  }
+
+  // C4 — Ajuste metabólico por idade (0–20)
+  const c4 = Math.max(12, Math.min(20, 20 - (idade - 18) * 0.2))
+
+  const total = Math.max(0, Math.min(100, Math.round(c1 + c2 + c3 + c4)))
+  return {
+    total,
+    c1: Math.round(c1 * 10) / 10,
+    c2: Math.round(c2 * 10) / 10,
+    c3,
+    c4: Math.round(c4 * 10) / 10,
+  }
+}
+
+function lbsClassif(score: number) {
+  if (score >= 90) return { label: 'Elite',             cor: '#8B5CF6' }
+  if (score >= 75) return { label: 'Muito bom',         cor: '#4ADE80' }
+  if (score >= 60) return { label: 'Bom / em evolução', cor: '#FF8C00' }
+  if (score >= 45) return { label: 'Atenção',           cor: '#FBBF24' }
+  return               { label: 'Risco elevado',       cor: '#EF4444' }
+}
+
+function lbsSummario(
+  lbs: ReturnType<typeof calcLetsBodyScore>,
+  gorduraPct: number,
+  sexo: Sexo,
+) {
+  const gaps = [
+    { key: 'gordura', gap: 40 - lbs.c1, label: 'C1' },
+    { key: 'peso',    gap: 20 - lbs.c2, label: 'C2' },
+    { key: 'musculo', gap: 20 - lbs.c3, label: 'C3' },
+  ]
+  const pior = gaps.reduce((a, b) => a.gap > b.gap ? a : b)
+
+  const faixaIdeal = sexo === 'masculino' ? '10–18%' : '18–28%'
+  const acimaDaFaixa = sexo === 'masculino' ? gorduraPct > 18 : gorduraPct > 28
+
+  const melhorias: Record<string, string> = {
+    gordura: acimaDaFaixa
+      ? `Reduzir o percentual de gordura para a faixa ideal (${faixaIdeal}) é o maior impacto no seu score. Priorize déficit calórico moderado com treinos de força.`
+      : `Seu percentual de gordura está abaixo da faixa ideal. Ganhar massa magra vai elevar naturalmente a composição.`,
+    peso: `Ajustar o peso em direção ao seu peso fitness vai elevar o pilar de peso funcional e melhorar o score geral.`,
+    musculo: `Treinos de força progressivos vão aumentar seu FFMI e elevar o pilar de estrutura muscular ao longo dos ciclos.`,
+  }
+
+  const situacao =
+    lbs.total >= 75 ? `Seu perfil físico está em ótima forma — continue o trabalho consistente.` :
+    lbs.total >= 60 ? `Seu perfil está em boa evolução, com pontos claros para avançar.` :
+    lbs.total >= 45 ? `Seu perfil merece atenção em algumas áreas — pequenas mudanças geram grande impacto.` :
+    `Seu perfil indica necessidade de mudanças no estilo de vida para proteger a saúde.`
+
+  return { situacao, melhoria: melhorias[pior.key] }
+}
+
 const GET_LEVELS = [
   { tag: 'sed',  mult: 1.20, label: 'Sedentário',          dias: '0–1 dias/sem' },
   { tag: 'leve', mult: 1.37, label: 'Levemente ativo',     dias: '2–3 dias/sem' },
@@ -140,6 +234,54 @@ function IMCGauge({ imc }: { imc: number }) {
       <text x={16} y={97} fill="rgba(255,255,255,0.2)" fontSize="6" fontFamily="system-ui">16</text>
       <text x={86} y={22} fill="rgba(255,255,255,0.2)" fontSize="6" fontFamily="system-ui">25</text>
       <text x={174} y={97} fill="rgba(255,255,255,0.2)" fontSize="6" fontFamily="system-ui">40</text>
+    </svg>
+  )
+}
+
+// ── Score Gauge SVG ───────────────────────────────────────────────────────────
+
+function ScoreGauge({ score }: { score: number }) {
+  const r = 72, cx = 100, cy = 100
+  const circ = 2 * Math.PI * r
+  const progress = circ * (score / 100)
+  const { label, cor } = lbsClassif(score)
+
+  return (
+    <svg viewBox="0 0 200 200" className="w-full max-w-[190px]">
+      {/* Trilha de fundo */}
+      <circle cx={cx} cy={cy} r={r}
+        fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={14} />
+      {/* Arco de progresso — começa do topo (-90°) */}
+      <circle cx={cx} cy={cy} r={r}
+        fill="none" stroke={cor} strokeWidth={14}
+        strokeLinecap="round"
+        strokeDasharray={`${progress} ${circ}`}
+        transform={`rotate(-90 ${cx} ${cy})`}
+        opacity={0.9}
+      />
+      {/* Halo suave */}
+      <circle cx={cx} cy={cy} r={r}
+        fill="none" stroke={cor} strokeWidth={20}
+        strokeLinecap="round"
+        strokeDasharray={`${progress} ${circ}`}
+        transform={`rotate(-90 ${cx} ${cy})`}
+        opacity={0.08}
+      />
+      {/* Número */}
+      <text x={cx} y={cy - 4} textAnchor="middle"
+        fill="white" fontSize="46" fontWeight="bold" fontFamily="system-ui">
+        {score}
+      </text>
+      {/* Rótulo */}
+      <text x={cx} y={cy + 16} textAnchor="middle"
+        fill="rgba(255,255,255,0.3)" fontSize="8" fontFamily="system-ui" letterSpacing="1.5">
+        LETS BODY SCORE
+      </text>
+      {/* Classificação */}
+      <text x={cx} y={cy + 34} textAnchor="middle"
+        fill={cor} fontSize="11" fontWeight="bold" fontFamily="system-ui">
+        {label}
+      </text>
     </svg>
   )
 }
@@ -270,6 +412,10 @@ export default async function ProgressPage() {
     risco: ReturnType<typeof riscoClassif>
     tdee: number; activeTag: string
     objetivos: string[]
+    lbs: ReturnType<typeof calcLetsBodyScore>
+    lbsInfo: ReturnType<typeof lbsClassif>
+    lbsTexto: ReturnType<typeof lbsSummario>
+    sexo: Sexo
   } | null = null
 
   if (hasMeta) {
@@ -293,6 +439,8 @@ export default async function ProgressPage() {
       ? (profile!.objetivo as string).split(',').map(s => s.trim())
       : []
 
+    const lbs = calcLetsBodyScore(gorduraPct, peso, pesosIdeais.fitness, ffmi, idade, sexo)
+
     meta = {
       imc: Math.round(imc * 10) / 10,
       imcInfo: imcClassif(imc),
@@ -309,6 +457,10 @@ export default async function ProgressPage() {
       tdee: Math.round(tmb * activeMult),
       activeTag,
       objetivos,
+      lbs,
+      lbsInfo: lbsClassif(lbs.total),
+      lbsTexto: lbsSummario(lbs, gorduraPct, sexo),
+      sexo,
     }
   }
 
@@ -391,6 +543,63 @@ export default async function ProgressPage() {
             <div>
               <h2 className="text-base font-bold">Desempenho &amp; Projeção</h2>
               <p className="text-xs text-white/40 mt-0.5">Análise do seu perfil físico e metabólico</p>
+            </div>
+
+            {/* ── LETS BODY SCORE ─────────────────────────────────────────── */}
+            <div className="rounded-3xl border p-5 flex flex-col gap-5"
+              style={{ borderColor: meta.lbsInfo.cor + '30', backgroundColor: meta.lbsInfo.cor + '06' }}>
+
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-bold tracking-wide">
+                    <span className="text-white">Lets</span>
+                    <span style={{ color: meta.lbsInfo.cor }}> Body Score</span>
+                  </p>
+                  <p className="text-[10px] text-white/35 mt-0.5">Avaliação física integrada</p>
+                </div>
+                <span className="text-xs font-bold px-3 py-1 rounded-full"
+                  style={{ backgroundColor: meta.lbsInfo.cor + '20', color: meta.lbsInfo.cor }}>
+                  {meta.lbsInfo.label}
+                </span>
+              </div>
+
+              {/* Gauge */}
+              <div className="flex justify-center">
+                <ScoreGauge score={meta.lbs.total} />
+              </div>
+
+              {/* Pilares */}
+              <div className="flex flex-col gap-3">
+                <p className="text-xs text-white/40 font-medium">Composição do score</p>
+                {[
+                  { label: 'C1 — Composição corporal', value: meta.lbs.c1, max: 40, cor: '#FF8C00' },
+                  { label: 'C2 — Peso funcional',      value: meta.lbs.c2, max: 20, cor: '#4ADE80' },
+                  { label: 'C3 — Estrutura muscular',  value: meta.lbs.c3, max: 20, cor: '#8B5CF6' },
+                  { label: 'C4 — Fator metabólico',    value: meta.lbs.c4, max: 20, cor: '#60A5FA' },
+                ].map(p => (
+                  <div key={p.label} className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-white/50">{p.label}</span>
+                      <span className="text-xs font-bold" style={{ color: p.cor }}>
+                        {p.value} <span className="text-white/25 font-normal">/ {p.max}</span>
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full rounded-full bg-white/[0.06] overflow-hidden">
+                      <div className="h-full rounded-full"
+                        style={{ width: `${(p.value / p.max) * 100}%`, backgroundColor: p.cor }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Resumo interpretativo */}
+              <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 flex flex-col gap-2">
+                <p className="text-xs text-white/60 leading-relaxed">{meta.lbsTexto.situacao}</p>
+                <p className="text-xs leading-relaxed" style={{ color: meta.lbsInfo.cor + 'CC' }}>
+                  {meta.lbsTexto.melhoria}
+                </p>
+              </div>
             </div>
 
             {/* IMC */}
