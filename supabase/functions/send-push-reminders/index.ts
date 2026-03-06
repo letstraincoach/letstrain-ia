@@ -20,12 +20,14 @@ const VAPID_PRIVATE_KEY = Deno.env.get('VAPID_PRIVATE_KEY')!
 webpush.setVapidDetails('mailto:contato@letstrain.app', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY)
 
 const MOTIVATIONAL_MESSAGES = [
-  'Bora treinar! Você não vai se arrepender. 💪',
-  'Seu treino de hoje está esperando. Vamos lá! 🔥',
-  'Consistência é o segredo. Não pule hoje! ⚡',
-  'Um treino por vez. Este é o dia! 🏆',
-  'Seu eu do futuro agradece. Treina! 🌟',
-  'Não deixe o hábito quebrar hoje. Você consegue! 💎',
+  'Seu treino de hoje está pronto. Bora lá! 💪',
+  'É hora do treino! A consistência faz toda a diferença. 🔥',
+  'Esse é o momento. Seu treino de hoje te espera! ⚡',
+  'Cada treino conta. Não deixa passar o de hoje! 🏆',
+  'Quem treina hoje agradece amanhã. Vamos! 🌟',
+  'Hora de manter a sequência. Você está indo muito bem! 💎',
+  'Treino na agenda, bom humor garantido depois. Bora! 🎯',
+  'Sua melhor versão começa com esse treino agora. 🚀',
 ]
 
 Deno.serve(async () => {

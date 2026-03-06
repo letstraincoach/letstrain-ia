@@ -19,7 +19,7 @@ const OPTIONS: {
     label: 'Academia de Condomínio',
     emoji: '🏢',
     descricao: 'Equipamentos limitados mas suficientes',
-    detalhe: 'Vamos fotografar os aparelhos disponíveis e a IA monta treinos com o que você tem.',
+    detalhe: 'Fotografe os aparelhos disponíveis e nossa equipe monta seu treino com o que você tem.',
   },
   {
     value: 'academia',
@@ -33,7 +33,7 @@ const OPTIONS: {
     label: 'Academia de Hotel',
     emoji: '🏨',
     descricao: 'Estrutura básica, ideal para viagens',
-    detalhe: 'Fotografe a academia do hotel e a IA monta um treino completo com o que estiver disponível.',
+    detalhe: 'Fotografe a academia do hotel e nossa equipe monta um treino completo com o que estiver disponível.',
   },
 ]
 

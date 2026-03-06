@@ -30,8 +30,8 @@ const PLANOS = [
 ]
 
 const FEATURES = [
-  '💪 Treinos diários gerados por IA',
-  '🤖 Metodologia Lets Train Time Efficient',
+  '💪 Treinos diários pela metodologia Lets Train',
+  '⚡ Metodologia Time Efficient — máximo resultado em menos tempo',
   '📊 Progressão automática de nível',
   '🏆 Gamificação e conquistas',
   '📅 Calendário e histórico completo',
@@ -164,7 +164,7 @@ export default function AssinaturaPage() {
             Lets Train
           </p>
           <h1 className="text-2xl font-bold leading-tight">
-            Seu personal trainer de IA
+            Seu personal trainer no bolso
           </h1>
           <p className="mt-1.5 text-sm text-white/50 leading-relaxed">
             Treinos diários personalizados, progressão automática e conquistas. Tudo no seu bolso.

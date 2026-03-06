@@ -40,7 +40,7 @@ function CelebrationScreen({ onClose }: { onClose: () => void }) {
         <div>
           <h2 className="text-2xl font-bold mb-2">Treino concluído!</h2>
           <p className="text-white/60 text-sm leading-relaxed max-w-xs">
-            Mais um treino no banco. Você está construindo um hábito incrível. Continue assim!
+            Mais um treino no banco. Você está construindo algo real aqui. Orgulho total!
           </p>
         </div>
         <motion.div className="flex gap-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
@@ -177,7 +177,7 @@ export default function AvaliacaoPage() {
           </p>
           <h1 className="text-2xl font-bold">Como foi o treino?</h1>
           <p className="mt-1 text-sm text-white/50">
-            Sua avaliação nos ajuda a melhorar os próximos treinos.
+            Conta pra gente como foi. Isso ajuda a deixar o próximo ainda melhor.
           </p>
         </div>
 
@@ -247,7 +247,7 @@ export default function AvaliacaoPage() {
           <textarea
             value={comentario}
             onChange={(e) => setComentario(e.target.value)}
-            placeholder="O que você achou? Algo que podemos melhorar?"
+            placeholder="Fique à vontade para contar como foi. Qualquer detalhe ajuda!"
             rows={3}
             className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#FF8C00] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] resize-none"
           />

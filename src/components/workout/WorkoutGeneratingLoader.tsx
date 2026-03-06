@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const MESSAGES = [
-  'Analisando seus equipamentos...',
-  'Montando seu treino personalizado...',
-  'Aplicando a metodologia Lets Train...',
-  'Calibrando intensidade para hoje...',
-  'Quase lá! Seu treino está incrível...',
+  'Analisando seu perfil e equipamentos...',
+  'Preparando seu treino de hoje...',
+  'Aplicando a metodologia Time Efficient...',
+  'Ajustando a intensidade para sua disposição...',
+  'Quase pronto! Vai ser um treino incrível...',
 ]
 
 export default function WorkoutGeneratingLoader() {
