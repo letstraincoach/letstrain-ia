@@ -40,7 +40,7 @@ export default function WorkoutGeneratingLoader() {
           transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
         />
         {/* Logo centralizada */}
-        <LetsTrainLogo size="xs" iconOnly />
+        <LetsTrainLogo size="xs" />
       </div>
 
       {/* Mensagem rotativa */}
