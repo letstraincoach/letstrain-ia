@@ -23,11 +23,16 @@ function calcTMB(peso: number, alturaCm: number, idade: number, sexo: Sexo) {
   return Math.round(sexo === 'masculino' ? base + 5 : base - 161)
 }
 
-function calcPesoIdeal(alturaCm: number, sexo: Sexo) {
-  const ideal = sexo === 'masculino'
-    ? alturaCm - 100 - (alturaCm - 150) / 4
-    : alturaCm - 100 - (alturaCm - 150) / 2.5
-  return Math.round(ideal * 10) / 10
+// Peso ideal baseado na composição corporal — massaMagra / (1 − %gorduraAlvo)
+function calcPesosIdeais(massaMagra: number, sexo: Sexo) {
+  const alvos = sexo === 'masculino'
+    ? { saude: 0.18, fitness: 0.15, atletico: 0.10 }
+    : { saude: 0.28, fitness: 0.24, atletico: 0.20 }
+  return {
+    saude:    Math.round(massaMagra / (1 - alvos.saude)    * 10) / 10,
+    fitness:  Math.round(massaMagra / (1 - alvos.fitness)  * 10) / 10,
+    atletico: Math.round(massaMagra / (1 - alvos.atletico) * 10) / 10,
+  }
 }
 
 function calcGorduraPct(imc: number, idade: number, sexo: Sexo) {
@@ -58,13 +63,6 @@ function ffmiClassif(ffmi: number) {
   if (ffmi < 20) return { label: 'Normal',   cor: '#4ADE80' }
   if (ffmi < 23) return { label: 'Atlético', cor: '#FF8C00' }
   return               { label: 'Elite',     cor: '#8B5CF6' }
-}
-
-function calcIdadeMet(alturaCm: number, tmb: number, sexo: Sexo) {
-  const piIdeal = calcPesoIdeal(alturaCm, sexo)
-  const sexOff  = sexo === 'masculino' ? 5 : -161
-  const age     = Math.round((10 * piIdeal + 6.25 * alturaCm + sexOff - tmb) / 5)
-  return Math.max(15, Math.min(80, age))
 }
 
 function riscoClassif(imc: number, gordura: number, idade: number) {
@@ -264,12 +262,11 @@ export default async function ProgressPage() {
 
   let meta: {
     imc: number; imcInfo: ReturnType<typeof imcClassif>
-    pesoIdeal: number; pesoDiff: number
+    pesosIdeais: ReturnType<typeof calcPesosIdeais>; pesoDiff: number
     tmb: number
     gorduraPct: number; gorduraInfo: ReturnType<typeof gorduraClassif>
     massaGorda: number; massaMagra: number
     ffmi: number; ffmiInfo: ReturnType<typeof ffmiClassif>
-    idadeMet: number
     risco: ReturnType<typeof riscoClassif>
     tdee: number; activeTag: string
     objetivos: string[]
@@ -289,7 +286,7 @@ export default async function ProgressPage() {
     const massaGorda = Math.round(peso * (gorduraPct / 100) * 10) / 10
     const massaMagra = Math.round((peso - massaGorda) * 10) / 10
     const ffmi       = Math.round((massaMagra / (alturaM * alturaM)) * 10) / 10
-    const pesoIdeal  = calcPesoIdeal(alturaCm, sexo)
+    const pesosIdeais = calcPesosIdeais(massaMagra, sexo)
     const activeTag  = activeGetTag(dias)
     const activeMult = GET_LEVELS.find(g => g.tag === activeTag)!.mult
     const objetivos  = profile!.objetivo
@@ -299,8 +296,8 @@ export default async function ProgressPage() {
     meta = {
       imc: Math.round(imc * 10) / 10,
       imcInfo: imcClassif(imc),
-      pesoIdeal,
-      pesoDiff: Math.round((peso - pesoIdeal) * 10) / 10,
+      pesosIdeais,
+      pesoDiff: Math.round((peso - pesosIdeais.saude) * 10) / 10,
       tmb,
       gorduraPct,
       gorduraInfo: gorduraClassif(gorduraPct, sexo),
@@ -308,7 +305,6 @@ export default async function ProgressPage() {
       massaMagra,
       ffmi,
       ffmiInfo: ffmiClassif(ffmi),
-      idadeMet: calcIdadeMet(alturaCm, tmb, sexo),
       risco: riscoClassif(imc, gorduraPct, idade),
       tdee: Math.round(tmb * activeMult),
       activeTag,
@@ -412,35 +408,76 @@ export default async function ProgressPage() {
               </p>
             </div>
 
-            {/* Peso & Referências */}
+            {/* Peso Ideal — baseado em composição corporal */}
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 flex flex-col gap-4">
-              <p className="text-sm font-semibold">Peso &amp; Referências</p>
-              <div className="flex flex-col gap-2">
+              <div>
+                <p className="text-sm font-semibold">Peso Ideal (Composição Corporal)</p>
+                <p className="text-[10px] text-white/35 mt-0.5">
+                  Baseado na massa magra e metas de gordura por categoria
+                </p>
+              </div>
+
+              {/* Grid 4 células: Atual / Saúde / Fitness / Atlético */}
+              <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: 'Peso atual',           value: `${profile!.peso} kg`,          cor: 'text-white' },
-                  { label: 'Peso ideal (Lorentz)',  value: `${meta.pesoIdeal} kg`,         cor: 'text-white' },
                   {
-                    label: 'Diferença',
-                    value: meta.pesoDiff > 0
-                      ? `+${meta.pesoDiff} kg acima do ideal`
-                      : meta.pesoDiff < 0
-                      ? `${meta.pesoDiff} kg abaixo do ideal`
-                      : 'No peso ideal',
-                    cor: meta.pesoDiff > 0 ? 'text-yellow-400' : meta.pesoDiff < 0 ? 'text-blue-400' : 'text-green-400',
+                    label: 'Peso atual',
+                    value: `${profile!.peso} kg`,
+                    sub: `${meta.gorduraPct}% gordura`,
+                    cor: '#FFFFFF',
+                    bg: 'bg-white/[0.04]',
+                    border: 'border-white/10',
                   },
-                ].map(row => (
-                  <div key={row.label} className="flex items-center justify-between py-2 border-b border-white/[0.06] last:border-0">
-                    <span className="text-xs text-white/50">{row.label}</span>
-                    <span className={`text-sm font-bold ${row.cor}`}>{row.value}</span>
+                  {
+                    label: '💚 Saúde',
+                    value: `${meta.pesosIdeais.saude} kg`,
+                    sub: profile!.sexo === 'feminino' ? 'meta 28% gordura' : 'meta 18% gordura',
+                    cor: '#4ADE80',
+                    bg: '',
+                    border: 'border-[#4ADE80]/25',
+                  },
+                  {
+                    label: '🔥 Fitness',
+                    value: `${meta.pesosIdeais.fitness} kg`,
+                    sub: profile!.sexo === 'feminino' ? 'meta 24% gordura' : 'meta 15% gordura',
+                    cor: '#FF8C00',
+                    bg: '',
+                    border: 'border-[#FF8C00]/25',
+                  },
+                  {
+                    label: '⚡ Atlético',
+                    value: `${meta.pesosIdeais.atletico} kg`,
+                    sub: profile!.sexo === 'feminino' ? 'meta 20% gordura' : 'meta 10% gordura',
+                    cor: '#8B5CF6',
+                    bg: '',
+                    border: 'border-[#8B5CF6]/25',
+                  },
+                ].map(cell => (
+                  <div key={cell.label}
+                    className={`rounded-2xl border ${cell.border} ${cell.bg || 'bg-white/[0.02]'} p-4 flex flex-col gap-1`}>
+                    <p className="text-[10px] text-white/40 font-medium">{cell.label}</p>
+                    <p className="text-xl font-bold" style={{ color: cell.cor }}>{cell.value}</p>
+                    <p className="text-[10px] text-white/30">{cell.sub}</p>
                   </div>
                 ))}
               </div>
+
               {meta.pesoDiff > 0 && (
                 <p className="text-xs text-white/35 leading-relaxed">
-                  Meta saudável: <strong className="text-white/60">−{meta.pesoDiff} kg</strong> em aproximadamente{' '}
+                  Para atingir o peso de saúde, você precisa perder{' '}
+                  <strong className="text-white/60">{meta.pesoDiff} kg</strong> — aproximadamente{' '}
                   <strong className="text-white/60">{Math.ceil(meta.pesoDiff / 0.5)} semanas</strong> com déficit de 400 kcal/dia.
                 </p>
               )}
+              {meta.pesoDiff <= 0 && (
+                <p className="text-xs text-green-400/70 leading-relaxed">
+                  Você já está no peso de saúde ou abaixo dele. Foque em composição corporal e qualidade muscular.
+                </p>
+              )}
+
+              <p className="text-[10px] text-white/20 leading-relaxed">
+                Cálculo: massa magra ÷ (1 − % gordura alvo). Estimativa baseada em método científico populacional.
+              </p>
             </div>
 
             {/* Composição corporal */}
@@ -598,32 +635,6 @@ export default async function ProgressPage() {
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 flex flex-col gap-4">
               <p className="text-sm font-semibold">Indicadores de Saúde</p>
               <div className="flex flex-col gap-3">
-
-                {/* Idade metabólica */}
-                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3">
-                  <div>
-                    <p className="text-xs text-white/50">Idade metabólica estimada</p>
-                    <p className="text-[10px] text-white/30 mt-0.5">Baseada na TMB vs. peso ideal</p>
-                  </div>
-                  <div className="text-right">
-                    <p className={`text-2xl font-bold ${
-                      meta.idadeMet < (profile!.idade as number)
-                        ? 'text-green-400'
-                        : meta.idadeMet === (profile!.idade as number)
-                        ? 'text-white'
-                        : 'text-yellow-400'
-                    }`}>
-                      {meta.idadeMet} anos
-                    </p>
-                    <p className="text-[10px] text-white/30">
-                      {meta.idadeMet < (profile!.idade as number)
-                        ? `${(profile!.idade as number) - meta.idadeMet} anos mais jovem`
-                        : meta.idadeMet > (profile!.idade as number)
-                        ? `${meta.idadeMet - (profile!.idade as number)} anos acima`
-                        : 'Na média da sua idade'}
-                    </p>
-                  </div>
-                </div>
 
                 {/* Risco metabólico */}
                 <div className="flex items-center justify-between rounded-2xl border px-4 py-3"
