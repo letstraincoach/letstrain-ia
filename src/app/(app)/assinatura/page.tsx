@@ -164,7 +164,7 @@ export default function AssinaturaPage() {
             Lets Train
           </p>
           <h1 className="text-2xl font-bold leading-tight">
-            Seu personal trainer no bolso
+            Metodologia real. Resultado de verdade.
           </h1>
           <p className="mt-1.5 text-sm text-white/50 leading-relaxed">
             Treinos diários personalizados, progressão automática e conquistas. Tudo no seu bolso.

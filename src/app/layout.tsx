@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     default: 'Lets Train',
     template: '%s | Lets Train',
   },
-  description: 'Seu personal trainer no bolso. Treinos personalizados com IA e metodologia real.',
+  description: 'Metodologia real. Resultado de verdade. Treinos diários personalizados, progressão automática e conquistas.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
