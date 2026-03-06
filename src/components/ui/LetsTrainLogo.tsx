@@ -22,29 +22,37 @@ export default function LetsTrainLogo({
 
   return (
     <div className={`flex items-center ${gap} ${className}`}>
-      {/* Haltere SVG — baseado no icon.svg do projeto */}
+      {/* Logo mark — 3 arcos concêntricos (símbolo registrado Lets Train) */}
       <svg
         width={icon}
         height={icon}
-        viewBox="0 0 512 512"
+        viewBox="0 0 100 100"
         fill="none"
+        overflow="hidden"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        {/* Barra central */}
-        <rect x="176" y="236" width="160" height="40" rx="8" fill="#FF8C00" />
-        {/* Peso esquerdo superior */}
-        <rect x="96" y="184" width="96" height="48" rx="10" fill="#FF8C00" />
-        {/* Peso esquerdo inferior */}
-        <rect x="96" y="280" width="96" height="48" rx="10" fill="#FF8C00" />
-        {/* Conector esquerdo */}
-        <rect x="148" y="184" width="32" height="144" rx="6" fill="#E07000" />
-        {/* Peso direito superior */}
-        <rect x="320" y="184" width="96" height="48" rx="10" fill="#FF8C00" />
-        {/* Peso direito inferior */}
-        <rect x="320" y="280" width="96" height="48" rx="10" fill="#FF8C00" />
-        {/* Conector direito */}
-        <rect x="332" y="184" width="32" height="144" rx="6" fill="#E07000" />
+        {/* Arco externo */}
+        <path
+          d="M 0 7 H 73 A 20 20 0 0 1 93 27 V 100"
+          stroke="#FF8C00"
+          strokeWidth="14"
+          strokeLinecap="butt"
+        />
+        {/* Arco médio */}
+        <path
+          d="M 0 33 H 47 A 20 20 0 0 1 67 53 V 100"
+          stroke="#FF8C00"
+          strokeWidth="14"
+          strokeLinecap="butt"
+        />
+        {/* Arco interno */}
+        <path
+          d="M 0 59 H 21 A 20 20 0 0 1 41 79 V 100"
+          stroke="#FF8C00"
+          strokeWidth="14"
+          strokeLinecap="butt"
+        />
       </svg>
 
       {!iconOnly && (
