@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { LEVEL_CONFIG } from '@/lib/training/levels.config'
 import type { TrainingLevel } from '@/types/database.types'
 import AlbumConquistas from '@/components/gamification/AlbumConquistas'
+import LetsCoinsSection from '@/components/dashboard/LetsCoinsSection'
 
 type Sexo = 'masculino' | 'feminino'
 
@@ -353,7 +354,7 @@ export default async function ProgressPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [profileResult, progressResult, workoutsResult, allAchievementsResult, userAchievementsResult] =
+  const [profileResult, progressResult, workoutsResult, allAchievementsResult, userAchievementsResult, historicoResult, resgatesResult] =
     await Promise.all([
       supabase
         .from('user_profiles')
@@ -363,7 +364,7 @@ export default async function ProgressPage() {
 
       supabase
         .from('user_progress')
-        .select('treinos_totais, treinos_nivel_atual, streak_atual, streak_maximo')
+        .select('treinos_totais, treinos_nivel_atual, streak_atual, streak_maximo, lets_coins')
         .eq('id', user.id)
         .single(),
 
@@ -383,13 +384,31 @@ export default async function ProgressPage() {
       supabase.from('user_achievements')
         .select('achievement_id, desbloqueado_em')
         .eq('user_id', user.id),
+
+      supabase
+        .from('workouts')
+        .select('id, data, local_treino, duracao_estimada, exercicios, workout_evaluations(rating)')
+        .eq('user_id', user.id)
+        .eq('status', 'executado')
+        .order('data', { ascending: false })
+        .order('criado_em', { ascending: false })
+        .limit(15),
+
+      supabase
+        .from('lets_coins_resgates')
+        .select('id, codigo, valor_brl, coins_gastos, status, criado_em')
+        .eq('user_id', user.id)
+        .order('criado_em', { ascending: false })
+        .limit(10),
     ])
 
   const profile         = profileResult.data
   const progress        = progressResult.data
   const workouts        = workoutsResult.data ?? []
+  const resgates        = resgatesResult.data ?? []
   const allAchievements = allAchievementsResult.data ?? []
   const userAchievements = userAchievementsResult.data ?? []
+  const historico       = historicoResult.data ?? []
 
   const nivel     = (profile?.nivel_atual ?? 'adaptacao') as TrainingLevel
   const levelCfg  = LEVEL_CONFIG[nivel]
@@ -875,6 +894,70 @@ export default async function ProgressPage() {
             <WorkoutCalendar executedDates={executedDates} />
           </div>
         </div>
+
+        {/* Treinos Recentes */}
+        {historico.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <h2 className="text-base font-bold">Treinos Recentes</h2>
+            <div className="flex flex-col gap-2">
+              {historico.map((w) => {
+                const ex = w.exercicios as { nome?: string } | null
+                const nomeTreino = ex?.nome ?? 'Treino'
+                const dataFormatada = new Date(w.data + 'T12:00:00').toLocaleDateString('pt-BR', {
+                  day: '2-digit', month: 'short',
+                })
+                const localEmoji =
+                  w.local_treino === 'academia' ? '🏋️' :
+                  w.local_treino === 'hotel' ? '✈️' : '🏠'
+                const avaliacoes = w.workout_evaluations as { rating: number }[] | null
+                const rating = avaliacoes?.[0]?.rating ?? null
+                const starEmojis = ['😞', '😕', '😐', '😊', '🤩']
+
+                return (
+                  <Link
+                    key={w.id}
+                    href={`/workout/${w.id}`}
+                    className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 flex items-center gap-3 hover:border-white/20 transition-colors active:scale-[0.99]"
+                  >
+                    <div className="text-xl shrink-0">{localEmoji}</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{nomeTreino}</p>
+                      <p className="text-xs text-white/40 mt-0.5">
+                        {dataFormatada}
+                        {w.duracao_estimada ? ` · ${w.duracao_estimada} min` : ''}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {rating && (
+                        <span className="text-base">{starEmojis[rating - 1]}</span>
+                      )}
+                      <span className="text-white/20 text-sm">→</span>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Lets Coins */}
+        <section className="flex flex-col gap-4">
+          <div>
+            <h2 className="text-lg font-bold">Lets Coins</h2>
+            <p className="text-sm text-white/50 mt-0.5">Ganhe coins treinando e troque por descontos na loja</p>
+          </div>
+          <LetsCoinsSection
+            coins={progress?.lets_coins ?? 0}
+            resgates={resgates.map((r) => ({
+              id: r.id,
+              codigo: r.codigo,
+              valor_brl: Number(r.valor_brl),
+              coins_gastos: r.coins_gastos,
+              status: r.status,
+              criado_em: r.criado_em,
+            }))}
+          />
+        </section>
 
         {/* Álbum de Conquistas */}
         <AlbumConquistas

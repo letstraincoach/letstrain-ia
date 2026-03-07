@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Nenhuma imagem enviada' }, { status: 400 })
   }
 
-  const urls = imageUrls.slice(0, 10) // máximo 10 imagens
+  const urls = imageUrls.slice(0, 12) // máximo 12 imagens
 
   // Montar content blocks com todas as imagens
   const imageBlocks: Anthropic.ImageBlockParam[] = urls.map((url) => ({

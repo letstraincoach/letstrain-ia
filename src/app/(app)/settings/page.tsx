@@ -5,16 +5,17 @@ import { LEVEL_CONFIG } from '@/lib/training/levels.config'
 import type { TrainingLevel } from '@/types/database.types'
 import PushNotificationSetup from '@/components/push/PushNotificationSetup'
 import SignOutButton from '@/components/settings/SignOutButton'
+import TelefoneInput from '@/components/settings/TelefoneInput'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [profileResult, subscriptionResult, pushResult] = await Promise.all([
+  const [profileResult, subscriptionResult, pushResult, equipmentResult] = await Promise.all([
     supabase
       .from('user_profiles')
-      .select('nome, nivel_atual, objetivo, local_treino, dias_por_semana')
+      .select('nome, nivel_atual, objetivo, local_treino, dias_por_semana, preferencia_treino, condominio_nome, condominio_cep, condominio_fotos, peso, altura, idade, sexo, telefone')
       .eq('id', user.id)
       .single(),
 
@@ -34,11 +35,18 @@ export default async function SettingsPage() {
       .eq('ativo', true)
       .limit(1)
       .maybeSingle(),
+
+    supabase
+      .from('user_equipment')
+      .select('id, nome_custom')
+      .eq('user_id', user.id)
+      .order('criado_em', { ascending: true }),
   ])
 
   const profile = profileResult.data
   const subscription = subscriptionResult.data
   const pushConfig = pushResult.data
+  const equipment = equipmentResult.data ?? []
 
   const nivel = (profile?.nivel_atual ?? 'adaptacao') as TrainingLevel
   const levelCfg = LEVEL_CONFIG[nivel]
@@ -49,9 +57,16 @@ export default async function SettingsPage() {
     qualidade_vida: 'Qualidade de Vida',
   }
 
+  const preferenciaLabel: Record<string, string> = {
+    isolados: 'Treinos Isolados',
+    grupos_musculares: 'Grupos Musculares',
+    superior_inferior: 'Superior + Inferior',
+  }
+
   const localLabel: Record<string, string> = {
     condominio: 'Academia de Condomínio',
     academia: 'Academia Convencional',
+    hotel: 'Hotel / Viagem',
   }
 
   const fimFormatted = subscription?.fim
@@ -76,7 +91,15 @@ export default async function SettingsPage() {
 
         {/* Perfil */}
         <section className="flex flex-col gap-3">
-          <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">Perfil</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">Perfil</h2>
+            <Link
+              href="/settings/perfil"
+              className="text-xs text-[#FF8C00] hover:text-[#E07000] transition-colors"
+            >
+              Editar →
+            </Link>
+          </div>
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] divide-y divide-white/[0.06]">
             {[
               { label: 'Nome', value: profile?.nome ?? '—' },
@@ -86,7 +109,13 @@ export default async function SettingsPage() {
               },
               {
                 label: 'Objetivo',
-                value: objetivoLabel[profile?.objetivo ?? ''] ?? '—',
+                value: profile?.objetivo
+                  ? profile.objetivo.split(',').map((o: string) => objetivoLabel[o.trim()] ?? o.trim()).join(', ')
+                  : '—',
+              },
+              {
+                label: 'Preferência',
+                value: preferenciaLabel[profile?.preferencia_treino ?? ''] ?? '—',
               },
               {
                 label: 'Local de treino',
@@ -103,6 +132,133 @@ export default async function SettingsPage() {
               </div>
             ))}
           </div>
+        </section>
+
+        {/* Academia do Condomínio */}
+        {profile?.local_treino === 'condominio' && (
+          <section className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">Minha Academia</h2>
+              <Link
+                href="/settings/equipamentos"
+                className="text-xs text-[#FF8C00] hover:text-[#E07000] transition-colors"
+              >
+                Gerenciar →
+              </Link>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-4">
+              {/* Nome e CEP */}
+              <div className="flex flex-col gap-1.5">
+                <p className="text-sm font-semibold">
+                  🏠 {profile.condominio_nome ?? 'Condomínio'}
+                </p>
+                {profile.condominio_cep && (
+                  <p className="text-xs text-white/40">
+                    CEP {profile.condominio_cep.replace(/^(\d{5})(\d{3})$/, '$1-$2')}
+                  </p>
+                )}
+              </div>
+
+              {/* Fotos */}
+              {profile.condominio_fotos && profile.condominio_fotos.length > 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <p className="text-xs text-white/40">{profile.condominio_fotos.length} foto(s) da academia</p>
+                  <div className="flex gap-1.5 overflow-x-auto pb-1">
+                    {(profile.condominio_fotos as string[]).slice(0, 6).map((url, i) => (
+                      <div key={i} className="w-16 h-16 rounded-xl overflow-hidden bg-white/5 shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt={`foto ${i + 1}`} className="w-full h-full object-cover" />
+                      </div>
+                    ))}
+                    {profile.condominio_fotos.length > 6 && (
+                      <div className="w-16 h-16 rounded-xl bg-white/[0.03] border border-white/10 shrink-0 flex items-center justify-center">
+                        <span className="text-xs text-white/40">+{profile.condominio_fotos.length - 6}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Equipamentos */}
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-white/40">
+                  {equipment.length > 0
+                    ? `${equipment.length} equipamento(s) detectado(s)`
+                    : 'Nenhum equipamento cadastrado'}
+                </p>
+                <Link
+                  href="/settings/equipamentos"
+                  className="text-xs text-[#FF8C00] hover:text-[#E07000] transition-colors"
+                >
+                  Ver lista →
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Equipamentos — Academia Convencional */}
+        {profile?.local_treino === 'academia' && equipment.length > 0 && (
+          <section className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">Meus Equipamentos</h2>
+              <Link
+                href="/settings/equipamentos"
+                className="text-xs text-[#FF8C00] hover:text-[#E07000] transition-colors"
+              >
+                Gerenciar →
+              </Link>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <p className="text-sm text-white/70">{equipment.length} equipamento(s) cadastrado(s)</p>
+              <p className="text-xs text-white/35 mt-1">{equipment.slice(0, 3).map(e => e.nome_custom).join(', ')}{equipment.length > 3 ? ` +${equipment.length - 3}` : ''}</p>
+            </div>
+          </section>
+        )}
+
+        {/* Medidas */}
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">Medidas</h2>
+            <Link
+              href="/atualizar-medidas"
+              className="text-xs text-[#FF8C00] hover:text-[#E07000] transition-colors"
+            >
+              Atualizar →
+            </Link>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] divide-y divide-white/[0.06]">
+            {[
+              { label: 'Peso', value: profile?.peso ? `${profile.peso} kg` : '—' },
+              { label: 'Altura', value: profile?.altura ? `${profile.altura} cm` : '—' },
+              { label: 'Idade', value: profile?.idade ? `${profile.idade} anos` : '—' },
+              {
+                label: 'Sexo',
+                value: profile?.sexo === 'masculino' ? 'Masculino' : profile?.sexo === 'feminino' ? 'Feminino' : '—',
+              },
+            ].map((row) => (
+              <div key={row.label} className="flex items-center justify-between px-4 py-3">
+                <p className="text-sm text-white/50">{row.label}</p>
+                <p className="text-sm font-medium">{row.value}</p>
+              </div>
+            ))}
+          </div>
+          {(!profile?.peso || !profile?.altura || !profile?.idade) && (
+            <p className="text-xs text-white/30 leading-relaxed">
+              Complete suas medidas para ver o{' '}
+              <Link href="/progress" className="text-[#FF8C00] hover:text-[#E07000] transition-colors">
+                Lets Body Score
+              </Link>{' '}
+              na tela de progresso.
+            </p>
+          )}
+        </section>
+
+        {/* Contato */}
+        <section className="flex flex-col gap-3">
+          <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">Contato</h2>
+          <TelefoneInput userId={user.id} initialTelefone={profile?.telefone ?? null} />
         </section>
 
         {/* Assinatura */}

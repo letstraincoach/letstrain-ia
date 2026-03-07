@@ -31,6 +31,25 @@ export async function POST(_request: Request, { params }: Props) {
     return NextResponse.json({ ok: true })
   }
 
+  // Trava: verificar se já concluiu outro treino hoje
+  const hoje = new Date().toISOString().split('T')[0]
+  const { data: outroExecutado } = await supabase
+    .from('workouts')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('data', hoje)
+    .eq('status', 'executado')
+    .neq('id', id)
+    .limit(1)
+    .maybeSingle()
+
+  if (outroExecutado) {
+    return NextResponse.json(
+      { error: 'Limite de 1 treino por dia atingido.' },
+      { status: 409 }
+    )
+  }
+
   const { error } = await supabase
     .from('workouts')
     .update({

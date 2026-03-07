@@ -56,6 +56,7 @@ function playRevealSound() {
 export default function AchievementBanner({ achievements, onDone }: AchievementBannerProps) {
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(false)
+  const [shared, setShared] = useState(false)
 
   const current = achievements[index]
   const isLast = index === achievements.length - 1
@@ -63,10 +64,11 @@ export default function AchievementBanner({ achievements, onDone }: AchievementB
   // Dispara o som + revela assim que o card entra em cena
   useEffect(() => {
     setRevealed(false)
+    setShared(false)
     const t1 = setTimeout(() => {
       setRevealed(true)
       playRevealSound()
-    }, 300) // pequeno delay para a animação de entrada terminar
+    }, 300)
     return () => clearTimeout(t1)
   }, [index])
 
@@ -76,6 +78,19 @@ export default function AchievementBanner({ achievements, onDone }: AchievementB
     } else {
       setIndex((i) => i + 1)
     }
+  }
+
+  async function handleShare() {
+    const text = `Desbloqueei ${current.icone_emoji} "${current.nome}" no Lets Train IA! 💪\n\nTreina comigo → https://letstrain-ia.vercel.app`
+    try {
+      if (navigator.share) {
+        await navigator.share({ text })
+      } else {
+        await navigator.clipboard.writeText(text)
+        setShared(true)
+        setTimeout(() => setShared(false), 2500)
+      }
+    } catch { /* usuário cancelou */ }
   }
 
   return (
@@ -217,13 +232,19 @@ export default function AchievementBanner({ achievements, onDone }: AchievementB
             </motion.div>
           )}
 
-          {/* CTA */}
+          {/* CTAs */}
           <motion.div
-            className="w-full"
+            className="w-full flex flex-col gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: revealed ? 1 : 0 }}
             transition={{ delay: 0.5 }}
           >
+            <button
+              onClick={handleShare}
+              className="w-full h-11 rounded-xl border border-[#F59E0B]/30 bg-[#F59E0B]/08 text-[#F59E0B] font-semibold text-sm flex items-center justify-center gap-2 hover:bg-[#F59E0B]/12 transition-colors active:scale-[0.98]"
+            >
+              {shared ? '✅ Copiado!' : '📤 Compartilhar conquista'}
+            </button>
             <Button fullWidth onClick={handleNext}>
               {isLast ? 'Ver álbum 🎴' : `Próxima (${index + 1}/${achievements.length})`}
             </Button>

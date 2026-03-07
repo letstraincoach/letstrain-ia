@@ -3,6 +3,17 @@
 import { motion } from 'framer-motion'
 import Figurinha, { type FigurinhaData } from './Figurinha'
 
+async function shareAchievement(fig: FigurinhaData) {
+  const text = `Desbloqueei ${fig.emoji} "${fig.nome}" no Lets Train IA! 💪\n\nTreina comigo → https://letstrain-ia.vercel.app`
+  try {
+    if (navigator.share) {
+      await navigator.share({ text })
+    } else {
+      await navigator.clipboard.writeText(text)
+    }
+  } catch { /* usuário cancelou */ }
+}
+
 // ── Definição das categorias ─────────────────────────────────────────────────
 
 interface CategoryDef {
@@ -251,11 +262,22 @@ export default function AlbumConquistas({
             {/* Grade de figurinhas */}
             <div className="grid grid-cols-4 gap-2">
               {figurinhas.map((fig, i) => (
-                <Figurinha
-                  key={fig.codigo}
-                  {...fig}
-                  delay={catIndex * 0.06 + i * 0.03}
-                />
+                <div key={fig.codigo} className="relative">
+                  <Figurinha
+                    {...fig}
+                    delay={catIndex * 0.06 + i * 0.03}
+                  />
+                  {fig.desbloqueado && (
+                    <button
+                      onClick={() => shareAchievement(fig)}
+                      title="Compartilhar conquista"
+                      className="absolute top-1 right-1 z-10 w-5 h-5 rounded-full bg-black/50 flex items-center justify-center hover:bg-black/70 transition-colors active:scale-90"
+                      style={{ fontSize: '9px' }}
+                    >
+                      📤
+                    </button>
+                  )}
+                </div>
               ))}
             </div>
           </motion.section>

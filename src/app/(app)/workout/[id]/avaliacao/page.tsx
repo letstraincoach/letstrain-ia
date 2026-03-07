@@ -68,6 +68,13 @@ export default function AvaliacaoPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Biometrics
+  const [pesoHoje, setPesoHoje] = useState('')
+  const [showBio, setShowBio] = useState(false)
+  const [fcMedia, setFcMedia] = useState('')
+  const [fcMaxima, setFcMaxima] = useState('')
+  const [caloriasReais, setCaloriasReais] = useState('')
+
   const [screen, setScreen] = useState<Screen>('form')
   const [levelUpData, setLevelUpData] = useState<{ previous: TrainingLevel; next: TrainingLevel } | null>(null)
   const [achievements, setAchievements] = useState<NewAchievement[]>([])
@@ -96,6 +103,24 @@ export default function AvaliacaoPage() {
       setError('Erro ao salvar avaliação. Tente novamente.')
       setSaving(false)
       return
+    }
+
+    // 1b. Salvar dados biométricos (best-effort, não bloqueia)
+    const pesoVal = parseFloat(pesoHoje)
+    const fcM = parseInt(fcMedia)
+    const fcX = parseInt(fcMaxima)
+    const cal = parseInt(caloriasReais)
+    if (pesoVal > 0 || fcM > 0 || fcX > 0 || cal > 0) {
+      fetch(`/api/workout/${workoutId}/biometrics`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          peso_treino: pesoVal > 0 ? pesoVal : null,
+          fc_media: fcM > 0 ? fcM : null,
+          fc_maxima: fcX > 0 ? fcX : null,
+          calorias_reais: cal > 0 ? cal : null,
+        }),
+      }).catch(() => {/* best-effort */})
     }
 
     // 2. Obter nível atual (para animar transição)
@@ -239,6 +264,30 @@ export default function AvaliacaoPage() {
           </div>
         </div>
 
+        {/* Peso hoje */}
+        <div className="flex flex-col gap-3">
+          <p className="text-sm font-medium text-white/70">
+            Seu peso hoje <span className="text-white/30">(opcional)</span>
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1">
+              <input
+                type="number"
+                inputMode="decimal"
+                min={30} max={300} step={0.1}
+                value={pesoHoje}
+                onChange={(e) => setPesoHoje(e.target.value)}
+                placeholder="ex: 78.5"
+                className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#FF8C00] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
+              />
+            </div>
+            <span className="text-sm font-semibold text-white/40 shrink-0">kg</span>
+          </div>
+          <p className="text-xs text-white/30 leading-relaxed">
+            Registrar o peso mantém o seu Lets Body Score sempre atualizado.
+          </p>
+        </div>
+
         {/* Comentário */}
         <div className="flex flex-col gap-2">
           <p className="text-sm font-medium text-white/70">
@@ -251,6 +300,78 @@ export default function AvaliacaoPage() {
             rows={3}
             className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#FF8C00] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] resize-none"
           />
+        </div>
+
+        {/* Dados do relógio (opcional) */}
+        <div className="flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={() => setShowBio((v) => !v)}
+            className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm transition-all hover:border-white/20 active:scale-[0.98]"
+          >
+            <span className="flex items-center gap-2 font-medium text-white/70">
+              ⌚ Dados do smartwatch
+              <span className="text-xs text-white/30 font-normal">(FC e calorias)</span>
+            </span>
+            <span className="text-white/30 text-xs">{showBio ? '▲' : '▼'}</span>
+          </button>
+
+          {showBio && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-xl border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-4"
+            >
+              <p className="text-xs text-white/40 leading-relaxed">
+                Informe os dados do seu treino registrados pelo smartwatch. Eles ficam salvos no seu histórico.
+              </p>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs text-white/50">FC Média</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min={40} max={220}
+                      value={fcMedia}
+                      onChange={(e) => setFcMedia(e.target.value)}
+                      placeholder="—"
+                      className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-2 py-2 text-sm text-center text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#FF8C00] focus:ring-offset-0"
+                    />
+                    <span className="absolute -bottom-4 left-0 right-0 text-center text-[10px] text-white/25">bpm</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs text-white/50">FC Máxima</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min={40} max={250}
+                      value={fcMaxima}
+                      onChange={(e) => setFcMaxima(e.target.value)}
+                      placeholder="—"
+                      className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-2 py-2 text-sm text-center text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#FF8C00] focus:ring-offset-0"
+                    />
+                    <span className="absolute -bottom-4 left-0 right-0 text-center text-[10px] text-white/25">bpm</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs text-white/50">Calorias</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min={0} max={5000}
+                      value={caloriasReais}
+                      onChange={(e) => setCaloriasReais(e.target.value)}
+                      placeholder="—"
+                      className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-2 py-2 text-sm text-center text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#FF8C00] focus:ring-offset-0"
+                    />
+                    <span className="absolute -bottom-4 left-0 right-0 text-center text-[10px] text-white/25">kcal</span>
+                  </div>
+                </div>
+              </div>
+              <div className="h-4" />
+            </motion.div>
+          )}
         </div>
 
         {error && (

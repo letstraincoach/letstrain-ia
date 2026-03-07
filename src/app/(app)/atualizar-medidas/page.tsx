@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import Button from '@/components/ui/Button'
+import Link from 'next/link'
 
 export default function AtualizarMedidasPage() {
   const router = useRouter()
@@ -13,6 +14,28 @@ export default function AtualizarMedidasPage() {
   const [idade, setIdade] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [loaded, setLoaded] = useState(false)
+
+  // Pre-fill with current values from DB
+  useEffect(() => {
+    async function load() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('peso, altura, idade')
+        .eq('id', user.id)
+        .single()
+      if (data) {
+        if (data.peso) setPeso(String(data.peso))
+        if (data.altura) setAltura(String(data.altura))
+        if (data.idade) setIdade(String(data.idade))
+      }
+      setLoaded(true)
+    }
+    load()
+  }, [])
 
   async function handleSalvar() {
     const pesoNum = parseFloat(peso)
@@ -44,17 +67,24 @@ export default function AtualizarMedidasPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-6 py-10">
-      <div className="w-full max-w-sm flex flex-col gap-6">
+    <div className="min-h-screen bg-[#0a0a0a] px-6 py-10">
+      <div className="w-full max-w-sm mx-auto flex flex-col gap-6">
+
+        {/* Back */}
+        <Link href="/settings" className="text-sm text-white/40 hover:text-white/70 transition-colors">
+          ← Voltar
+        </Link>
 
         <motion.div
-          className="text-center flex flex-col gap-3"
+          className="flex flex-col gap-3"
           initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
         >
-          <span className="text-5xl">📏</span>
-          <h1 className="text-xl font-bold">Atualize suas medidas</h1>
+          <span className="text-4xl">📏</span>
+          <h1 className="text-xl font-bold">Atualizar medidas</h1>
           <p className="text-sm text-white/50 leading-relaxed">
-            Você subiu de nível! Atualize seu peso para que o <strong className="text-white/70">Lets Body Score</strong> e a análise de desempenho reflitam sua evolução real.
+            Mantenha seus dados atualizados para que o{' '}
+            <span className="text-white/70 font-medium">Lets Body Score</span>{' '}
+            reflita sua evolução real.
           </p>
         </motion.div>
 
@@ -74,7 +104,8 @@ export default function AtualizarMedidasPage() {
                 placeholder="Ex: 82.5"
                 value={peso}
                 onChange={e => setPeso(e.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 pr-12 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#FF8C00] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
+                disabled={!loaded}
+                className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 pr-12 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#FF8C00] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] disabled:opacity-40"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-white/30">kg</span>
             </div>
@@ -83,7 +114,7 @@ export default function AtualizarMedidasPage() {
           {/* Altura — opcional */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-white/50">
-              Altura <span className="text-white/25 text-xs">(opcional — atualizar se mudou)</span>
+              Altura <span className="text-white/25 text-xs">(opcional)</span>
             </label>
             <div className="relative">
               <input
@@ -92,7 +123,8 @@ export default function AtualizarMedidasPage() {
                 placeholder="Ex: 178"
                 value={altura}
                 onChange={e => setAltura(e.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 pr-12 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#FF8C00] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
+                disabled={!loaded}
+                className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 pr-12 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#FF8C00] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] disabled:opacity-40"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-white/30">cm</span>
             </div>
@@ -110,7 +142,8 @@ export default function AtualizarMedidasPage() {
                 placeholder="Ex: 32"
                 value={idade}
                 onChange={e => setIdade(e.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 pr-12 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#FF8C00] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]"
+                disabled={!loaded}
+                className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 pr-12 text-sm text-white placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-[#FF8C00] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] disabled:opacity-40"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-white/30">anos</span>
             </div>
@@ -124,7 +157,7 @@ export default function AtualizarMedidasPage() {
         </motion.div>
 
         <div className="flex flex-col gap-3">
-          <Button fullWidth loading={saving} onClick={handleSalvar}>
+          <Button fullWidth loading={saving} disabled={!loaded} onClick={handleSalvar}>
             Salvar e ver meu desempenho
           </Button>
           <button

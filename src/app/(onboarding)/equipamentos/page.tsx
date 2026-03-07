@@ -61,7 +61,7 @@ export default function EquipamentosPage() {
   return (
     <div className="flex flex-col items-center w-full max-w-sm gap-4 pt-2">
       {local === 'condominio' || local === 'hotel'
-        ? <EquipmentDetector userId={userId} onSaved={handleSaved} />
+        ? <EquipmentDetector userId={userId} localTipo={local} onSaved={handleSaved} />
         : <EquipmentSelector userId={userId} onSaved={handleSaved} />
       }
       <button

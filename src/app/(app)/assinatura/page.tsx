@@ -14,15 +14,15 @@ const PLANOS = [
   {
     id: 'anual' as Plano,
     label: 'Anual',
-    preco: 'R$249,00',
-    precoMes: 'R$20,75/mês',
-    economia: 'Economize R$109,80 (30%)',
-    badge: '🔥 Mais popular',
+    preco: '12x de R$37,90',
+    precoMes: 'total R$397,00 · cobrado anualmente',
+    economia: 'Economize R$201,80 vs mensal (-34%)',
+    badge: '🔥 Melhor custo-benefício',
   },
   {
     id: 'mensal' as Plano,
     label: 'Mensal',
-    preco: 'R$29,90/mês',
+    preco: 'R$49,90/mês',
     precoMes: null,
     economia: null,
     badge: null,
@@ -38,22 +38,26 @@ const FEATURES = [
   '🔔 Lembretes personalizados',
 ]
 
-// ---- Formulário de pagamento (dentro do provider Elements) ----
-function CheckoutForm({ plano }: { plano: Plano }) {
+// ---- Formulário de setup (coleta cartão para o trial) ----
+function SetupForm({ plano }: { plano: Plano }) {
   const stripe = useStripe()
   const elements = useElements()
-  const [paying, setPaying] = useState(false)
+  const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+
+  const trialEndDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR', {
+    day: 'numeric', month: 'long',
+  })
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!stripe || !elements) return
 
-    setPaying(true)
+    setProcessing(true)
     setError(null)
 
-    const { error: stripeError } = await stripe.confirmPayment({
+    const { error: stripeError } = await stripe.confirmSetup({
       elements,
       confirmParams: {
         return_url: `${appUrl}/assinatura/sucesso`,
@@ -61,14 +65,22 @@ function CheckoutForm({ plano }: { plano: Plano }) {
     })
 
     if (stripeError) {
-      setError(stripeError.message ?? 'Erro ao processar pagamento.')
-      setPaying(false)
+      setError(stripeError.message ?? 'Erro ao salvar método de pagamento.')
+      setProcessing(false)
     }
     // Se não houver erro, o Stripe redireciona para return_url
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <div className="rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.04] px-4 py-3">
+        <p className="text-xs text-[#FF8C00] font-semibold mb-0.5">🎁 3 dias grátis ativados</p>
+        <p className="text-xs text-white/50 leading-relaxed">
+          Nenhuma cobrança antes de <strong className="text-white/70">{trialEndDate}</strong>.
+          Cancele antes disso e não paga nada.
+        </p>
+      </div>
+
       <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
         <PaymentElement
           options={{
@@ -86,19 +98,19 @@ function CheckoutForm({ plano }: { plano: Plano }) {
 
       <button
         type="submit"
-        disabled={!stripe || paying}
+        disabled={!stripe || processing}
         className="w-full h-14 rounded-2xl bg-[#FF8C00] text-black font-bold text-base flex items-center justify-center gap-2 hover:bg-[#E07000] transition-colors active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {paying ? (
+        {processing ? (
           <span className="inline-block w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
         ) : (
-          <>💳 Pagar {plano === 'anual' ? 'R$249,00' : 'R$29,90'}</>
+          <>🎁 Começar 3 dias grátis</>
         )}
       </button>
 
       <p className="text-center text-xs text-white/30 leading-relaxed">
-        Pagamento seguro via Stripe.<br />
-        Cartão de crédito ou débito.
+        Após o trial: {plano === 'anual' ? 'R$397,00/ano' : 'R$49,90/mês'}.<br />
+        Pagamento seguro via Stripe. Cancele quando quiser.
       </p>
     </form>
   )
@@ -185,7 +197,7 @@ export default function AssinaturaPage() {
           ))}
         </motion.div>
 
-        {/* Se não temos clientSecret ainda: seletor de planos */}
+        {/* Seletor de planos */}
         {!clientSecret && (
           <>
             <div className="flex flex-col gap-3">
@@ -253,9 +265,14 @@ export default function AssinaturaPage() {
                 {loadingIntent ? (
                   <span className="inline-block w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                 ) : (
-                  <>💳 Assinar {selectedPlano === 'anual' ? 'por R$249,00' : 'por R$29,90/mês'}</>
+                  <>🎁 Começar 3 dias grátis</>
                 )}
               </button>
+
+              <p className="text-center text-xs text-white/40 leading-relaxed">
+                Sem cobrança durante o trial. Cancele antes de 3 dias e não paga nada.<br />
+                Após: {selectedPlano === 'anual' ? 'R$397,00/ano' : 'R$49,90/mês'}.
+              </p>
 
               <button
                 type="button"
@@ -268,7 +285,7 @@ export default function AssinaturaPage() {
           </>
         )}
 
-        {/* Formulário de pagamento Stripe Elements */}
+        {/* Formulário Stripe Elements (setup intent para trial) */}
         {clientSecret && (
           <motion.div
             className="flex flex-col gap-4 pb-8"
@@ -276,7 +293,7 @@ export default function AssinaturaPage() {
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold">Dados de pagamento</h2>
+              <h2 className="text-base font-bold">Salvar método de pagamento</h2>
               <button
                 type="button"
                 onClick={() => setClientSecret(null)}
@@ -290,7 +307,7 @@ export default function AssinaturaPage() {
               stripe={stripePromise}
               options={{ clientSecret, appearance: stripeAppearance, locale: 'pt-BR' }}
             >
-              <CheckoutForm plano={selectedPlano} />
+              <SetupForm plano={selectedPlano} />
             </Elements>
           </motion.div>
         )}

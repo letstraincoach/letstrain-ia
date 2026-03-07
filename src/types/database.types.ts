@@ -173,10 +173,12 @@ export type Database = {
           fim: string
           id: string
           inicio: string
-          mp_payment_id: string | null
-          mp_subscription_id: string | null
           plano: string
           status: string
+          stripe_customer_id: string | null
+          stripe_payment_intent_id: string | null
+          stripe_subscription_id: string | null
+          trial_ends_at: string | null
           user_id: string
         }
         Insert: {
@@ -185,10 +187,12 @@ export type Database = {
           fim: string
           id?: string
           inicio: string
-          mp_payment_id?: string | null
-          mp_subscription_id?: string | null
           plano: string
           status: string
+          stripe_customer_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_ends_at?: string | null
           user_id: string
         }
         Update: {
@@ -197,10 +201,12 @@ export type Database = {
           fim?: string
           id?: string
           inicio?: string
-          mp_payment_id?: string | null
-          mp_subscription_id?: string | null
           plano?: string
           status?: string
+          stripe_customer_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_ends_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -269,15 +275,44 @@ export type Database = {
           },
         ]
       }
+      jejum_sessions: {
+        Row: {
+          id: string
+          user_id: string
+          inicio: string
+          fim: string
+          duracao_horas: number | null
+          criado_em: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          inicio: string
+          fim: string
+          criado_em?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          inicio?: string
+          fim?: string
+          criado_em?: string
+        }
+        Relationships: []
+      }
       user_profiles: {
         Row: {
           altura: number | null
           atualizado_em: string
+          condominio_cep: string | null
+          condominio_fotos: string[] | null
+          condominio_nome: string | null
           criado_em: string
           dias_por_semana: number | null
           doenca_cardiaca: boolean
           id: string
           idade: number | null
+          jejum_inicio: string | null
           lesao_cronica: boolean
           lesao_descricao: string | null
           local_treino: string | null
@@ -290,16 +325,21 @@ export type Database = {
           peso: number | null
           preferencia_treino: string | null
           sexo: string | null
+          telefone: string | null
           tempo_sem_treinar: string | null
         }
         Insert: {
           altura?: number | null
           atualizado_em?: string
+          condominio_cep?: string | null
+          condominio_fotos?: string[] | null
+          condominio_nome?: string | null
           criado_em?: string
           dias_por_semana?: number | null
           doenca_cardiaca?: boolean
           id: string
           idade?: number | null
+          jejum_inicio?: string | null
           lesao_cronica?: boolean
           lesao_descricao?: string | null
           local_treino?: string | null
@@ -312,16 +352,21 @@ export type Database = {
           peso?: number | null
           preferencia_treino?: string | null
           sexo?: string | null
+          telefone?: string | null
           tempo_sem_treinar?: string | null
         }
         Update: {
           altura?: number | null
           atualizado_em?: string
+          condominio_cep?: string | null
+          condominio_fotos?: string[] | null
+          condominio_nome?: string | null
           criado_em?: string
           dias_por_semana?: number | null
           doenca_cardiaca?: boolean
           id?: string
           idade?: number | null
+          jejum_inicio?: string | null
           lesao_cronica?: boolean
           lesao_descricao?: string | null
           local_treino?: string | null
@@ -334,6 +379,7 @@ export type Database = {
           peso?: number | null
           preferencia_treino?: string | null
           sexo?: string | null
+          telefone?: string | null
           tempo_sem_treinar?: string | null
         }
         Relationships: []
@@ -342,6 +388,7 @@ export type Database = {
         Row: {
           atualizado_em: string
           id: string
+          lets_coins: number
           streak_atual: number
           streak_maximo: number
           treinos_nivel_atual: number
@@ -351,6 +398,7 @@ export type Database = {
         Insert: {
           atualizado_em?: string
           id: string
+          lets_coins?: number
           streak_atual?: number
           streak_maximo?: number
           treinos_nivel_atual?: number
@@ -360,11 +408,72 @@ export type Database = {
         Update: {
           atualizado_em?: string
           id?: string
+          lets_coins?: number
           streak_atual?: number
           streak_maximo?: number
           treinos_nivel_atual?: number
           treinos_totais?: number
           ultimo_treino?: string | null
+        }
+        Relationships: []
+      }
+      lets_coins_transactions: {
+        Row: {
+          id: string
+          user_id: string
+          amount: number
+          tipo: string
+          descricao: string | null
+          criado_em: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          amount: number
+          tipo: string
+          descricao?: string | null
+          criado_em?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          amount?: number
+          tipo?: string
+          descricao?: string | null
+          criado_em?: string
+        }
+        Relationships: []
+      }
+      lets_coins_resgates: {
+        Row: {
+          id: string
+          user_id: string
+          coins_gastos: number
+          valor_brl: number
+          codigo: string
+          status: string
+          criado_em: string
+          usado_em: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          coins_gastos: number
+          valor_brl: number
+          codigo: string
+          status?: string
+          criado_em?: string
+          usado_em?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          coins_gastos?: number
+          valor_brl?: number
+          codigo?: string
+          status?: string
+          criado_em?: string
+          usado_em?: string | null
         }
         Relationships: []
       }
@@ -408,6 +517,7 @@ export type Database = {
       }
       workouts: {
         Row: {
+          calorias_reais: number | null
           checkin_disposicao: number | null
           checkin_tempo_disponivel: number | null
           checkin_ultima_refeicao: string | null
@@ -416,13 +526,18 @@ export type Database = {
           duracao_estimada: number | null
           executado_em: string | null
           exercicios: Json
+          fc_maxima: number | null
+          fc_media: number | null
           id: string
           local_treino: string
           nivel: string
+          origem_bio: string | null
+          peso_treino: number | null
           status: string
           user_id: string
         }
         Insert: {
+          calorias_reais?: number | null
           checkin_disposicao?: number | null
           checkin_tempo_disponivel?: number | null
           checkin_ultima_refeicao?: string | null
@@ -431,13 +546,18 @@ export type Database = {
           duracao_estimada?: number | null
           executado_em?: string | null
           exercicios?: Json
+          fc_maxima?: number | null
+          fc_media?: number | null
           id?: string
           local_treino: string
           nivel: string
+          origem_bio?: string | null
+          peso_treino?: number | null
           status?: string
           user_id: string
         }
         Update: {
+          calorias_reais?: number | null
           checkin_disposicao?: number | null
           checkin_tempo_disponivel?: number | null
           checkin_ultima_refeicao?: string | null
@@ -446,9 +566,13 @@ export type Database = {
           duracao_estimada?: number | null
           executado_em?: string | null
           exercicios?: Json
+          fc_maxima?: number | null
+          fc_media?: number | null
           id?: string
           local_treino?: string
           nivel?: string
+          origem_bio?: string | null
+          peso_treino?: number | null
           status?: string
           user_id?: string
         }

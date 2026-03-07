@@ -51,10 +51,11 @@ export async function middleware(request: NextRequest) {
 
   // Verificação de assinatura (rotas protegidas do app)
   if (user && isProtectedRoute) {
-    // Grace period de 3 dias após vencimento
     const gracePeriodEnd = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+    const now = new Date().toISOString()
 
-    const { data: sub } = await supabase
+    // Assinatura ativa (com grace period de 3 dias)
+    const { data: activeSub } = await supabase
       .from('subscriptions')
       .select('id')
       .eq('user_id', user.id)
@@ -63,7 +64,17 @@ export async function middleware(request: NextRequest) {
       .limit(1)
       .maybeSingle()
 
-    if (!sub) {
+    // Trial válido (trial_ends_at no futuro)
+    const { data: trialSub } = !activeSub ? await supabase
+      .from('subscriptions')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('status', 'trial')
+      .gt('trial_ends_at', now)
+      .limit(1)
+      .maybeSingle() : { data: null }
+
+    if (!activeSub && !trialSub) {
       return NextResponse.redirect(new URL('/assinatura', request.url))
     }
   }

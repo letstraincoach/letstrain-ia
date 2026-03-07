@@ -8,28 +8,14 @@ function SucessoContent() {
   const router = useRouter()
   const params = useSearchParams()
   const [countdown, setCountdown] = useState(5)
-  const [confirmed, setConfirmed] = useState(false)
 
-  // Confirma o pagamento e cria a subscription no banco (fallback para o webhook)
+  // Trial flow: setup_intent vem no param
+  // Legacy flow: payment_intent vem no param
+  const setupIntentId = params.get('setup_intent')
+  const isTrial = !!setupIntentId
+
+  // Countdown imediato — webhook cria a subscription em background
   useEffect(() => {
-    const paymentIntentId = params.get('payment_intent')
-    if (!paymentIntentId) {
-      setConfirmed(true)
-      return
-    }
-
-    fetch('/api/checkout/confirm', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paymentIntentId }),
-    })
-      .catch(() => {}) // silencia erros — o webhook pode ter chegado primeiro
-      .finally(() => setConfirmed(true))
-  }, [params])
-
-  // Só inicia o countdown após confirmação
-  useEffect(() => {
-    if (!confirmed) return
     const timer = setInterval(() => {
       setCountdown((n) => {
         if (n <= 1) {
@@ -41,7 +27,11 @@ function SucessoContent() {
       })
     }, 1000)
     return () => clearInterval(timer)
-  }, [confirmed, router])
+  }, [router])
+
+  const trialEndDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR', {
+    weekday: 'long', day: 'numeric', month: 'long',
+  })
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center px-6 text-center">
@@ -67,16 +57,29 @@ function SucessoContent() {
         <div>
           <h1 className="text-2xl font-bold mb-2">Bem-vindo ao Lets Train!</h1>
           <p className="text-white/60 text-sm leading-relaxed">
-            Pagamento aprovado! Sua assinatura está ativa.
+            {isTrial
+              ? 'Seu trial de 3 dias começou agora!'
+              : 'Pagamento aprovado! Sua assinatura está ativa.'}
           </p>
         </div>
 
-        <div className="w-full rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.05] p-5 flex flex-col gap-2">
-          <p className="text-sm font-semibold text-[#FF8C00]">✅ Assinatura ativa</p>
-          <p className="text-xs text-white/50">
-            Você tem acesso completo a todos os treinos e recursos do app.
-          </p>
-        </div>
+        {isTrial ? (
+          <div className="w-full rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.05] p-5 flex flex-col gap-2">
+            <p className="text-sm font-semibold text-[#FF8C00]">🎁 Trial ativo — 3 dias grátis</p>
+            <p className="text-xs text-white/50 leading-relaxed">
+              Seu cartão só será cobrado em{' '}
+              <strong className="text-white/70">{trialEndDate}</strong>.{' '}
+              Você pode cancelar antes disso sem nenhum custo.
+            </p>
+          </div>
+        ) : (
+          <div className="w-full rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.05] p-5 flex flex-col gap-2">
+            <p className="text-sm font-semibold text-[#FF8C00]">✅ Assinatura ativa</p>
+            <p className="text-xs text-white/50">
+              Você tem acesso completo a todos os treinos e recursos do app.
+            </p>
+          </div>
+        )}
 
         <button
           type="button"
@@ -86,11 +89,9 @@ function SucessoContent() {
           💪 Começar a treinar
         </button>
 
-        {confirmed && (
-          <p className="text-xs text-white/30">
-            Redirecionando em {countdown}s…
-          </p>
-        )}
+        <p className="text-xs text-white/30">
+          Redirecionando em {countdown}s…
+        </p>
       </motion.div>
     </div>
   )

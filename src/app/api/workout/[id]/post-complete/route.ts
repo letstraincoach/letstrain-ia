@@ -43,7 +43,7 @@ export async function POST(_request: Request, { params }: Props) {
   const [progressResult, profileResult] = await Promise.all([
     supabase
       .from('user_progress')
-      .select('treinos_totais, treinos_nivel_atual, streak_atual, streak_maximo')
+      .select('treinos_totais, treinos_nivel_atual, streak_atual, streak_maximo, lets_coins')
       .eq('id', user.id)
       .single(),
     supabase
@@ -225,6 +225,43 @@ export async function POST(_request: Request, { params }: Props) {
       .map((a) => ({ codigo: a.codigo, nome: a.nome, icone_emoji: a.icone_emoji }))
   }
 
+  // ── Lets Coins ───────────────────────────────────────────────────────────
+  const coinTransactions: { tipo: string; amount: number; descricao: string }[] = []
+
+  // +10 por treino concluído (sempre)
+  coinTransactions.push({ tipo: 'treino', amount: 10, descricao: 'Treino concluído 💪' })
+
+  // +25 a cada múltiplo de 7 dias de streak
+  if (progress.streak_atual > 0 && progress.streak_atual % 7 === 0) {
+    coinTransactions.push({ tipo: 'streak', amount: 25, descricao: `Streak de ${progress.streak_atual} dias 🔥` })
+  }
+
+  // +15 no primeiro treino do mês
+  const mesAtual = new Date().toISOString().slice(0, 7) // "2026-03"
+  const { count: treinseMes } = await supabase
+    .from('workouts')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .eq('status', 'executado')
+    .gte('executado_em', `${mesAtual}-01T00:00:00Z`)
+
+  if ((treinseMes ?? 0) === 1) {
+    coinTransactions.push({ tipo: 'primeiro_mes', amount: 15, descricao: 'Primeiro treino do mês 🌟' })
+  }
+
+  const totalCoins = coinTransactions.reduce((sum, t) => sum + t.amount, 0)
+
+  // Atualiza saldo e registra transações
+  await Promise.all([
+    supabase
+      .from('user_progress')
+      .update({ lets_coins: (progress.lets_coins ?? 0) + totalCoins })
+      .eq('id', user.id),
+    supabase
+      .from('lets_coins_transactions')
+      .insert(coinTransactions.map((t) => ({ user_id: user.id, ...t }))),
+  ])
+
   // ── Push notifications (fire-and-forget) ───────────────────────────────
   const pushTasks: Promise<void>[] = []
 
@@ -255,5 +292,7 @@ export async function POST(_request: Request, { params }: Props) {
     leveledUp,
     newLevel: newLevel ?? null,
     newAchievements,
+    coinsGanhos: totalCoins,
+    coinTransactions,
   })
 }

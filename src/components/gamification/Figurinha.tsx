@@ -75,8 +75,8 @@ export default function Figurinha({
             {nome}
           </p>
         ) : (
-          <p className="text-center leading-tight font-semibold" style={{ fontSize: '10px', color: 'rgba(255,255,255,0.18)' }}>
-            ???
+          <p className="text-center leading-tight" style={{ fontSize: '9px', color: 'rgba(255,255,255,0.22)', lineHeight: '1.3' }}>
+            {nome}
           </p>
         )}
       </div>

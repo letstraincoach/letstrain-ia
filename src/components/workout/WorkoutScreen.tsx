@@ -67,15 +67,45 @@ function ConfirmModal({
   )
 }
 
+// ---- Biometrics badge (shown when jaExecutado + data exists) ----
+function BiometricsBadge({
+  biometrics,
+}: {
+  biometrics: { fc_media?: number; fc_maxima?: number; calorias_reais?: number; peso_treino?: number }
+}) {
+  const items = [
+    biometrics.peso_treino    && { label: 'Peso',     value: `${biometrics.peso_treino} kg`,      icon: '⚖️' },
+    biometrics.fc_media       && { label: 'FC Média', value: `${biometrics.fc_media} bpm`,        icon: '❤️' },
+    biometrics.fc_maxima      && { label: 'FC Máx',   value: `${biometrics.fc_maxima} bpm`,       icon: '📈' },
+    biometrics.calorias_reais && { label: 'Calorias', value: `${biometrics.calorias_reais} kcal`, icon: '🔥' },
+  ].filter(Boolean) as { label: string; value: string; icon: string }[]
+
+  if (items.length === 0) return null
+
+  return (
+    <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 flex items-center gap-3 flex-wrap">
+      <span className="text-[10px] text-white/30 uppercase tracking-wider mr-1">📊 Biometria</span>
+      {items.map((item) => (
+        <div key={item.label} className="flex items-center gap-1">
+          <span className="text-xs">{item.icon}</span>
+          <span className="text-xs font-semibold text-white/70">{item.value}</span>
+          <span className="text-[10px] text-white/30 ml-0.5">{item.label}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 // ---- Componente principal ----
 interface WorkoutScreenProps {
   workoutId: string
   workout: GeneratedWorkout
   nivel: string
   jaExecutado?: boolean
+  biometrics?: { fc_media?: number; fc_maxima?: number; calorias_reais?: number; peso_treino?: number }
 }
 
-export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado = false }: WorkoutScreenProps) {
+export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado = false, biometrics }: WorkoutScreenProps) {
   const router = useRouter()
   const flatList = buildFlatList(workout)
   const total = flatList.length
@@ -156,6 +186,9 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                 transition={{ duration: 0.4 }}
               />
             </div>
+
+            {/* Biometrics badge — only when jaExecutado */}
+            {jaExecutado && biometrics && <BiometricsBadge biometrics={biometrics} />}
           </div>
         </div>
 

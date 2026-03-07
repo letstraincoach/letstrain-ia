@@ -179,12 +179,18 @@ export default function LoginPage() {
       </div>
 
       {/* Footer */}
-      <p className="mt-6 text-center text-sm text-white/40">
-        Não tem uma conta?{' '}
-        <Link href="/cadastro" className="text-[#FF8C00] hover:text-[#E07000] font-medium transition-colors">
-          Criar conta grátis
-        </Link>
-      </p>
+      <div className="mt-6 flex flex-col items-center gap-2">
+        <p className="text-center text-sm text-white/40">
+          Não tem uma conta?{' '}
+          <Link href="/cadastro" className="text-[#FF8C00] hover:text-[#E07000] font-medium transition-colors">
+            Criar conta grátis
+          </Link>
+        </p>
+        <p className="text-center text-xs text-white/25">
+          e ganhe uma avaliação física completa com o{' '}
+          <span className="text-white/40 font-medium">Lets Body Score</span>
+        </p>
+      </div>
     </div>
   )
 }

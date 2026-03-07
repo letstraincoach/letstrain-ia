@@ -12,6 +12,7 @@ interface CheckinPayload {
   ultima_refeicao: string
   tempo_disponivel: number
   disposicao: number
+  equipamentos_hotel?: string[]
 }
 
 export async function POST(request: Request) {
@@ -28,6 +29,31 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: 'Payload inválido' }, { status: 400 })
   }
+
+  // ── Trava: 1 treino por dia ───────────────────────────────────────────────
+  const hoje = new Date().toISOString().split('T')[0]
+  const { data: treinoHoje } = await supabase
+    .from('workouts')
+    .select('id, status')
+    .eq('user_id', user.id)
+    .eq('data', hoje)
+    .in('status', ['executado', 'gerado'])
+    .order('criado_em', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (treinoHoje?.status === 'executado') {
+    return NextResponse.json(
+      { error: 'Você já concluiu um treino hoje. Descanse e volte amanhã! 💪', workout_id: treinoHoje.id },
+      { status: 409 }
+    )
+  }
+
+  if (treinoHoje?.status === 'gerado') {
+    // Já existe um treino gerado hoje — redirecionar sem gerar outro
+    return NextResponse.json({ workout_id: treinoHoje.id })
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   // Buscar perfil + equipamentos do usuário em paralelo
   const [profileResult, equipamentosResult, historicoResult] = await Promise.all([
@@ -59,12 +85,17 @@ export async function POST(request: Request) {
 
   const profile = profileResult.data
 
-  // Montar lista de equipamentos (nome_custom tem prioridade, senão nome do catálogo)
-  const equipamentos: string[] = (equipamentosResult.data ?? []).map((e) => {
-    if (e.nome_custom) return e.nome_custom
-    const catalog = e.equipment_catalog as { nome: string } | null
-    return catalog?.nome ?? ''
-  }).filter(Boolean)
+  // Montar lista de equipamentos:
+  // - Hotel com detecção por foto → usa os equipamentos detectados no check-in (temporários)
+  // - Demais locais → usa equipamentos salvos no perfil do usuário
+  const equipamentos: string[] =
+    checkin.local_treino === 'hotel' && checkin.equipamentos_hotel?.length
+      ? checkin.equipamentos_hotel
+      : (equipamentosResult.data ?? []).map((e) => {
+          if (e.nome_custom) return e.nome_custom
+          const catalog = e.equipment_catalog as { nome: string } | null
+          return catalog?.nome ?? ''
+        }).filter(Boolean)
 
   // Montar histórico: extrair nomes dos exercícios principais dos últimos 3 treinos
   const historico = (historicoResult.data ?? []).map((w) => {
