@@ -1,6 +1,24 @@
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Lets Train — Seu treino, gerado por IA. Evoluindo todo dia.',
+  description: 'A metodologia da Lets Train na palma da sua mão. Treinos diários personalizados para academia, condomínio ou hotel. Progressão automática, 59 conquistas e Lets Body Score. Comece com 3 dias grátis.',
+  openGraph: {
+    title: 'Lets Train — Seu treino, gerado por IA.',
+    description: 'Treinos diários personalizados por IA. 15 níveis de progressão, 59 conquistas, Lets Body Score. 3 dias grátis — sem cobranças durante o trial.',
+    url: 'https://letstrain-ia.vercel.app',
+  },
+  twitter: {
+    title: 'Lets Train — Seu treino, gerado por IA.',
+    description: 'Treinos diários personalizados por IA. 3 dias grátis, sem cobranças durante o trial.',
+  },
+  alternates: {
+    canonical: '/',
+  },
+}
 
 export default async function LandingPage() {
   // Usuário logado vai direto pro dashboard

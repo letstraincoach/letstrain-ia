@@ -17,11 +17,16 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Lets Train',
+    default: 'Lets Train — Treino personalizado por IA',
     template: '%s | Lets Train',
   },
-  description: 'Metodologia real, resultados de verdade! Treinos diários personalizados, progressão automática e conquistas.',
+  description: 'Metodologia real, resultados de verdade! Treinos diários personalizados por IA para academia, condomínio ou hotel. Progressão automática, 59 conquistas e muito mais. 3 dias grátis.',
+  keywords: ['treino personalizado', 'personal trainer IA', 'academia', 'treino em casa', 'fitness', 'progressão automática', 'lets train'],
   manifest: '/manifest.json',
+  metadataBase: new URL('https://letstrain-ia.vercel.app'),
+  alternates: {
+    canonical: '/',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -30,9 +35,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'Lets Train',
-    title: 'Lets Train — Personal Trainer IA',
-    description: 'Treinos diários personalizados por IA. Progressão automática. R$29,90/mês.',
+    title: 'Lets Train — Treino personalizado por IA',
+    description: 'Metodologia real, resultados de verdade! Treinos diários personalizados por IA. 3 dias grátis, sem cobranças durante o trial.',
     locale: 'pt_BR',
+    url: 'https://letstrain-ia.vercel.app',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Lets Train — Treino personalizado por IA',
+    description: 'Metodologia real, resultados de verdade! Treinos diários personalizados por IA. 3 dias grátis.',
   },
   icons: {
     icon: [
