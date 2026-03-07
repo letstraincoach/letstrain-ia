@@ -285,7 +285,7 @@ export default async function SettingsPage() {
                 </p>
               )}
               {hasPortal && (
-                <BillingPortalButton label="Cancelar trial" variant="ghost" />
+                <BillingPortalButton label="Gerenciar assinatura" variant="ghost" />
               )}
             </div>
           ) : subscription ? (
