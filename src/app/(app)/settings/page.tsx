@@ -6,6 +6,7 @@ import type { TrainingLevel } from '@/types/database.types'
 import PushNotificationSetup from '@/components/push/PushNotificationSetup'
 import SignOutButton from '@/components/settings/SignOutButton'
 import TelefoneInput from '@/components/settings/TelefoneInput'
+import BillingPortalButton from '@/components/settings/BillingPortalButton'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -21,9 +22,9 @@ export default async function SettingsPage() {
 
     supabase
       .from('subscriptions')
-      .select('plano, status, fim')
+      .select('plano, status, fim, trial_ends_at, stripe_customer_id')
       .eq('user_id', user.id)
-      .eq('status', 'ativa')
+      .in('status', ['ativa', 'trial'])
       .order('fim', { ascending: false })
       .limit(1)
       .maybeSingle(),
@@ -72,6 +73,13 @@ export default async function SettingsPage() {
   const fimFormatted = subscription?.fim
     ? new Date(subscription.fim).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
     : null
+
+  const trialEndsFormatted = subscription?.trial_ends_at
+    ? new Date(subscription.trial_ends_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+    : null
+
+  const isTrial = subscription?.status === 'trial'
+  const hasPortal = !!subscription?.stripe_customer_id
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] px-6 py-10">
@@ -264,14 +272,33 @@ export default async function SettingsPage() {
         {/* Assinatura */}
         <section className="flex flex-col gap-3">
           <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">Assinatura</h2>
-          {subscription ? (
-            <div className="rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.04] p-4 flex flex-col gap-2">
+
+          {isTrial ? (
+            <div className="rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.04] p-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-[#FF8C00]">🎁 Trial ativo</span>
+                <span className="text-xs text-white/50 capitalize">{subscription!.plano}</span>
+              </div>
+              {trialEndsFormatted && (
+                <p className="text-xs text-white/40">
+                  Gratuito até <strong className="text-white/60">{trialEndsFormatted}</strong>. Após isso, cobramos automaticamente.
+                </p>
+              )}
+              {hasPortal && (
+                <BillingPortalButton label="Cancelar trial" variant="ghost" />
+              )}
+            </div>
+          ) : subscription ? (
+            <div className="rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.04] p-4 flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-[#FF8C00]">✅ Ativa</span>
                 <span className="text-xs text-white/50 capitalize">{subscription.plano}</span>
               </div>
               {fimFormatted && (
                 <p className="text-xs text-white/40">Renova em {fimFormatted}</p>
+              )}
+              {hasPortal && (
+                <BillingPortalButton label="Gerenciar assinatura →" variant="ghost" />
               )}
             </div>
           ) : (
