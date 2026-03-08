@@ -39,7 +39,7 @@ export default function EquipamentosPage() {
   }, [router])
 
   function handleSaved() {
-    router.push('/dashboard')
+    router.push('/personal')
   }
 
   if (loading || !userId) {

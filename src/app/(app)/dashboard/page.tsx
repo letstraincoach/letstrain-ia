@@ -5,6 +5,7 @@ import { LEVEL_CONFIG } from '@/lib/training/levels.config'
 import type { TrainingLevel } from '@/types/database.types'
 import JejumTimer from '@/components/dashboard/JejumTimer'
 import LetsCoinsWidget from '@/components/dashboard/LetsCoinsWidget'
+import { getTrainer } from '@/lib/trainers/config'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,7 +33,7 @@ export default async function DashboardPage() {
   ] = await Promise.all([
     supabase
       .from('user_profiles')
-      .select('nome, nivel_atual, objetivo, onboarding_completo, jejum_inicio, dias_por_semana')
+      .select('nome, nivel_atual, objetivo, onboarding_completo, jejum_inicio, dias_por_semana, personal_slug')
       .eq('id', user.id)
       .single(),
 
@@ -96,6 +97,7 @@ export default async function DashboardPage() {
   const proximaConquista = (achievementsResult.data ?? [])
     .find(a => !unlockedIds.has(a.id) && (a.criterio_valor ?? 0) > treinosTotal) ?? null
 
+  const trainer   = getTrainer(profile?.personal_slug)
   const firstName = profile?.nome?.split(' ')[0] ?? 'Atleta'
   const brasiliaHour = nowBrasilia.getUTCHours()
   const saudacao =
@@ -107,10 +109,22 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-[#0a0a0a] px-6 py-10">
       <div className="max-w-sm mx-auto flex flex-col gap-6">
 
-        {/* Saudação */}
-        <div>
-          <p className="text-sm text-white/50">{saudacao},</p>
-          <h1 className="text-2xl font-bold">{firstName} 👋</h1>
+        {/* Saudação + Personal */}
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-sm text-white/50">{saudacao},</p>
+            <h1 className="text-2xl font-bold">{firstName} 👋</h1>
+          </div>
+          <Link
+            href="/settings/perfil"
+            className="shrink-0 flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 hover:border-white/15 transition-colors"
+          >
+            <span className="text-base">{trainer.emoji}</span>
+            <div className="text-right">
+              <p className="text-[10px] text-white/30 leading-none">Personal</p>
+              <p className="text-xs font-semibold text-white/70 leading-tight">{trainer.nome.replace('Personal ', '')}</p>
+            </div>
+          </Link>
         </div>
 
         {/* Card principal — status do dia */}

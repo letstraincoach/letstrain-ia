@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 // Rotas que exigem auth + assinatura ativa
 const PROTECTED_ROUTES = ['/dashboard', '/workout', '/progress', '/settings']
 // Rotas que exigem auth mas não assinatura (onboarding + página de assinatura)
-const AUTH_ONLY_ROUTES = ['/assinatura', '/quiz', '/local', '/nivel', '/equipamentos', '/desempenho', '/admin']
+const AUTH_ONLY_ROUTES = ['/assinatura', '/quiz', '/local', '/nivel', '/equipamentos', '/desempenho', '/admin', '/personal']
 // Rotas de autenticação (redirect para dashboard se já logado)
 const AUTH_PAGES = ['/login', '/cadastro', '/recuperar-senha', '/nova-senha']
 

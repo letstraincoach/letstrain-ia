@@ -40,8 +40,8 @@ const SECTIONS = [
     content: `Você concorda em utilizar a plataforma apenas para fins pessoais e lícitos. É vedado:\n\n— Compartilhar sua conta com terceiros.\n— Tentar acessar, modificar ou danificar os sistemas da Lets Train.\n— Reproduzir, copiar ou revender qualquer parte do serviço sem autorização.\n— Utilizar o serviço de forma que viole direitos de terceiros ou a legislação aplicável.`,
   },
   {
-    title: '9. Aviso de saúde',
-    content: `Os treinos gerados pela Lets Train são elaborados por inteligência artificial com base nas informações fornecidas por você. Eles têm caráter informativo e educativo.\n\nA Lets Train não substitui a orientação de um profissional de educação física, médico ou nutricionista. Antes de iniciar qualquer programa de exercícios, especialmente se você tiver condições de saúde preexistentes, consulte um profissional habilitado.\n\nA Lets Train não se responsabiliza por lesões, danos à saúde ou quaisquer consequências decorrentes da prática dos treinos sugeridos.`,
+    title: '9. Metodologia e responsabilidade técnica',
+    content: `Os treinos disponibilizados pela Lets Train são desenvolvidos com base na metodologia da academia Lets Train, elaborada e validada por Professores de Educação Física devidamente habilitados e registrados no CREF. O sistema seleciona automaticamente o treino adequado ao seu nível e objetivos a partir desta base de conteúdo profissional.\n\nAo assinar o plano, o usuário escolhe um Personal Trainer responsável pelo seu acompanhamento, cujos nome e número de CREF ficam registrados em seu perfil.\n\nApesar do rigor metodológico, recomendamos que usuários com condições de saúde preexistentes (problemas cardíacos, lesões crônicas, doenças controladas por medicamento ou qualquer condição que contraindique esforço físico) consultem um médico antes de iniciar o programa.\n\nA Lets Train não se responsabiliza por eventos decorrentes da omissão de informações de saúde durante o cadastro ou da prática de exercícios em desacordo com as restrições declaradas pelo próprio usuário.`,
   },
   {
     title: '10. Propriedade intelectual',

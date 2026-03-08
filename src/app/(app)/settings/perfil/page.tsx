@@ -10,7 +10,7 @@ export default async function EditarPerfilPage() {
 
   const { data: profile } = await supabase
     .from('user_profiles')
-    .select('nome, objetivo, dias_por_semana, preferencia_treino')
+    .select('nome, objetivo, dias_por_semana, preferencia_treino, personal_slug')
     .eq('id', user.id)
     .single()
 
@@ -35,6 +35,7 @@ export default async function EditarPerfilPage() {
           initialObjetivo={profile?.objetivo ? (profile.objetivo as string).split(',').map((s: string) => s.trim()) : []}
           initialDias={profile?.dias_por_semana ?? 3}
           initialPreferencia={(profile?.preferencia_treino as string | null) ?? ''}
+          initialPersonal={(profile?.personal_slug as string | null) ?? 'guilherme'}
         />
 
       </div>

@@ -322,6 +322,7 @@ export type Database = {
           objetivo: string | null
           onboarding_completo: boolean
           onboarding_etapa: string
+          personal_slug: string | null
           peso: number | null
           preferencia_treino: string | null
           sexo: string | null
@@ -349,6 +350,7 @@ export type Database = {
           objetivo?: string | null
           onboarding_completo?: boolean
           onboarding_etapa?: string
+          personal_slug?: string | null
           peso?: number | null
           preferencia_treino?: string | null
           sexo?: string | null
@@ -376,6 +378,7 @@ export type Database = {
           objetivo?: string | null
           onboarding_completo?: boolean
           onboarding_etapa?: string
+          personal_slug?: string | null
           peso?: number | null
           preferencia_treino?: string | null
           sexo?: string | null
