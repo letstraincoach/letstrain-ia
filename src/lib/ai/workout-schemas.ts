@@ -10,13 +10,27 @@ const ExerciseSchema = z.object({
   instrucoes: z.string().optional(),
 })
 
+// Nova estrutura Lets Train — 4 blocos
 export const WorkoutSchema = z.object({
   nome: z.string().min(1),
   duracao_estimada: z.number().int().min(10).max(120),
-  aquecimento: z.array(ExerciseSchema).min(1).max(6),
-  principal: z.array(ExerciseSchema).min(2).max(14),
-  cooldown: z.array(ExerciseSchema).min(1).max(5),
+
+  // ── Nova estrutura (4 blocos) ───────────────────────────
+  preparacao: z.array(ExerciseSchema).min(1).max(5).optional(),  // mobilidade + ativação + cardio leve
+  forca: z.array(ExerciseSchema).min(2).max(10).optional(),       // força guiada ou funcional
+  circuito: z.array(ExerciseSchema).min(2).max(8).optional(),     // circuito metabólico
+  finisher: z.array(ExerciseSchema).min(1).max(4).optional(),     // finisher curto e intenso
+
+  // ── Legacy (treinos gerados antes da migração) ──────────
+  aquecimento: z.array(ExerciseSchema).optional(),
+  principal: z.array(ExerciseSchema).optional(),
+  cooldown: z.array(ExerciseSchema).optional(),
 })
 
 export type GeneratedWorkout = z.infer<typeof WorkoutSchema>
 export type WorkoutExercise = z.infer<typeof ExerciseSchema>
+
+/** Verifica se o workout usa a nova estrutura de 4 blocos */
+export function isNewFormat(w: GeneratedWorkout): boolean {
+  return !!(w.preparacao || w.forca || w.circuito || w.finisher)
+}

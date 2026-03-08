@@ -20,8 +20,25 @@ export interface WorkoutContext {
   historico_recente: { exercicios_principais: string[] }[]
 }
 
+// Classifica a academia com base nos equipamentos detectados
+function classificarAcademia(equipamentos: string[]): string {
+  const eq = equipamentos.map((e) => e.toLowerCase())
+  const temCardio = eq.some((e) => ['esteira', 'bicicleta', 'eliptico', 'remo'].some((c) => e.includes(c)))
+  const temPolia = eq.some((e) => ['crossover', 'polia', 'cabo', 'pulley'].some((c) => e.includes(c)))
+  const temMulti = eq.some((e) => ['multiestacao', 'multi', 'leg press', 'extensora', 'flexora'].some((c) => e.includes(c)))
+  const temFuncional = eq.some((e) => ['kettlebell', 'trx', 'medicine ball', 'elástico', 'miniband'].some((c) => e.includes(c)))
+  const temHalteres = eq.some((e) => e.includes('halter') || e.includes('anilha'))
+
+  const score = [temCardio, temPolia, temMulti, temFuncional, temHalteres].filter(Boolean).length
+  if (score >= 4) return 'completa'
+  if (score >= 2) return 'híbrida compacta'
+  return 'compacta (peso livre / corporal)'
+}
+
 export function buildWorkoutPrompt(ctx: WorkoutContext, exerciseCatalog?: string): string {
   const levelLabel = LEVEL_CONFIG[ctx.nivel].label
+  const isHotel = ctx.local_treino === 'hotel'
+  const academiaClasse = classificarAcademia(ctx.equipamentos)
 
   const intensidade =
     ctx.disposicao <= 4
@@ -31,7 +48,7 @@ export function buildWorkoutPrompt(ctx: WorkoutContext, exerciseCatalog?: string
         : `MODERADA (${ctx.disposicao}/10) — intensidade normal do nível`
 
   const objetivoDescricao: Record<string, string> = {
-    perda_peso: 'perda de gordura — priorize compostos + cardio metabólico, descansos curtos',
+    perda_peso: 'perda de gordura — priorize compostos + metabólico, descansos curtos',
     ganho_massa: 'ganho de massa muscular — volume moderado-alto, foco em tensão mecânica',
     qualidade_vida: 'qualidade de vida — equilibre força e mobilidade, intensidade confortável',
   }
@@ -49,12 +66,28 @@ export function buildWorkoutPrompt(ctx: WorkoutContext, exerciseCatalog?: string
           .join('\n')
       : '  - Sem histórico recente (primeiro treino)'
 
+  // Volumes baseados no tempo disponível
+  const temMinutos = ctx.tempo_disponivel
+  const blocos = {
+    preparacaoExs: 3,
+    forcaExs: temMinutos <= 30 ? 3 : temMinutos <= 45 ? 4 : 5,
+    circuitoExs: temMinutos <= 30 ? 3 : 4,
+    finisherExs: ctx.disposicao <= 4 ? 1 : 2,
+  }
+
+  // Modo silencioso para hotel
+  const modoSilencioso = isHotel
+    ? `\nMODO SILENCIOSO ATIVO (academia de hotel):
+Evite OBRIGATORIAMENTE: saltos, burpees, box jumps, corda naval, medicine ball slams, jumping jacks, qualquer exercício de impacto.
+Prefira: halteres, polia, cabos, exercícios controlados e isométricos.
+Circuito metabólico sem impacto: mountain climber (lento), kettelbell swing (se disponível), agachamento controlado, remada.`
+    : ''
+
   const catalogSection = exerciseCatalog ? `${exerciseCatalog}\n` : ''
 
-  return `${catalogSection}Você é um personal trainer da Lets Train, especialista na metodologia Time Efficient.
-Gere um treino para ${ctx.tempo_disponivel} minutos, objetivo e cientificamente embasado.
-Responda APENAS com JSON válido no schema especificado abaixo. Sem texto extra.
-
+  return `${catalogSection}Você é um personal trainer da academia Lets Train, especialista na metodologia Time Efficient.
+Gere um treino completo em 4 blocos para ${temMinutos} minutos. Responda APENAS com JSON válido. Sem texto extra.
+${modoSilencioso}
 PERFIL DO ALUNO:
 Nível: ${ctx.nivel} (${levelLabel})
 Objetivo: ${ctx.objetivo.split(',').map((o) => objetivoDescricao[o.trim()] ?? o.trim()).join(' + ')}
@@ -63,45 +96,68 @@ Restrições/Lesões: ${ctx.lesao_cronica && ctx.lesao_descricao ? ctx.lesao_des
 Condição cardíaca: ${ctx.doenca_cardiaca ? 'Sim — treino leve, exercícios seguros, sem alta intensidade' : 'Não'}
 
 CONTEXTO DE HOJE:
-Local: ${ctx.local_treino === 'hotel' ? 'Academia de hotel (equipamentos limitados, similar ao condomínio)' : 'Academia de condomínio'}
+Local: ${isHotel ? 'Academia de hotel (equipamentos limitados, similar ao condomínio)' : 'Academia de condomínio'}
+Classificação da academia: ${academiaClasse}
 Equipamentos disponíveis: ${ctx.equipamentos.length ? ctx.equipamentos.join(', ') : 'Apenas peso corporal'}
 Última refeição: ${ctx.ultima_refeicao}
-Tempo disponível: ${ctx.tempo_disponivel} minutos
+Tempo disponível: ${temMinutos} minutos
 Disposição: ${intensidade}
 
 HISTÓRICO RECENTE (evite repetir os mesmos exercícios principais):
 ${historicoTexto}
 
-DIRETRIZES METODOLOGIA LETS TRAIN — TIME EFFICIENT:
-Priorize movimentos compostos multiarticulares.
-Adaptação: técnica acima de tudo, 40% da capacidade máxima, foco em ativação.
-Iniciante: 60% de intensidade, padrões de movimento corretos.
-Intermediário: 75%, adicione variações e complexidade.
+METODOLOGIA LETS TRAIN — ESTRUTURA DE 4 BLOCOS OBRIGATÓRIA:
+
+BLOCO 1 — PREPARAÇÃO (3–5 min): ${blocos.preparacaoExs} exercícios
+Objetivo: mobilidade articular + ativação muscular + cardio leve.
+Inclua: 1–2 de mobilidade, 1 de ativação (glúteo, core ou escápulas), 1 cardio leve (caminhada na esteira, bike leve, polichinelo lento) se disponível.
+Séries: 1 série. Repetições/tempo: 30–60 segundos ou 10–15 reps leves.
+
+BLOCO 2 — FORÇA (${Math.round(temMinutos * 0.40)} min): ${blocos.forcaExs} exercícios
+Objetivo: força guiada ou funcional com base nos equipamentos disponíveis.
+Se há máquinas/polia → priorize exercícios guiados (leg press, chest press, puxada, remada baixa).
+Se apenas peso livre/corporal → exercícios compostos (goblet squat, supino halteres, remada halteres).
+Séries: ${ctx.nivel.startsWith('adaptacao') ? '2' : ctx.nivel.startsWith('iniciante') ? '3' : '3–4'}.
+Repetições: ${ctx.nivel.startsWith('adaptacao') ? '12–15' : '8–12'} (foco em técnica antes de carga).
+Padrões obrigatórios: inclua pelo menos um empurrar + um puxar no bloco.
+
+BLOCO 3 — CIRCUITO METABÓLICO (${Math.round(temMinutos * 0.25)} min): ${blocos.circuitoExs} exercícios em circuito
+Objetivo: elevação de FC e queima metabólica.
+Formato: circuito sem descanso entre exercícios (descanso_segundos: 0 em todos), descanse 60–90s entre rounds.
+Inclua: 1 de membros inferiores + 1 de membros superiores + 1 de core.
+${isHotel ? 'Sem impacto: use mountain climber lento, agachamento, remada halteres, prancha com variação.' : 'Exercícios como kettlebell swing, mountain climber, lunge walk, russian twist, burpee (se adequado ao nível).'}
+
+BLOCO 4 — FINISHER (3–5 min): ${blocos.finisherExs} exercício(s)
+Objetivo: estímulo final curto e intenso.
+${ctx.disposicao <= 4 ? 'Disposição baixa: finisher suave — 1 exercício isométrico ou de respiração (prancha ou deep breathing).' : 'HIIT ou isométrico intenso. Exemplos: prancha máxima, tabata 20s on/10s off, corrida na esteira 1 min.'}
+${isHotel ? 'Sem impacto: use isométricos ou exercícios controlados.' : ''}
+Séries: 1–2. Tempo ou reps: conforme o exercício.
+
+REGRAS GERAIS:
 Use SOMENTE os equipamentos listados acima.
-Aquecimento: 2 a 4 exercícios leves de ativação.
-Bloco principal: ${ctx.disposicao <= 4 ? '3 a 5' : ctx.disposicao >= 8 ? '6 a 10' : '4 a 8'} exercícios.
-Cooldown: 2 a 3 alongamentos ou exercícios de mobilidade.
-Sugira youtube_url reais para demonstração de técnica (use URLs no formato https://www.youtube.com/watch?v=XXXX).
+Distribuição de grupos musculares conforme preferência de treino do aluno.
+Adaptação: técnica acima de tudo — para nível adaptacao/iniciante, reduza carga e aumente repetições.
 
 REGRA CRÍTICA PARA O CAMPO "instrucoes":
-Escreva como um personal trainer falando diretamente ao aluno, no imperativo, em 2 a 3 frases corridas e naturais.
+Escreva como personal trainer falando diretamente ao aluno, no imperativo, em 2–3 frases corridas e naturais.
 NUNCA use traços, hífens, listas ou bullet points nas instruções.
-NUNCA comece a instrução com hífen ou traço.
-Exemplo correto: "Posicione os pés na largura dos ombros com os dedos levemente abertos para fora. Desça controlando o movimento até as coxas ficarem paralelas ao chão, mantendo o peito erguido e os joelhos alinhados com os pés. Suba expirando, contraindo o glúteo no topo do movimento."
-Exemplo incorreto: "- Pés na largura dos ombros\\n- Desça até 90 graus\\n- Suba expirando"
+Exemplo correto: "Posicione os pés na largura dos ombros com os dedos levemente abertos. Desça controlando até as coxas ficarem paralelas ao chão, mantendo o peito erguido. Suba expirando, contraindo o glúteo no topo."
 
 Responda EXATAMENTE neste JSON (sem campos extras, sem texto antes ou depois):
 {
   "nome": "string (nome criativo e motivacional para o treino)",
   "duracao_estimada": number,
-  "aquecimento": [
-    { "nome": string, "series": number, "repeticoes": string, "descanso_segundos": number, "youtube_url": string }
-  ],
-  "principal": [
+  "preparacao": [
     { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "youtube_url": string, "instrucoes": string }
   ],
-  "cooldown": [
-    { "nome": string, "series": number, "repeticoes": string, "descanso_segundos": number }
+  "forca": [
+    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "youtube_url": string, "instrucoes": string }
+  ],
+  "circuito": [
+    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "youtube_url": string, "instrucoes": string }
+  ],
+  "finisher": [
+    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "youtube_url": string, "instrucoes": string }
   ]
 }`
 }

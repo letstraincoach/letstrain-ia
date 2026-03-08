@@ -4,31 +4,50 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { GeneratedWorkout, WorkoutExercise } from '@/lib/ai/workout-schemas'
+import { isNewFormat } from '@/lib/ai/workout-schemas'
 import Button from '@/components/ui/Button'
 
 // Achata todas as seções em uma lista linear com separadores de seção
+type SecaoNova = 'Preparação' | 'Força' | 'Circuito' | 'Finisher'
+type SecaoLegacy = 'Aquecimento' | 'Principal' | 'Cooldown'
+type Secao = SecaoNova | SecaoLegacy
+
 interface FlatExercise extends WorkoutExercise {
-  secao: 'Aquecimento' | 'Principal' | 'Cooldown'
+  secao: Secao
   indexGlobal: number
   totalGlobal: number
 }
 
 function buildFlatList(workout: GeneratedWorkout): FlatExercise[] {
-  const result: FlatExercise[] = []
-  const all = [
-    ...workout.aquecimento.map((e) => ({ ...e, secao: 'Aquecimento' as const })),
-    ...workout.principal.map((e) => ({ ...e, secao: 'Principal' as const })),
-    ...workout.cooldown.map((e) => ({ ...e, secao: 'Cooldown' as const })),
-  ]
-  const total = all.length
-  all.forEach((ex, i) => result.push({ ...ex, indexGlobal: i, totalGlobal: total }))
-  return result
+  const items: { ex: WorkoutExercise; secao: Secao }[] = []
+
+  if (isNewFormat(workout)) {
+    // Nova estrutura 4 blocos
+    ;(workout.preparacao ?? []).forEach((e) => items.push({ ex: e, secao: 'Preparação' }))
+    ;(workout.forca ?? []).forEach((e) => items.push({ ex: e, secao: 'Força' }))
+    ;(workout.circuito ?? []).forEach((e) => items.push({ ex: e, secao: 'Circuito' }))
+    ;(workout.finisher ?? []).forEach((e) => items.push({ ex: e, secao: 'Finisher' }))
+  } else {
+    // Legacy 3 blocos (treinos antigos no banco)
+    ;(workout.aquecimento ?? []).forEach((e) => items.push({ ex: e, secao: 'Aquecimento' }))
+    ;(workout.principal ?? []).forEach((e) => items.push({ ex: e, secao: 'Principal' }))
+    ;(workout.cooldown ?? []).forEach((e) => items.push({ ex: e, secao: 'Cooldown' }))
+  }
+
+  const total = items.length
+  return items.map(({ ex, secao }, i) => ({ ...ex, secao, indexGlobal: i, totalGlobal: total }))
 }
 
-const SECAO_COLOR: Record<string, string> = {
-  Aquecimento: '#F59E0B',
-  Principal: '#FF8C00',
-  Cooldown: '#3B82F6',
+const SECAO_COLOR: Record<Secao, string> = {
+  // Nova estrutura
+  'Preparação': '#F59E0B',
+  'Força':      '#FF8C00',
+  'Circuito':   '#A855F7',
+  'Finisher':   '#EF4444',
+  // Legacy
+  'Aquecimento': '#F59E0B',
+  'Principal':   '#FF8C00',
+  'Cooldown':    '#3B82F6',
 }
 
 // ---- Modal de confirmação ----
