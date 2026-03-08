@@ -99,9 +99,13 @@ export async function POST(request: Request) {
         }).filter(Boolean)
 
   // Montar histórico: extrair nomes dos exercícios principais dos últimos 3 treinos
+  // Suporta tanto o novo formato (forca) quanto o legacy (principal)
   const historico = (historicoResult.data ?? []).map((w) => {
-    const exercicios = w.exercicios as { principal?: { nome: string }[] }
-    const principais = (exercicios?.principal ?? []).map((e) => e.nome)
+    const ex = w.exercicios as {
+      forca?: { nome: string }[]    // novo formato 4 blocos
+      principal?: { nome: string }[] // legacy
+    }
+    const principais = [...(ex?.forca ?? []), ...(ex?.principal ?? [])].map((e) => e.nome)
     return { exercicios_principais: principais }
   })
 
