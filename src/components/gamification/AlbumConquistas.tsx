@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import Figurinha, { type FigurinhaData } from './Figurinha'
 
 async function shareAchievement(fig: FigurinhaData) {
-  const text = `Desbloqueei ${fig.emoji} "${fig.nome}" no Lets Train IA! 💪\n\nTreina comigo → https://letstrain.com.br`
+  const text = `Desbloqueei ${fig.emoji} "${fig.nome}" na Lets Train! 💪\n\nTreina comigo → https://letstrain.com.br`
   try {
     if (navigator.share) {
       await navigator.share({ text })

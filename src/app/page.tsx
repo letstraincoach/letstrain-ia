@@ -184,7 +184,7 @@ export default async function LandingPage() {
                   <p className="text-[11px] text-white/30 font-mono mt-1">CREF 011884-G/SC</p>
                 </div>
                 <p className="text-xs text-white/45 leading-relaxed">
-                  Mais de 15 anos transformando vidas. A Lets Train IA é a metodologia Time Efficient aplicada em escala.
+                  Mais de 15 anos transformando vidas. A Lets Train é a metodologia Time Efficient aplicada em escala.
                 </p>
                 <div className="flex flex-wrap gap-1.5 justify-center sm:justify-start">
                   {['Perda de Gordura', 'Ganho de Massa', 'Qualidade de Vida'].map((tag) => (
