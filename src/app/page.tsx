@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Lets Train — Seu treino, gerado por IA.',
     description: 'Treinos diários personalizados por IA. 15 níveis de progressão, 59 conquistas, Lets Body Score. 3 dias grátis — sem cobranças durante o trial.',
-    url: 'https://letstrain-ia.vercel.app',
+    url: 'https://letstrain.com.br',
   },
   twitter: {
     title: 'Lets Train — Seu treino, gerado por IA.',

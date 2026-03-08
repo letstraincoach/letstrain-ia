@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description: 'Metodologia real, resultados de verdade! Treinos diários personalizados por IA para academia, condomínio ou hotel. Progressão automática, 59 conquistas e muito mais. 3 dias grátis.',
   keywords: ['treino personalizado', 'personal trainer IA', 'academia', 'treino em casa', 'fitness', 'progressão automática', 'lets train'],
   manifest: '/manifest.json',
-  metadataBase: new URL('https://letstrain-ia.vercel.app'),
+  metadataBase: new URL('https://letstrain.com.br'),
   alternates: {
     canonical: '/',
   },
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: 'Lets Train — Treino personalizado por IA',
     description: 'Metodologia real, resultados de verdade! Treinos diários personalizados por IA. 3 dias grátis, sem cobranças durante o trial.',
     locale: 'pt_BR',
-    url: 'https://letstrain-ia.vercel.app',
+    url: 'https://letstrain.com.br',
   },
   twitter: {
     card: 'summary_large_image',

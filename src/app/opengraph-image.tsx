@@ -130,7 +130,7 @@ export default function OGImage() {
             margin: 0,
           }}
         >
-          letstrain-ia.vercel.app
+          letstrain.com.br
         </p>
       </div>
     ),

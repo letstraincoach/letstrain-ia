@@ -30,9 +30,9 @@ export async function POST(request: Request) {
   let returnUrl: string
   try {
     const body = await request.json() as { returnUrl?: string }
-    returnUrl = body.returnUrl ?? `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://letstrain-ia.vercel.app'}/settings`
+    returnUrl = body.returnUrl ?? `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://letstrain.com.br'}/settings`
   } catch {
-    returnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://letstrain-ia.vercel.app'}/settings`
+    returnUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://letstrain.com.br'}/settings`
   }
 
   try {

@@ -81,7 +81,7 @@ export default function AchievementBanner({ achievements, onDone }: AchievementB
   }
 
   async function handleShare() {
-    const text = `Desbloqueei ${current.icone_emoji} "${current.nome}" no Lets Train IA! 💪\n\nTreina comigo → https://letstrain-ia.vercel.app`
+    const text = `Desbloqueei ${current.icone_emoji} "${current.nome}" no Lets Train IA! 💪\n\nTreina comigo → https://letstrain.com.br`
     try {
       if (navigator.share) {
         await navigator.share({ text })
