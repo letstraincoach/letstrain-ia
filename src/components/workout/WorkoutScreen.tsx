@@ -115,6 +115,112 @@ function BiometricsBadge({
   )
 }
 
+// ---- Overview screen — resumo dos 4 blocos ----
+function WorkoutOverview({
+  workout,
+  nivel,
+  onStart,
+}: {
+  workout: GeneratedWorkout
+  nivel: string
+  onStart: () => void
+}) {
+  const newFormat = isNewFormat(workout)
+
+  const blocos = newFormat
+    ? [
+        { label: 'Preparação',          cor: '#F59E0B', exs: workout.preparacao ?? [], desc: 'Mobilidade · Ativação · Cardio leve' },
+        { label: 'Força',               cor: '#FF8C00', exs: workout.forca      ?? [], desc: 'Força guiada ou funcional' },
+        { label: 'Circuito Metabólico', cor: '#A855F7', exs: workout.circuito   ?? [], desc: 'Sem descanso entre exercícios' },
+        { label: 'Finisher',            cor: '#EF4444', exs: workout.finisher   ?? [], desc: 'Estímulo final curto e intenso' },
+      ]
+    : [
+        { label: 'Aquecimento', cor: '#F59E0B', exs: workout.aquecimento ?? [], desc: 'Preparação do corpo' },
+        { label: 'Principal',   cor: '#FF8C00', exs: workout.principal   ?? [], desc: 'Treino principal' },
+        { label: 'Cooldown',    cor: '#3B82F6', exs: workout.cooldown    ?? [], desc: 'Desaceleração e alongamento' },
+      ]
+
+  const totalExs = blocos.reduce((acc, b) => acc + b.exs.length, 0)
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
+      <div className="flex-1 px-6 pt-10 pb-6 overflow-y-auto">
+        <div className="max-w-sm mx-auto flex flex-col gap-6">
+          {/* Header */}
+          <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+            <h1 className="text-2xl font-bold leading-tight">{workout.nome}</h1>
+            <div className="flex items-center gap-3 mt-2 text-xs text-white/40">
+              <span>⏱ {workout.duracao_estimada} min</span>
+              <span>·</span>
+              <span className="capitalize">{nivel.replace(/_/g, ' ')}</span>
+              <span>·</span>
+              <span>{totalExs} exercícios</span>
+            </div>
+          </motion.div>
+
+          {/* Blocos */}
+          <div className="flex flex-col gap-3">
+            {blocos.map((bloco, i) => (
+              bloco.exs.length > 0 && (
+                <motion.div
+                  key={bloco.label}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: 0.1 + i * 0.08 }}
+                  className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden"
+                >
+                  {/* Bloco header */}
+                  <div
+                    className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]"
+                    style={{ borderLeftColor: bloco.cor, borderLeftWidth: 3 }}
+                  >
+                    <div>
+                      <span className="text-sm font-bold" style={{ color: bloco.cor }}>{bloco.label}</span>
+                      <p className="text-[11px] text-white/35 mt-0.5">{bloco.desc}</p>
+                    </div>
+                    <span
+                      className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                      style={{ color: bloco.cor, backgroundColor: bloco.cor + '20' }}
+                    >
+                      {bloco.exs.length}×
+                    </span>
+                  </div>
+
+                  {/* Lista de exercícios */}
+                  <div className="px-4 py-2 flex flex-col gap-1.5">
+                    {bloco.exs.map((ex, j) => (
+                      <div key={j} className="flex items-center justify-between py-1">
+                        <span className="text-sm text-white/70">{ex.nome}</span>
+                        <span className="text-xs text-white/35 ml-2 shrink-0">
+                          {ex.series}× {ex.repeticoes}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <motion.div
+        className="px-6 pb-10 pt-4 border-t border-white/[0.05]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.3 }}
+      >
+        <div className="max-w-sm mx-auto">
+          <Button fullWidth onClick={onStart}>
+            Começar Treino →
+          </Button>
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
 // ---- Componente principal ----
 interface WorkoutScreenProps {
   workoutId: string
@@ -129,10 +235,15 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
   const flatList = buildFlatList(workout)
   const total = flatList.length
 
+  const [view, setView] = useState<'overview' | 'exercise'>(jaExecutado ? 'exercise' : 'overview')
   const [current, setCurrent] = useState(jaExecutado ? total - 1 : 0)
   const [direction, setDirection] = useState(1) // 1 = forward, -1 = back
   const [showConfirm, setShowConfirm] = useState(false)
   const [completing, setCompleting] = useState(false)
+
+  if (view === 'overview') {
+    return <WorkoutOverview workout={workout} nivel={nivel} onStart={() => setView('exercise')} />
+  }
 
   const ex = flatList[current]
   const isLast = current === total - 1
