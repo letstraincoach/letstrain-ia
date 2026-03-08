@@ -4,16 +4,16 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Lets Train — Seu treino, gerado por IA. Evoluindo todo dia.',
-  description: 'A metodologia da Lets Train na palma da sua mão. Treinos diários personalizados para condomínio ou hotel. Progressão automática, 59 conquistas e Lets Body Score. Comece com 3 dias grátis.',
+  title: 'Lets Train — Método LETS TRAIN com suporte da Inteligência Artificial.',
+  description: 'Treinos diários com o Método LETS TRAIN e suporte da Inteligência Artificial. Progressão automática, 59 conquistas e Lets Body Score. Comece com 3 dias grátis.',
   openGraph: {
-    title: 'Lets Train — Seu treino, gerado por IA.',
-    description: 'Treinos diários personalizados por IA. 15 níveis de progressão, 59 conquistas, Lets Body Score. 3 dias grátis — sem cobranças durante o trial.',
+    title: 'Lets Train — Método LETS TRAIN + Inteligência Artificial.',
+    description: 'Treinos diários com o Método LETS TRAIN. 15 níveis de progressão, 59 conquistas, Lets Body Score. 3 dias grátis — sem cobranças durante o trial.',
     url: 'https://letstrain.com.br',
   },
   twitter: {
-    title: 'Lets Train — Seu treino, gerado por IA.',
-    description: 'Treinos diários personalizados por IA. 3 dias grátis, sem cobranças durante o trial.',
+    title: 'Lets Train — Método LETS TRAIN + Inteligência Artificial.',
+    description: 'Treinos com o Método LETS TRAIN e suporte da IA. 3 dias grátis, sem cobranças durante o trial.',
   },
   alternates: {
     canonical: '/',
@@ -58,14 +58,14 @@ export default async function LandingPage() {
           {/* Texto */}
           <div className="flex flex-col items-center lg:items-start gap-6 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 bg-[#FF8C00]/10 border border-[#FF8C00]/20 rounded-full px-4 py-1.5">
-              <span className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest">🎁 3 dias grátis — sem cartão</span>
+              <span className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest">3 dias grátis — sem cartão</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight">
-              Seu treino,{' '}
-              <span className="text-[#FF8C00]">gerado por IA.</span>
-              <br />
-              Evoluindo todo dia.
+              Seu treino com o{' '}
+              <span className="text-[#FF8C00]">Método LETS TRAIN</span>
+              {' '}e suporte da Inteligência Artificial.{' '}
+              <span className="text-[#FF8C00]">Evolua todo dia.</span>
             </h1>
 
             <p className="text-base sm:text-lg text-white/50 leading-relaxed max-w-lg">
@@ -78,7 +78,7 @@ export default async function LandingPage() {
                 href="/cadastro"
                 className="h-14 px-8 rounded-2xl bg-[#FF8C00] text-black font-bold text-base flex items-center justify-center gap-2 hover:bg-[#E07000] transition-colors active:scale-[0.98]"
               >
-                💪 Começar 3 dias grátis
+                Começar 3 dias grátis →
               </Link>
               <Link
                 href="/login"
@@ -115,7 +115,7 @@ export default async function LandingPage() {
                   <div className="flex flex-col gap-0.5">
                     <p className="text-[10px] text-white/30 uppercase tracking-widest">Treino de Hoje</p>
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-black">Personal Guilherme 🔥</p>
+                      <p className="text-sm font-black">Personal Guilherme</p>
                       <span className="text-[10px] text-[#FF8C00] font-bold bg-[#FF8C00]/10 px-2 py-0.5 rounded-full">Nível 3</span>
                     </div>
                   </div>
@@ -124,17 +124,17 @@ export default async function LandingPage() {
 
                   {/* Blocos */}
                   {[
-                    { emoji: '⭕', label: 'Preparação', desc: 'Mobilidade · 8 min', color: '#F59E0B', bg: 'rgba(245,158,11,0.08)' },
-                    { emoji: '💪', label: 'Força', desc: 'Supino · Remada · Desenvolvimento', color: '#FF8C00', bg: 'rgba(255,140,0,0.08)' },
-                    { emoji: '⚡', label: 'Circuito', desc: '4 exerc. · 3 rounds · 40s', color: '#A855F7', bg: 'rgba(168,85,247,0.08)' },
-                    { emoji: '🔥', label: 'Finisher', desc: 'Burpee · 30s · AMRAP', color: '#EF4444', bg: 'rgba(239,68,68,0.08)' },
+                    { label: 'Preparação', desc: 'Mobilidade · 8 min', color: '#F59E0B', bg: 'rgba(245,158,11,0.08)' },
+                    { label: 'Força', desc: 'Supino · Remada · Desenvolvimento', color: '#FF8C00', bg: 'rgba(255,140,0,0.08)' },
+                    { label: 'Circuito', desc: '4 exerc. · 3 rounds · 40s', color: '#A855F7', bg: 'rgba(168,85,247,0.08)' },
+                    { label: 'Finisher', desc: 'Burpee · 30s · AMRAP', color: '#EF4444', bg: 'rgba(239,68,68,0.08)' },
                   ].map((block) => (
                     <div
                       key={block.label}
                       className="rounded-xl px-3 py-2.5 flex items-center gap-3"
                       style={{ background: block.bg, border: `1px solid ${block.color}22` }}
                     >
-                      <span className="text-base shrink-0">{block.emoji}</span>
+                      <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: block.color }} />
                       <div className="min-w-0">
                         <p className="text-xs font-bold" style={{ color: block.color }}>{block.label}</p>
                         <p className="text-[10px] text-white/40 truncate">{block.desc}</p>
@@ -144,7 +144,7 @@ export default async function LandingPage() {
 
                   {/* CTA dentro do mockup */}
                   <div className="mt-1 h-9 rounded-xl bg-[#FF8C00] flex items-center justify-center gap-1.5">
-                    <span className="text-black font-bold text-xs">▶ INICIAR TREINO</span>
+                    <span className="text-black font-bold text-[10px] tracking-wide">▶  INICIAR TREINO</span>
                   </div>
                 </div>
               </div>
@@ -221,7 +221,7 @@ export default async function LandingPage() {
                 </div>
                 <div className="p-3 flex flex-col gap-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[9px] text-[#FF8C00] font-bold uppercase">💪 Força — 2/4</span>
+                    <span className="text-[9px] text-[#FF8C00] font-bold uppercase">Força — 2/4</span>
                     <span className="text-[9px] text-white/30">3×12</span>
                   </div>
                   <p className="text-[12px] font-black leading-tight">Supino Reto<br />com Halteres</p>
@@ -254,7 +254,7 @@ export default async function LandingPage() {
                   <div className="w-12 h-1 rounded-full bg-white/10" />
                 </div>
                 <div className="p-3 flex flex-col items-center gap-2 text-center">
-                  <p className="text-[9px] text-[#FF8C00] font-bold uppercase tracking-widest">🏆 Conquista!</p>
+                  <p className="text-[9px] text-[#FF8C00] font-bold uppercase tracking-widest">Conquista!</p>
                   {/* Figurinha simulada */}
                   <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
                     style={{ background: 'linear-gradient(135deg,rgba(255,140,0,0.3),rgba(255,200,0,0.15))', border: '2px solid rgba(255,140,0,0.4)' }}>
@@ -290,27 +290,24 @@ export default async function LandingPage() {
                 num: '01',
                 title: 'Faz o onboarding',
                 desc: 'Conta seu nível, objetivo, onde treina e os equipamentos disponíveis. Leva menos de 3 minutos.',
-                icon: '🎯',
               },
               {
                 num: '02',
-                title: 'IA gera seu treino',
+                title: 'Método Lets Train + Inteligência Artificial',
                 desc: 'Cada dia, um treino novo. Personalizado pro seu nível, objetivo e equipamentos — com exercícios da metodologia Lets Train.',
-                icon: '🤖',
               },
               {
                 num: '03',
                 title: 'Executa e evolui',
                 desc: 'Conclui o treino, sobe de nível, desbloqueia conquistas e acumula Lets Coins. A progressão acontece automaticamente.',
-                icon: '📈',
               },
             ].map((step) => (
               <div
                 key={step.num}
                 className="flex gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5"
               >
-                <div className="shrink-0 w-12 h-12 rounded-xl bg-[#FF8C00]/10 border border-[#FF8C00]/20 flex items-center justify-center text-xl">
-                  {step.icon}
+                <div className="shrink-0 w-12 h-12 rounded-xl bg-[#FF8C00]/10 border border-[#FF8C00]/20 flex items-center justify-center">
+                  <span className="text-[#FF8C00] font-black text-sm">{step.num}</span>
                 </div>
                 <div>
                   <p className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest mb-1">{step.num}</p>
@@ -422,7 +419,7 @@ export default async function LandingPage() {
                   <p className="text-[11px] text-white/30 font-mono mt-1">CREF 011884-G/SC</p>
                 </div>
                 <p className="text-xs text-white/45 leading-relaxed">
-                  Mais de 15 anos transformando vidas. A Lets Train é a metodologia Time Efficient aplicada em escala.
+                  A IA cruza dados com os da metodologia LETS TRAIN e prepara o seu melhor treino.
                 </p>
                 <div className="flex flex-wrap gap-1.5 justify-center sm:justify-start">
                   {['Perda de Gordura', 'Ganho de Massa', 'Qualidade de Vida'].map((tag) => (
@@ -448,20 +445,20 @@ export default async function LandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { icon: '💪', title: 'Treinos diários por IA', desc: 'Gerados com Claude (Anthropic) usando a metodologia Time Efficient.' },
-              { icon: '📊', title: 'Progressão automática', desc: '15 níveis. Sobe quando bate as metas. Intensidade adapta sozinha.' },
-              { icon: '🏆', title: 'Álbum de conquistas', desc: '59 figurinhas para colecionar. Streak, jejum, diversidade e mais.' },
-              { icon: '🪙', title: 'Lets Coins', desc: 'Ganhe moedas por treino e troque por descontos reais.' },
-              { icon: '⏱️', title: 'Jejum intermitente', desc: 'Timer ao vivo com alertas de milestone. Integrado às conquistas.' },
-              { icon: '🏠', title: 'Treino 4 blocos', desc: 'Preparação → Força → Circuito → Finisher. Estrutura profissional.' },
-              { icon: '🔔', title: 'Lembretes push', desc: 'Notificações nos dias e horários que você escolher.' },
-              { icon: '📏', title: 'Lets Body Score', desc: 'Score 0-100 com 4 pilares e 15 indicadores metabólicos.' },
+              { title: 'Treinos Diários', desc: 'Metodologia Time Efficient da Lets Train, com acompanhamento da Inteligência Artificial.' },
+              { title: 'Progressão automática', desc: '15 níveis. Sobe quando bate as metas. Intensidade adapta sozinha.' },
+              { title: 'Álbum de conquistas', desc: '59 figurinhas para colecionar. Streak, jejum, diversidade e mais.' },
+              { title: 'Lets Coins', desc: 'Ganhe moedas por treino e troque por descontos reais.' },
+              { title: 'Jejum intermitente', desc: 'Timer ao vivo com alertas de milestone. Integrado às conquistas.' },
+              { title: 'Treino 4 blocos', desc: 'Preparação → Força → Circuito → Finisher. Estrutura profissional.' },
+              { title: 'Lembretes push', desc: 'Notificações nos dias e horários que você escolher.' },
+              { title: 'Lets Body Score', desc: 'Score 0-100 com 4 pilares e 15 indicadores metabólicos.' },
             ].map((f) => (
               <div
                 key={f.title}
                 className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 flex gap-3"
               >
-                <span className="text-xl shrink-0 mt-0.5">{f.icon}</span>
+                <div className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-[#FF8C00]" />
                 <div>
                   <p className="font-semibold text-sm mb-0.5">{f.title}</p>
                   <p className="text-xs text-white/40 leading-relaxed">{f.desc}</p>
@@ -512,7 +509,7 @@ export default async function LandingPage() {
             {/* Plano Anual — destaque */}
             <div className="relative rounded-2xl border border-[#FF8C00] bg-[#FF8C00]/[0.06] p-6 flex flex-col gap-4">
               <span className="absolute -top-3 left-5 bg-[#FF8C00] text-black text-xs font-bold px-3 py-0.5 rounded-full">
-                🔥 Melhor custo-benefício
+                Melhor custo-benefício
               </span>
               <div className="flex items-start justify-between">
                 <div>
@@ -528,7 +525,7 @@ export default async function LandingPage() {
                 href="/cadastro"
                 className="w-full h-12 rounded-xl bg-[#FF8C00] text-black font-bold text-sm flex items-center justify-center hover:bg-[#E07000] transition-colors"
               >
-                🎁 Começar 3 dias grátis
+                Começar 3 dias grátis →
               </Link>
             </div>
 
@@ -548,7 +545,7 @@ export default async function LandingPage() {
                 href="/cadastro"
                 className="w-full h-12 rounded-xl border border-white/10 text-white/70 font-semibold text-sm flex items-center justify-center hover:border-white/20 hover:text-white transition-colors"
               >
-                🎁 Começar 3 dias grátis
+                Começar 3 dias grátis →
               </Link>
             </div>
           </div>
@@ -617,7 +614,6 @@ export default async function LandingPage() {
       {/* ── CTA Final ───────────────────────────────────────── */}
       <section className="px-6 py-24 text-center">
         <div className="max-w-lg mx-auto flex flex-col items-center gap-6">
-          <span className="text-5xl">💪</span>
           <h2 className="text-3xl sm:text-4xl font-black leading-tight">
             Metodologia real,<br />
             <span className="text-[#FF8C00]">resultados de verdade.</span>
@@ -629,7 +625,7 @@ export default async function LandingPage() {
             href="/cadastro"
             className="h-14 px-10 rounded-2xl bg-[#FF8C00] text-black font-bold text-base flex items-center justify-center gap-2 hover:bg-[#E07000] transition-colors active:scale-[0.98]"
           >
-            💪 Começar 3 dias grátis
+            Começar 3 dias grátis →
           </Link>
           <p className="text-xs text-white/25">
             Sem cobranças durante o trial · Cancele quando quiser
