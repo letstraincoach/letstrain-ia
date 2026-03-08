@@ -318,6 +318,8 @@ export default async function LandingPage() {
           <div className="flex items-center gap-6 text-xs text-white/30">
             <Link href="/login" className="hover:text-white/60 transition-colors">Entrar</Link>
             <Link href="/cadastro" className="hover:text-white/60 transition-colors">Cadastrar</Link>
+            <Link href="/termos" className="hover:text-white/60 transition-colors">Termos</Link>
+            <Link href="/privacidade" className="hover:text-white/60 transition-colors">Privacidade</Link>
           </div>
           <p className="text-xs text-white/20">© 2026 Lets Train. Todos os direitos reservados.</p>
         </div>
