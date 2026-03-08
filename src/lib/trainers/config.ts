@@ -1,4 +1,4 @@
-export type TrainerSlug = 'guilherme' | 'carlos' | 'raul' | 'maicon'
+export type TrainerSlug = 'guilherme'
 
 export interface Trainer {
   slug: TrainerSlug
@@ -14,33 +14,9 @@ export const TRAINERS: Trainer[] = [
     slug: 'guilherme',
     nome: 'Personal Guilherme',
     cref: 'CREF 011884-G/SC',
-    estilo: 'Treino Intenso',
-    estiloDesc: 'Alta intensidade, máxima superação. Para quem quer resultados rápidos e não tem medo de suor.',
+    estilo: 'Metodologia Time Efficient',
+    estiloDesc: 'Mais de 15 anos transformando vidas. Treinos inteligentes e eficientes para resultados reais.',
     emoji: '🔥',
-  },
-  {
-    slug: 'carlos',
-    nome: 'Personal Carlos',
-    cref: 'CREF SC151652',
-    estilo: 'Pega Pesado',
-    estiloDesc: 'Foco em força e hipertrofia. Treinos densos, carga progressiva e muito ganho muscular.',
-    emoji: '💪',
-  },
-  {
-    slug: 'raul',
-    nome: 'Personal Raul',
-    cref: 'CREF SC5666156',
-    estilo: 'Mais Calmo',
-    estiloDesc: 'Equilíbrio entre desempenho e bem-estar. Ideal para quem quer evoluir sem sacrificar a qualidade de vida.',
-    emoji: '🎯',
-  },
-  {
-    slug: 'maicon',
-    nome: 'Personal Maicon',
-    cref: 'CREF SC513252',
-    estilo: 'Terceira Idade',
-    estiloDesc: 'Especialista em treinos funcionais e de baixo impacto. Segurança, mobilidade e saúde em primeiro lugar.',
-    emoji: '🌟',
   },
 ]
 

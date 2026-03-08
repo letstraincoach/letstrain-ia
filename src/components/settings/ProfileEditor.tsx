@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
-import { TRAINERS, type TrainerSlug } from '@/lib/trainers/config'
+import { TRAINERS } from '@/lib/trainers/config'
 
 type Objetivo = 'perda_peso' | 'ganho_massa' | 'qualidade_vida'
 type Preferencia = 'isolados' | 'grupos_musculares' | 'superior_inferior'
@@ -46,7 +46,7 @@ export default function ProfileEditor({
   const [objetivos, setObjetivos] = useState<Objetivo[]>(initialObjetivo as Objetivo[])
   const [dias, setDias] = useState(initialDias)
   const [preferencia, setPreferencia] = useState<Preferencia | ''>(initialPreferencia as Preferencia | '')
-  const [personalSlug, setPersonalSlug] = useState<TrainerSlug>(initialPersonal as TrainerSlug || 'guilherme')
+  const personalSlug = 'guilherme' as const
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -205,39 +205,23 @@ export default function ProfileEditor({
         </div>
       </section>
 
-      {/* Personal Trainer */}
+      {/* Personal Trainer — fixo */}
       <section className="flex flex-col gap-3">
         <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">Seu Personal Trainer</h2>
-        <div className="flex flex-col gap-2">
-          {TRAINERS.map((trainer) => {
-            const selected = personalSlug === trainer.slug
-            return (
-              <button
-                key={trainer.slug}
-                type="button"
-                onClick={() => setPersonalSlug(trainer.slug)}
-                className={`flex items-center gap-4 rounded-2xl border p-4 text-left transition-all duration-200 active:scale-[0.98]
-                  ${selected
-                    ? 'border-[#FF8C00] bg-[#FF8C00]/10'
-                    : 'border-white/10 bg-white/[0.03] hover:border-white/20'
-                  }`}
-              >
-                <span className="text-2xl">{trainer.emoji}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm">{trainer.nome}</p>
-                  <p className="text-xs text-white/40">{trainer.estilo}</p>
-                  <p className="text-[10px] text-white/20 font-mono mt-0.5">{trainer.cref}</p>
-                </div>
-                {selected && (
-                  <div className="ml-auto h-5 w-5 rounded-full bg-[#FF8C00] flex items-center justify-center shrink-0">
-                    <svg className="h-3 w-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                )}
-              </button>
-            )
-          })}
+        <div className="flex items-center gap-4 rounded-2xl border border-[#FF8C00]/30 bg-[#FF8C00]/[0.06] p-4">
+          <div className="shrink-0 w-12 h-12 rounded-xl overflow-hidden border border-[#FF8C00]/30">
+            <img src="/guilherme-avatar.jpg" alt="Personal Guilherme" className="w-full h-full object-cover object-top" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-sm">{TRAINERS[0].nome}</p>
+            <p className="text-xs text-[#FF8C00] font-medium">{TRAINERS[0].estilo}</p>
+            <p className="text-[10px] text-white/25 font-mono mt-0.5">{TRAINERS[0].cref}</p>
+          </div>
+          <div className="h-5 w-5 rounded-full bg-[#FF8C00] flex items-center justify-center shrink-0">
+            <svg className="h-3 w-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
         </div>
       </section>
 
