@@ -62,16 +62,23 @@ export default async function LandingPage() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight">
-              Seu treino com o{' '}
-              <span className="text-[#FF8C00]">Método LETS TRAIN</span>
-              {' '}e suporte da Inteligência Artificial.{' '}
-              <span className="text-[#FF8C00]">Evolua todo dia.</span>
+              Método Lets Train{' '}
+              <span className="text-[#FF8C00]">+</span>{' '}
+              Inteligência Artificial{' '}
+              <span className="text-[#FF8C00]">=</span>{' '}
+              Evolução todo dia.
             </h1>
 
             <p className="text-base sm:text-lg text-white/50 leading-relaxed max-w-lg">
               A metodologia Time Efficient do Personal Guilherme agora na palma da sua mão.
               Treinos diários personalizados para condomínio ou hotel, com progressão automática.
             </p>
+
+            <div className="rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.05] px-4 py-3 max-w-lg w-full">
+              <p className="text-sm text-white/60 leading-relaxed">
+                Não tem equipamento suficiente no condomínio ou no hotel? Tire fotos do espaço e a nossa IA cruza os dados com a Metodologia da Academia LETS TRAIN — e envia treinos personalizados para você.
+              </p>
+            </div>
 
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <Link
