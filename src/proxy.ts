@@ -8,7 +8,7 @@ const AUTH_ONLY_ROUTES = ['/assinatura', '/quiz', '/local', '/nivel', '/equipame
 // Rotas de autenticação (redirect para dashboard se já logado)
 const AUTH_PAGES = ['/login', '/cadastro', '/recuperar-senha', '/nova-senha']
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
