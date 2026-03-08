@@ -906,9 +906,7 @@ export default async function ProgressPage() {
                 const dataFormatada = new Date(w.data + 'T12:00:00').toLocaleDateString('pt-BR', {
                   day: '2-digit', month: 'short',
                 })
-                const localEmoji =
-                  w.local_treino === 'academia' ? '🏋️' :
-                  w.local_treino === 'hotel' ? '✈️' : '🏠'
+                const localEmoji = w.local_treino === 'hotel' ? '✈️' : '🏠'
                 const avaliacoes = w.workout_evaluations as { rating: number }[] | null
                 const rating = avaliacoes?.[0]?.rating ?? null
                 const starEmojis = ['😞', '😕', '😐', '😊', '🤩']

@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 
-export type TrainingLocation = 'condominio' | 'academia' | 'hotel'
+export type TrainingLocation = 'condominio' | 'hotel'
 
 export interface CheckinData {
   local_treino: TrainingLocation
@@ -24,7 +24,6 @@ interface CheckinFormProps {
 
 const LOCAL_OPTIONS: { value: TrainingLocation; label: string; emoji: string; detail: string }[] = [
   { value: 'condominio', label: 'Condomínio / Casa', emoji: '🏠', detail: 'Treino direto com seus equipamentos' },
-  { value: 'academia', label: 'Academia', emoji: '🏋️', detail: 'Equipamentos completos' },
   { value: 'hotel', label: 'Hotel / Viagem', emoji: '✈️', detail: 'Detectar por foto' },
 ]
 

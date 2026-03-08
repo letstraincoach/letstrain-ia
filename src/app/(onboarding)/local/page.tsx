@@ -22,13 +22,6 @@ const OPTIONS: {
     detalhe: 'Fotografe os aparelhos disponíveis e nossa equipe monta seu treino com o que você tem.',
   },
   {
-    value: 'academia',
-    label: 'Academia Convencional',
-    emoji: '🏋️',
-    descricao: 'Acesso a equipamentos completos',
-    detalhe: 'Você seleciona os equipamentos disponíveis na sua academia e treinamos com eles.',
-  },
-  {
     value: 'hotel',
     label: 'Academia de Hotel',
     emoji: '🏨',

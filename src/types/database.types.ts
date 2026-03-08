@@ -785,7 +785,7 @@ export type TrainingLevel =
   | 'avancado_bronze' | 'avancado_prata' | 'avancado_ouro'
   | 'atleta_bronze' | 'atleta_prata' | 'atleta_ouro'
   | 'atleta_pro' | 'atleta_pro_max'
-export type TrainingLocation = 'condominio' | 'academia' | 'hotel'
+export type TrainingLocation = 'condominio' | 'hotel'
 export type TrainingObjective = 'perda_peso' | 'ganho_massa' | 'qualidade_vida'
 export type TrainingPreference = 'isolados' | 'grupos_musculares' | 'superior_inferior'
 export type WorkoutStatus = 'gerado' | 'executado' | 'cancelado'

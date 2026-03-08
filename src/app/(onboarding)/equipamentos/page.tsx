@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import EquipmentDetector from '@/components/onboarding/EquipmentDetector'
 import EquipmentSelector from '@/components/onboarding/EquipmentSelector'
 
-type Local = 'condominio' | 'academia' | 'hotel' | null
+type Local = 'condominio' | 'hotel' | null
 
 export default function EquipamentosPage() {
   const router = useRouter()

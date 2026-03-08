@@ -63,7 +63,7 @@ Restrições/Lesões: ${ctx.lesao_cronica && ctx.lesao_descricao ? ctx.lesao_des
 Condição cardíaca: ${ctx.doenca_cardiaca ? 'Sim — treino leve, exercícios seguros, sem alta intensidade' : 'Não'}
 
 CONTEXTO DE HOJE:
-Local: ${ctx.local_treino === 'academia' ? 'Academia convencional' : ctx.local_treino === 'hotel' ? 'Academia de hotel (recursos limitados, similar a condomínio)' : 'Academia de condomínio'}
+Local: ${ctx.local_treino === 'hotel' ? 'Academia de hotel (equipamentos limitados, similar ao condomínio)' : 'Academia de condomínio'}
 Equipamentos disponíveis: ${ctx.equipamentos.length ? ctx.equipamentos.join(', ') : 'Apenas peso corporal'}
 Última refeição: ${ctx.ultima_refeicao}
 Tempo disponível: ${ctx.tempo_disponivel} minutos

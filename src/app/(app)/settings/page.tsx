@@ -66,7 +66,6 @@ export default async function SettingsPage() {
 
   const localLabel: Record<string, string> = {
     condominio: 'Academia de Condomínio',
-    academia: 'Academia Convencional',
     hotel: 'Hotel / Viagem',
   }
 
@@ -202,25 +201,6 @@ export default async function SettingsPage() {
                   Ver lista →
                 </Link>
               </div>
-            </div>
-          </section>
-        )}
-
-        {/* Equipamentos — Academia Convencional */}
-        {profile?.local_treino === 'academia' && equipment.length > 0 && (
-          <section className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">Meus Equipamentos</h2>
-              <Link
-                href="/settings/equipamentos"
-                className="text-xs text-[#FF8C00] hover:text-[#E07000] transition-colors"
-              >
-                Gerenciar →
-              </Link>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-              <p className="text-sm text-white/70">{equipment.length} equipamento(s) cadastrado(s)</p>
-              <p className="text-xs text-white/35 mt-1">{equipment.slice(0, 3).map(e => e.nome_custom).join(', ')}{equipment.length > 3 ? ` +${equipment.length - 3}` : ''}</p>
             </div>
           </section>
         )}
