@@ -38,12 +38,33 @@ export async function POST(request: Request) {
 
   const urls = imageUrls.slice(0, 12) // máximo 12 imagens
 
-  // Montar content blocks com todas as imagens
-  const imageBlocks: Anthropic.ImageBlockParam[] = urls.map((url) => ({
+  // Baixar imagens e converter para base64 (URL direta pode ser bloqueada pelos servidores Anthropic)
+  async function toBase64(url: string): Promise<{ data: string; mediaType: string } | null> {
+    try {
+      const res = await fetch(url)
+      if (!res.ok) return null
+      const buffer = await res.arrayBuffer()
+      const data = Buffer.from(buffer).toString('base64')
+      const ct = res.headers.get('content-type') ?? 'image/jpeg'
+      const mediaType = ct.split(';')[0] || 'image/jpeg'
+      return { data, mediaType }
+    } catch {
+      return null
+    }
+  }
+
+  const base64Images = (await Promise.all(urls.map(toBase64))).filter(Boolean) as { data: string; mediaType: string }[]
+
+  if (!base64Images.length) {
+    return NextResponse.json({ error: 'Não foi possível processar as imagens. Tente novamente.' }, { status: 400 })
+  }
+
+  const imageBlocks: Anthropic.ImageBlockParam[] = base64Images.map((img) => ({
     type: 'image',
     source: {
-      type: 'url',
-      url,
+      type: 'base64',
+      media_type: img.mediaType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp',
+      data: img.data,
     },
   }))
 
