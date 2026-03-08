@@ -157,6 +157,36 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* ── Personal Trainers ───────────────────────────────── */}
+      <section className="px-6 py-20 bg-white/[0.015]">
+        <div className="max-w-2xl mx-auto flex flex-col gap-10">
+          <div className="text-center">
+            <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">Profissionais reais</p>
+            <h2 className="text-2xl sm:text-3xl font-black">Seu personal trainer,<br />registrado no CREF.</h2>
+            <p className="text-sm text-white/40 mt-3 leading-relaxed max-w-lg mx-auto">
+              A IA usa a metodologia dos nossos professores. Você escolhe com qual deles quer treinar.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { emoji: '🔥', nome: 'Personal Guilherme', estilo: 'Treino Intenso', cref: 'CREF SC146532' },
+              { emoji: '💪', nome: 'Personal Carlos',    estilo: 'Pega Pesado',    cref: 'CREF SC151652' },
+              { emoji: '🎯', nome: 'Personal Raul',      estilo: 'Mais Calmo',     cref: 'CREF SC5666156' },
+              { emoji: '🌟', nome: 'Personal Maicon',    estilo: 'Terceira Idade', cref: 'CREF SC513252' },
+            ].map((t) => (
+              <div key={t.nome} className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 flex flex-col gap-2">
+                <span className="text-2xl">{t.emoji}</span>
+                <div>
+                  <p className="font-semibold text-sm">{t.nome}</p>
+                  <p className="text-xs text-[#FF8C00] font-medium">{t.estilo}</p>
+                  <p className="text-[10px] text-white/25 font-mono mt-0.5">{t.cref}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Features ────────────────────────────────────────── */}
       <section className="px-6 py-20 bg-white/[0.015]">
         <div className="max-w-2xl mx-auto flex flex-col gap-10">
@@ -172,7 +202,7 @@ export default async function LandingPage() {
               { icon: '🏆', title: 'Álbum de conquistas', desc: '59 figurinhas para colecionar. Streak, horário, jejum, diversidade e muito mais.' },
               { icon: '🪙', title: 'Lets Coins', desc: 'Ganhe moedas por treino e troque por descontos reais na loja Lets Train.' },
               { icon: '⏱️', title: 'Jejum intermitente', desc: 'Timer ao vivo com alertas de milestone. Integrado às conquistas.' },
-              { icon: '🏠', title: 'Academia de condomínio', desc: 'Detecta seus equipamentos pela câmera. Gera treinos com o que você tem.' },
+              { icon: '🏠', title: 'Treino 4 blocos', desc: 'Preparação → Força → Circuito Metabólico → Finisher. Metodologia estruturada em toda sessão.' },
               { icon: '🔔', title: 'Lembretes personalizados', desc: 'Push notifications nos dias e horários que você escolher.' },
               { icon: '📏', title: 'Lets Body Score', desc: 'Score 0-100 de composição corporal com 4 pilares e 15 indicadores metabólicos.' },
             ].map((f) => (
@@ -199,11 +229,10 @@ export default async function LandingPage() {
             <h2 className="text-2xl sm:text-3xl font-black">Seu treino,<br />em qualquer lugar.</h2>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {[
-              { icon: '🏢', label: 'Academia\nde Condomínio' },
-              { icon: '🏋️', label: 'Academia\nConvencional' },
-              { icon: '🏨', label: 'Hotel /\nViagem' },
+              { icon: '🏢', label: 'Academia\nde Condomínio', desc: 'Detecta equipamentos pela câmera' },
+              { icon: '🏨', label: 'Hotel /\nViagem', desc: 'Modo silencioso — sem impacto' },
             ].map((local) => (
               <div
                 key={local.label}
@@ -211,6 +240,7 @@ export default async function LandingPage() {
               >
                 <span className="text-2xl">{local.icon}</span>
                 <p className="text-xs text-white/60 leading-tight whitespace-pre-line font-medium">{local.label}</p>
+                <p className="text-[10px] text-white/30 leading-tight">{local.desc}</p>
               </div>
             ))}
           </div>
