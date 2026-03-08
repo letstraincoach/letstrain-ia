@@ -74,12 +74,6 @@ export default async function LandingPage() {
               Treinos diários personalizados para condomínio ou hotel, com progressão automática.
             </p>
 
-            <div className="rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.05] px-4 py-3 max-w-lg w-full">
-              <p className="text-sm text-white/60 leading-relaxed">
-                Não tem equipamento suficiente no condomínio ou no hotel? Tire fotos do espaço e a nossa IA cruza os dados com a Metodologia da Academia LETS TRAIN — e envia treinos personalizados para você.
-              </p>
-            </div>
-
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <Link
                 href="/cadastro"
@@ -168,9 +162,9 @@ export default async function LandingPage() {
       <section className="px-6 py-12 border-y border-white/[0.06]">
         <div className="max-w-5xl mx-auto grid grid-cols-3 gap-6 text-center">
           {[
-            { num: '15', label: 'Níveis de progressão' },
-            { num: '59', label: 'Conquistas desbloqueáveis' },
-            { num: '100%', label: 'Metodologia Lets Train' },
+            { num: '15 anos', label: 'De metodologia validada em campo' },
+            { num: '3 min', label: 'Para seu treino estar pronto' },
+            { num: 'R$1,09/dia', label: 'Custo médio no plano anual' },
           ].map((item) => (
             <div key={item.label} className="flex flex-col gap-1">
               <p className="text-2xl sm:text-3xl font-black text-[#FF8C00]">{item.num}</p>
@@ -317,7 +311,6 @@ export default async function LandingPage() {
                   <span className="text-[#FF8C00] font-black text-sm">{step.num}</span>
                 </div>
                 <div>
-                  <p className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest mb-1">{step.num}</p>
                   <p className="font-bold text-sm mb-1">{step.title}</p>
                   <p className="text-xs text-white/45 leading-relaxed">{step.desc}</p>
                 </div>
@@ -481,23 +474,38 @@ export default async function LandingPage() {
         <div className="max-w-5xl mx-auto flex flex-col gap-10">
           <div className="text-center">
             <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">Funciona onde você estiver</p>
-            <h2 className="text-2xl sm:text-3xl font-black">Seu treino,<br />em qualquer lugar.</h2>
+            <h2 className="text-2xl sm:text-3xl font-black">Sem academia. Sem desculpa.</h2>
+            <p className="text-sm text-white/40 mt-3 max-w-lg mx-auto leading-relaxed">
+              Não tem equipamento suficiente? Tire fotos do espaço — a IA identifica o que está disponível e gera treinos adaptados à realidade do seu condomínio ou hotel.
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto w-full">
-            {[
-              { icon: '🏢', label: 'Academia\nde Condomínio', desc: 'Detecta equipamentos pela câmera' },
-              { icon: '🏨', label: 'Hotel /\nViagem', desc: 'Modo silencioso — sem impacto' },
-            ].map((local) => (
-              <div
-                key={local.label}
-                className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 flex flex-col items-center gap-2 text-center"
-              >
-                <span className="text-2xl">{local.icon}</span>
-                <p className="text-xs text-white/60 leading-tight whitespace-pre-line font-medium">{local.label}</p>
-                <p className="text-[10px] text-white/30 leading-tight">{local.desc}</p>
+          <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto w-full">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 flex flex-col gap-4">
+              <div className="w-10 h-10 rounded-xl bg-[#FF8C00]/10 border border-[#FF8C00]/20 flex items-center justify-center text-lg">🏢</div>
+              <div>
+                <p className="font-bold text-base mb-1">Academia de Condomínio</p>
+                <p className="text-sm text-white/45 leading-relaxed">Tire fotos do espaço. A IA detecta os equipamentos automaticamente e monta seu treino com o que você tem — halteres, cabo, máquinas ou só peso corporal.</p>
               </div>
-            ))}
+              <div className="flex flex-wrap gap-1.5">
+                {['Detecção por câmera', 'Halteres', 'Kettlebell', 'Cabo'].map(t => (
+                  <span key={t} className="text-[10px] px-2 py-0.5 rounded-full border border-white/10 text-white/40">{t}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 flex flex-col gap-4">
+              <div className="w-10 h-10 rounded-xl bg-[#FF8C00]/10 border border-[#FF8C00]/20 flex items-center justify-center text-lg">🏨</div>
+              <div>
+                <p className="font-bold text-base mb-1">Hotel / Viagem</p>
+                <p className="text-sm text-white/45 leading-relaxed">Treinos silenciosos, sem impacto, adaptados ao quarto ou à academia do hotel. Você seleciona o que tem disponível e o app gera na hora.</p>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {['Sem barulho', 'Peso corporal', 'Elástico', 'Colchonete'].map(t => (
+                  <span key={t} className="text-[10px] px-2 py-0.5 rounded-full border border-white/10 text-white/40">{t}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -622,11 +630,11 @@ export default async function LandingPage() {
       <section className="px-6 py-24 text-center">
         <div className="max-w-lg mx-auto flex flex-col items-center gap-6">
           <h2 className="text-3xl sm:text-4xl font-black leading-tight">
-            Metodologia real,<br />
-            <span className="text-[#FF8C00]">resultados de verdade.</span>
+            Seu primeiro treino está<br />
+            <span className="text-[#FF8C00]">pronto em 3 minutos.</span>
           </h2>
           <p className="text-sm text-white/45 leading-relaxed">
-            Comece hoje, sem risco. 3 dias grátis para experimentar tudo.
+            Comece com 3 dias grátis — sem cartão, sem compromisso.<br />Se não gostar, cancele antes do trial e não paga nada.
           </p>
           <Link
             href="/cadastro"
