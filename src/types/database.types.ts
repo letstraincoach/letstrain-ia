@@ -94,6 +94,60 @@ export type Database = {
         }
         Relationships: []
       }
+      exercise_catalog: {
+        Row: {
+          id: string
+          slug: string
+          nome: string
+          grupo_muscular: string
+          padrao_movimento: string
+          nivel_grupo: string
+          locais: string[]
+          equipamentos: string[] | null
+          instrucoes: string
+          erros_comuns: string | null
+          youtube_url: string | null
+          validado_por: string
+          ativo: boolean
+          criado_em: string
+          atualizado_em: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          nome: string
+          grupo_muscular: string
+          padrao_movimento: string
+          nivel_grupo?: string
+          locais?: string[]
+          equipamentos?: string[] | null
+          instrucoes: string
+          erros_comuns?: string | null
+          youtube_url?: string | null
+          validado_por?: string
+          ativo?: boolean
+          criado_em?: string
+          atualizado_em?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          nome?: string
+          grupo_muscular?: string
+          padrao_movimento?: string
+          nivel_grupo?: string
+          locais?: string[]
+          equipamentos?: string[] | null
+          instrucoes?: string
+          erros_comuns?: string | null
+          youtube_url?: string | null
+          validado_por?: string
+          ativo?: boolean
+          criado_em?: string
+          atualizado_em?: string
+        }
+        Relationships: []
+      }
       exercises: {
         Row: {
           ativo: boolean

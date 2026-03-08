@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@/lib/supabase/server'
 import { buildWorkoutPrompt } from '@/lib/ai/workout-generator'
+import { fetchExerciseCatalog, formatCatalogForPrompt } from '@/lib/ai/exercise-catalog'
 import { WorkoutSchema, type GeneratedWorkout } from '@/lib/ai/workout-schemas'
 import { NextResponse } from 'next/server'
 import type { Json } from '@/types/database.types'
@@ -104,14 +105,17 @@ export async function POST(request: Request) {
     return { exercicios_principais: principais }
   })
 
+  const localTreino = (checkin.local_treino ?? profile.local_treino ?? 'condominio') as string
+  const nivelAtual = (profile.nivel_atual ?? 'adaptacao') as string
+
   const context = {
-    nivel: profile.nivel_atual as Parameters<typeof buildWorkoutPrompt>[0]['nivel'],
+    nivel: nivelAtual as Parameters<typeof buildWorkoutPrompt>[0]['nivel'],
     objetivo: profile.objetivo ?? 'qualidade_vida',
     preferencia_treino: profile.preferencia_treino ?? 'grupos_musculares',
     lesao_cronica: profile.lesao_cronica ?? false,
     lesao_descricao: profile.lesao_descricao,
     doenca_cardiaca: profile.doenca_cardiaca ?? false,
-    local_treino: (checkin.local_treino ?? profile.local_treino) as Parameters<typeof buildWorkoutPrompt>[0]['local_treino'],
+    local_treino: localTreino as Parameters<typeof buildWorkoutPrompt>[0]['local_treino'],
     equipamentos,
     ultima_refeicao: checkin.ultima_refeicao,
     tempo_disponivel: checkin.tempo_disponivel,
@@ -119,7 +123,11 @@ export async function POST(request: Request) {
     historico_recente: historico,
   }
 
-  const prompt = buildWorkoutPrompt(context)
+  // Buscar catálogo de exercícios validados e injetar no prompt
+  const catalogExercises = await fetchExerciseCatalog(localTreino, nivelAtual)
+  const exerciseCatalog = formatCatalogForPrompt(catalogExercises)
+
+  const prompt = buildWorkoutPrompt(context, exerciseCatalog)
 
   // Chamar Claude com retry em caso de JSON inválido
   let generatedWorkout: GeneratedWorkout | null = null

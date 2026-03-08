@@ -20,7 +20,7 @@ export interface WorkoutContext {
   historico_recente: { exercicios_principais: string[] }[]
 }
 
-export function buildWorkoutPrompt(ctx: WorkoutContext): string {
+export function buildWorkoutPrompt(ctx: WorkoutContext, exerciseCatalog?: string): string {
   const levelLabel = LEVEL_CONFIG[ctx.nivel].label
 
   const intensidade =
@@ -49,7 +49,9 @@ export function buildWorkoutPrompt(ctx: WorkoutContext): string {
           .join('\n')
       : '  - Sem histórico recente (primeiro treino)'
 
-  return `Você é um personal trainer da Lets Train, especialista na metodologia Time Efficient.
+  const catalogSection = exerciseCatalog ? `${exerciseCatalog}\n` : ''
+
+  return `${catalogSection}Você é um personal trainer da Lets Train, especialista na metodologia Time Efficient.
 Gere um treino para ${ctx.tempo_disponivel} minutos, objetivo e cientificamente embasado.
 Responda APENAS com JSON válido no schema especificado abaixo. Sem texto extra.
 
