@@ -157,33 +157,46 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* ── Personal Trainers ───────────────────────────────── */}
+      {/* ── Personal Trainer ────────────────────────────────── */}
       <section className="px-6 py-20 bg-white/[0.015]">
         <div className="max-w-2xl mx-auto flex flex-col gap-10">
           <div className="text-center">
-            <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">Profissionais reais</p>
-            <h2 className="text-2xl sm:text-3xl font-black">Seu personal trainer,<br />registrado no CREF.</h2>
+            <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">Profissional real</p>
+            <h2 className="text-2xl sm:text-3xl font-black">Metodologia criada por<br />um personal registrado.</h2>
             <p className="text-sm text-white/40 mt-3 leading-relaxed max-w-lg mx-auto">
-              A IA usa a metodologia dos nossos professores. Você escolhe com qual deles quer treinar.
+              A IA aplica a metodologia Time Efficient desenvolvida pelo Personal Guilherme — todos os exercícios e progressões são validados por um profissional com CREF ativo.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { emoji: '🔥', nome: 'Personal Guilherme', estilo: 'Treino Intenso', cref: 'CREF SC146532' },
-              { emoji: '💪', nome: 'Personal Carlos',    estilo: 'Pega Pesado',    cref: 'CREF SC151652' },
-              { emoji: '🎯', nome: 'Personal Raul',      estilo: 'Mais Calmo',     cref: 'CREF SC5666156' },
-              { emoji: '🌟', nome: 'Personal Maicon',    estilo: 'Terceira Idade', cref: 'CREF SC513252' },
-            ].map((t) => (
-              <div key={t.nome} className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 flex flex-col gap-2">
-                <span className="text-2xl">{t.emoji}</span>
+
+          <div className="flex justify-center">
+            <div className="rounded-3xl border border-white/[0.08] bg-white/[0.03] p-6 flex flex-col sm:flex-row items-center gap-6 max-w-md w-full">
+              <div className="shrink-0 w-28 h-28 rounded-2xl overflow-hidden border border-[#FF8C00]/30">
+                <img
+                  src="/guilherme-avatar.jpg"
+                  alt="Personal Guilherme"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              <div className="flex flex-col gap-2 text-center sm:text-left">
                 <div>
-                  <p className="font-semibold text-sm">{t.nome}</p>
-                  <p className="text-xs text-[#FF8C00] font-medium">{t.estilo}</p>
-                  <p className="text-[10px] text-white/25 font-mono mt-0.5">{t.cref}</p>
+                  <p className="font-black text-lg">Personal Guilherme</p>
+                  <p className="text-xs text-[#FF8C00] font-semibold mt-0.5">Criador da Metodologia Time Efficient</p>
+                  <p className="text-[11px] text-white/30 font-mono mt-1">CREF 011884-G/SC</p>
+                </div>
+                <p className="text-xs text-white/45 leading-relaxed">
+                  Mais de 10 anos treinando pessoas reais com resultados reais. A Lets Train IA é a metodologia aplicada em escala.
+                </p>
+                <div className="flex flex-wrap gap-1.5 justify-center sm:justify-start">
+                  {['Perda de Gordura', 'Ganho de Massa', 'Qualidade de Vida'].map((tag) => (
+                    <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full border border-white/10 text-white/40">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
-            ))}
+            </div>
           </div>
+
         </div>
       </section>
 

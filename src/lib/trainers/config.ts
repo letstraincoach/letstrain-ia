@@ -13,7 +13,7 @@ export const TRAINERS: Trainer[] = [
   {
     slug: 'guilherme',
     nome: 'Personal Guilherme',
-    cref: 'CREF SC146532',
+    cref: 'CREF 011884-G/SC',
     estilo: 'Treino Intenso',
     estiloDesc: 'Alta intensidade, máxima superação. Para quem quer resultados rápidos e não tem medo de suor.',
     emoji: '🔥',
