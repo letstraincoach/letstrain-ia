@@ -5,13 +5,55 @@ import { createClient } from '@/lib/supabase/client'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 
-interface DetectedItem {
+// ── Listas de equipamentos comuns por local ────────────────────────────────────
+interface EquipItem {
   nome: string
   categoria: string
-  confianca: 'alta' | 'media' | 'baixa'
-  confirmed: boolean
-  custom?: boolean
+  emoji: string
 }
+
+const CONDOMINIO_ITEMS: EquipItem[] = [
+  // Pesos livres
+  { nome: 'Halteres', categoria: 'pesos_livres', emoji: '🏋️' },
+  { nome: 'Kettlebell', categoria: 'pesos_livres', emoji: '🔔' },
+  { nome: 'Barras e anilhas', categoria: 'pesos_livres', emoji: '🥊' },
+  // Banco / suporte
+  { nome: 'Banco ajustável', categoria: 'maquinas', emoji: '🛋️' },
+  // Barras
+  { nome: 'Barra fixa', categoria: 'funcionais', emoji: '⬛' },
+  { nome: 'Paralelas', categoria: 'funcionais', emoji: '⚌' },
+  // Máquinas
+  { nome: 'Leg Press', categoria: 'maquinas', emoji: '🦵' },
+  { nome: 'Extensora', categoria: 'maquinas', emoji: '🦿' },
+  { nome: 'Flexora', categoria: 'maquinas', emoji: '🦿' },
+  { nome: 'Puxador / Lat Pull-down', categoria: 'maquinas', emoji: '⬇️' },
+  { nome: 'Crossover / Polia', categoria: 'maquinas', emoji: '🔀' },
+  { nome: 'Supino (banco + barra)', categoria: 'maquinas', emoji: '💪' },
+  // Cardio
+  { nome: 'Esteira', categoria: 'cardio', emoji: '🏃' },
+  { nome: 'Bicicleta ergométrica', categoria: 'cardio', emoji: '🚴' },
+  { nome: 'Elíptico', categoria: 'cardio', emoji: '🔁' },
+  // Funcionais
+  { nome: 'Colchonete / Tapete', categoria: 'funcionais', emoji: '🛏️' },
+  { nome: 'Elásticos / Miniband', categoria: 'funcionais', emoji: '🎗️' },
+  { nome: 'Step / Banco baixo', categoria: 'funcionais', emoji: '🪜' },
+  { nome: 'Corda de pular', categoria: 'funcionais', emoji: '🪢' },
+  { nome: 'Bola suíça', categoria: 'funcionais', emoji: '⚽' },
+  { nome: 'TRX / Suspensão', categoria: 'funcionais', emoji: '🧗' },
+]
+
+const HOTEL_ITEMS: EquipItem[] = [
+  { nome: 'Colchonete / Tapete', categoria: 'funcionais', emoji: '🛏️' },
+  { nome: 'Halteres leves', categoria: 'pesos_livres', emoji: '🏋️' },
+  { nome: 'Elásticos / Miniband', categoria: 'funcionais', emoji: '🎗️' },
+  { nome: 'Corda de pular', categoria: 'funcionais', emoji: '🪢' },
+  { nome: 'Banco / Cadeira', categoria: 'maquinas', emoji: '🛋️' },
+  { nome: 'Esteira', categoria: 'cardio', emoji: '🏃' },
+  { nome: 'Bicicleta ergométrica', categoria: 'cardio', emoji: '🚴' },
+  { nome: 'Bola de exercício', categoria: 'funcionais', emoji: '⚽' },
+]
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 interface EquipmentDetectorProps {
   userId: string
@@ -27,44 +69,75 @@ function formatCep(value: string) {
 
 export default function EquipmentDetector({ userId, localTipo, onSaved }: EquipmentDetectorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [step, setStep] = useState<'upload' | 'confirm' | 'condo'>('upload')
+
+  // Controle de etapas
+  const [step, setStep] = useState<'select' | 'upload' | 'condo'>('select')
+
+  // Equipamentos selecionados (nomes)
+  const commonList = localTipo === 'condominio' ? CONDOMINIO_ITEMS : HOTEL_ITEMS
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [customName, setCustomName] = useState('')
+  const [customItems, setCustomItems] = useState<string[]>([])
+
+  // Upload / detecção por foto
   const [previews, setPreviews] = useState<string[]>([])
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
   const [detecting, setDetecting] = useState(false)
-  const [detected, setDetected] = useState<DetectedItem[] | null>(null)
-  const [customName, setCustomName] = useState('')
-  const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  // Condo info (only used when localTipo === 'condominio')
+  // Condo info
   const [condominioNome, setCondominioNome] = useState('')
   const [condominioCep, setCondominioCep] = useState('')
 
+  // Shared
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  function toggleItem(nome: string) {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(nome)) next.delete(nome)
+      else next.add(nome)
+      return next
+    })
+  }
+
+  function addCustom() {
+    const name = customName.trim()
+    if (!name || customItems.includes(name)) return
+    setCustomItems((prev) => [...prev, name])
+    setSelected((prev) => new Set([...prev, name]))
+    setCustomName('')
+  }
+
+  function removeCustom(nome: string) {
+    setCustomItems((prev) => prev.filter((n) => n !== nome))
+    setSelected((prev) => {
+      const next = new Set(prev)
+      next.delete(nome)
+      return next
+    })
+  }
+
+  // ── Upload ─────────────────────────────────────────────────────────────────
   async function handleFiles(files: FileList | null) {
     if (!files?.length) return
     setError(null)
 
-    // Append up to the remaining slots (max 12 total)
     const remaining = 12 - uploadedUrls.length
-    if (remaining <= 0) {
-      setError('Limite de 12 fotos atingido.')
-      return
-    }
+    if (remaining <= 0) { setError('Limite de 12 fotos atingido.'); return }
 
-    const selected = Array.from(files).slice(0, remaining)
-    const previewUrls = selected.map((f) => URL.createObjectURL(f))
+    const chosen = Array.from(files).slice(0, remaining)
+    const previewUrls = chosen.map((f) => URL.createObjectURL(f))
     setPreviews((prev) => [...prev, ...previewUrls])
-
-    // Reset input so the same file can be re-selected if needed
     if (fileInputRef.current) fileInputRef.current.value = ''
 
     setUploading(true)
     const supabase = createClient()
     const newUrls: string[] = []
 
-    for (let i = 0; i < selected.length; i++) {
-      const file = selected[i]
+    for (let i = 0; i < chosen.length; i++) {
+      const file = chosen[i]
       const path = `${userId}/${Date.now()}-${i}-${file.name.replace(/\s+/g, '_')}`
       const { error: uploadError } = await supabase.storage
         .from('equipment-photos')
@@ -76,11 +149,8 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         return
       }
 
-      const { data: publicUrl } = supabase.storage
-        .from('equipment-photos')
-        .getPublicUrl(path)
-
-      newUrls.push(publicUrl.publicUrl)
+      const { data: pub } = supabase.storage.from('equipment-photos').getPublicUrl(path)
+      newUrls.push(pub.publicUrl)
     }
 
     setUploadedUrls((prev) => [...prev, ...newUrls])
@@ -99,7 +169,10 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         body: JSON.stringify({ imageUrls: uploadedUrls }),
       })
 
-      const data = (await res.json()) as { equipamentos?: DetectedItem[]; error?: string }
+      const data = (await res.json()) as {
+        equipamentos?: { nome: string; categoria: string }[]
+        error?: string
+      }
 
       if (!res.ok || data.error) {
         setError(data.error ?? 'Erro ao analisar imagens.')
@@ -107,13 +180,25 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         return
       }
 
-      const items: DetectedItem[] = (data.equipamentos ?? []).map((e) => ({
-        ...e,
-        confirmed: true,
-      }))
+      // Mescla os detectados com a seleção atual
+      const detectados = data.equipamentos ?? []
+      setSelected((prev) => {
+        const next = new Set(prev)
+        detectados.forEach(({ nome }) => next.add(nome))
+        return next
+      })
+      // Adiciona à lista de custom os que não estão na lista padrão
+      const commonNames = commonList.map((i) => i.nome)
+      const novosCustom = detectados
+        .map(({ nome }) => nome)
+        .filter((n) => !commonNames.includes(n))
+      setCustomItems((prev) => {
+        const existing = new Set(prev)
+        return [...prev, ...novosCustom.filter((n) => !existing.has(n))]
+      })
 
-      setDetected(items)
-      setStep('confirm')
+      // Volta para select com os itens detectados já marcados
+      setStep('select')
     } catch {
       setError('Erro de conexão. Tente novamente.')
     } finally {
@@ -121,37 +206,13 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
     }
   }
 
-  function toggleItem(idx: number) {
-    setDetected((prev) =>
-      prev?.map((item, i) =>
-        i === idx ? { ...item, confirmed: !item.confirmed } : item
-      ) ?? null
-    )
-  }
-
-  function removeItem(idx: number) {
-    setDetected((prev) => prev?.filter((_, i) => i !== idx) ?? null)
-  }
-
-  function addCustom() {
-    const name = customName.trim()
-    if (!name) return
-    setDetected((prev) => [
-      ...(prev ?? []),
-      { nome: name, categoria: 'funcionais', confianca: 'alta', confirmed: true, custom: true },
-    ])
-    setCustomName('')
-  }
-
-  // Called from confirm step
-  function handleConfirmNext() {
-    const confirmedCount = (detected ?? []).filter((i) => i.confirmed).length
-    if (!confirmedCount) {
+  // ── Avançar do select ──────────────────────────────────────────────────────
+  function handleSelectNext() {
+    if (selected.size === 0) {
       setError('Selecione ao menos um equipamento.')
       return
     }
     setError(null)
-
     if (localTipo === 'condominio') {
       setStep('condo')
     } else {
@@ -159,18 +220,13 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
     }
   }
 
+  // ── Salvar ─────────────────────────────────────────────────────────────────
   async function doSave() {
-    const toSave = (detected ?? []).filter((i) => i.confirmed)
-
     setSaving(true)
     setError(null)
     const supabase = createClient()
 
-    const rows = toSave.map((item) => ({
-      user_id: userId,
-      nome_custom: item.nome,
-    }))
-
+    const rows = Array.from(selected).map((nome) => ({ user_id: userId, nome_custom: nome }))
     const { error: dbError } = await supabase.from('user_equipment').insert(rows)
 
     if (dbError) {
@@ -179,7 +235,6 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
       return
     }
 
-    // Save profile update
     const profileUpdate: Record<string, unknown> = {
       onboarding_completo: true,
       onboarding_etapa: 'completo',
@@ -188,26 +243,135 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
     if (localTipo === 'condominio') {
       profileUpdate.condominio_nome = condominioNome.trim()
       profileUpdate.condominio_cep = condominioCep.replace(/\D/g, '')
-      profileUpdate.condominio_fotos = uploadedUrls
+      if (uploadedUrls.length) profileUpdate.condominio_fotos = uploadedUrls
     }
 
-    await supabase
-      .from('user_profiles')
-      .update(profileUpdate)
-      .eq('id', userId)
-
+    await supabase.from('user_profiles').update(profileUpdate).eq('id', userId)
     onSaved()
   }
 
-  const confiancaColor: Record<string, string> = {
-    alta: 'text-[#FF8C00]',
-    media: 'text-yellow-400',
-    baixa: 'text-white/40',
+  const allSelected = selected.size
+
+  // ── Etapa: select ──────────────────────────────────────────────────────────
+  if (step === 'select') {
+    return (
+      <div className="flex flex-col gap-6 w-full max-w-sm">
+        <div>
+          <h2 className="text-xl font-bold">
+            {localTipo === 'condominio' ? 'Equipamentos da academia' : 'O que o hotel tem?'}
+          </h2>
+          <p className="mt-1 text-sm text-white/50">
+            Toque nos equipamentos disponíveis. A IA vai montar o treino ideal pro que você tem.
+          </p>
+        </div>
+
+        {/* Grid de equipamentos comuns */}
+        <div className="flex flex-wrap gap-2">
+          {commonList.map((item) => {
+            const isSelected = selected.has(item.nome)
+            return (
+              <button
+                key={item.nome}
+                type="button"
+                onClick={() => toggleItem(item.nome)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-all duration-150 active:scale-[0.97]
+                  ${isSelected
+                    ? 'border-[#FF8C00] bg-[#FF8C00]/15 text-[#FF8C00]'
+                    : 'border-white/10 bg-white/[0.03] text-white/60 hover:border-white/20'
+                  }`}
+              >
+                <span className="text-base leading-none">{item.emoji}</span>
+                <span>{item.nome}</span>
+                {isSelected && <span className="text-xs leading-none">✓</span>}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Itens personalizados adicionados */}
+        {customItems.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {customItems.map((nome) => (
+              <div
+                key={nome}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#FF8C00] bg-[#FF8C00]/15 text-sm font-medium text-[#FF8C00]"
+              >
+                <span>{nome}</span>
+                <button
+                  type="button"
+                  onClick={() => removeCustom(nome)}
+                  className="text-[#FF8C00]/60 hover:text-red-400 transition-colors leading-none"
+                  aria-label="Remover"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Adicionar manualmente */}
+        <div className="flex flex-col gap-2">
+          <p className="text-xs text-white/40">Não achou na lista? Adicione manualmente:</p>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Ex: Smith machine, agachador..."
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && addCustom()}
+              className="flex-1"
+            />
+            <Button variant="outline" onClick={addCustom} className="shrink-0 px-4">
+              +
+            </Button>
+          </div>
+        </div>
+
+        {/* Detectar por foto */}
+        <button
+          type="button"
+          onClick={() => { setError(null); setStep('upload') }}
+          className="flex items-center justify-center gap-2 h-11 w-full rounded-xl border border-white/10 text-white/50 text-sm font-medium hover:border-white/20 hover:text-white/70 transition-colors"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+              d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Fotografar e deixar a IA identificar
+        </button>
+
+        {error && (
+          <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+            {error}
+          </p>
+        )}
+
+        <div className="flex flex-col gap-3 pb-8">
+          <Button
+            fullWidth
+            disabled={allSelected === 0}
+            onClick={handleSelectNext}
+          >
+            {allSelected > 0
+              ? `Confirmar ${allSelected} equipamento${allSelected > 1 ? 's' : ''} →`
+              : 'Selecione ao menos um equipamento'}
+          </Button>
+          {localTipo === 'hotel' && (
+            <button
+              type="button"
+              onClick={() => { setSelected(new Set()); doSave() }}
+              className="text-sm text-white/30 hover:text-white/60 transition-colors"
+            >
+              Não tem equipamentos → treino funcional
+            </button>
+          )}
+        </div>
+      </div>
+    )
   }
 
-  const confirmedCount = detected?.filter((i) => i.confirmed).length ?? 0
-
-  // ---- Etapa 1: Upload ----
+  // ── Etapa: upload (detectar por foto) ─────────────────────────────────────
   if (step === 'upload') {
     const atLimit = uploadedUrls.length >= 12
     const remaining = 12 - uploadedUrls.length
@@ -217,11 +381,10 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         <div>
           <h2 className="text-xl font-bold">Fotografe sua academia</h2>
           <p className="mt-1 text-sm text-white/50">
-            Tire fotos dos aparelhos disponíveis. A IA vai identificá-los automaticamente.
+            Tire fotos dos aparelhos. A IA vai identificá-los e adicionar à sua lista.
           </p>
         </div>
 
-        {/* Área de upload — só mostra se ainda há slots */}
         {!atLimit && (
           <button
             type="button"
@@ -241,7 +404,7 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
             <span className="text-xs">
               {previews.length === 0
                 ? 'Até 12 imagens'
-                : `${uploadedUrls.length} enviada(s) · ainda ${remaining} disponível(is)`}
+                : `${uploadedUrls.length} enviada(s) · ${remaining} disponível(is)`}
             </span>
           </button>
         )}
@@ -255,29 +418,18 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
           onChange={(e) => handleFiles(e.target.files)}
         />
 
-        {/* Previews em grade */}
         {previews.length > 0 && (
           <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-white/40">
-                {uploading
-                  ? 'Enviando...'
-                  : uploadedUrls.length === previews.length
-                    ? `${uploadedUrls.length} foto(s) enviada(s)`
-                    : `${uploadedUrls.length} de ${previews.length} enviada(s)`}
-              </p>
-              {atLimit && (
-                <span className="text-[10px] text-[#FF8C00] bg-[#FF8C00]/10 rounded-full px-2 py-0.5">
-                  Limite atingido
-                </span>
-              )}
-            </div>
+            <p className="text-xs text-white/40">
+              {uploading
+                ? 'Enviando...'
+                : `${uploadedUrls.length} foto(s) enviada(s)`}
+            </p>
             <div className="grid grid-cols-3 gap-2">
               {previews.map((url, i) => (
                 <div key={i} className="aspect-square rounded-xl overflow-hidden bg-white/5 relative">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={url} alt={`foto ${i + 1}`} className="w-full h-full object-cover" />
-                  {/* Indicador de upload pendente */}
                   {i >= uploadedUrls.length && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                       <div className="w-4 h-4 rounded-full border-2 border-white/60 border-t-transparent animate-spin" />
@@ -302,117 +454,21 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
             loading={detecting}
             onClick={handleDetect}
           >
-            {detecting
-              ? 'A IA está analisando...'
-              : `Identificar equipamentos${uploadedUrls.length > 0 ? ` (${uploadedUrls.length} foto${uploadedUrls.length > 1 ? 's' : ''})` : ''}`}
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
-  // ---- Etapa 2: Confirmação dos equipamentos ----
-  if (step === 'confirm') {
-    return (
-      <div className="flex flex-col gap-6 w-full max-w-sm">
-        <div>
-          <h2 className="text-xl font-bold">Confirme os equipamentos</h2>
-          <p className="mt-1 text-sm text-white/50">
-            {detected?.length
-              ? `Encontrei ${detected.length} equipamento(s). Remova o que não existir.`
-              : 'Não detectei nenhum equipamento. Adicione manualmente.'}
-          </p>
-        </div>
-
-        {/* Lista detectada */}
-        {detected && detected.length > 0 && (
-          <div className="flex flex-col gap-2">
-            {detected.map((item, i) => (
-              <div
-                key={i}
-                className={`flex items-center justify-between rounded-xl border px-4 py-3 transition-all duration-150
-                  ${item.confirmed ? 'border-white/15 bg-white/[0.04]' : 'border-white/5 bg-transparent opacity-40'}`}
-              >
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => toggleItem(i)}
-                    className={`h-5 w-5 rounded-md border flex items-center justify-center shrink-0 transition-colors
-                      ${item.confirmed ? 'bg-[#FF8C00] border-[#FF8C00]' : 'border-white/30'}`}
-                  >
-                    {item.confirmed && (
-                      <svg className="h-3 w-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </button>
-                  <div>
-                    <p className="text-sm font-medium">{item.nome}</p>
-                    {!item.custom && (
-                      <p className={`text-xs ${confiancaColor[item.confianca]}`}>
-                        Confiança {item.confianca}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeItem(i)}
-                  className="text-white/30 hover:text-red-400 transition-colors ml-2"
-                  aria-label="Remover"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Adicionar manualmente */}
-        <div className="flex gap-2">
-          <Input
-            placeholder="Adicionar equipamento..."
-            value={customName}
-            onChange={(e) => setCustomName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && addCustom()}
-            className="flex-1"
-          />
-          <Button variant="outline" onClick={addCustom} className="shrink-0 px-4">
-            +
-          </Button>
-        </div>
-
-        {error && (
-          <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-            {error}
-          </p>
-        )}
-
-        <div className="flex flex-col gap-3 pb-8">
-          <Button fullWidth onClick={handleConfirmNext} disabled={confirmedCount === 0}>
-            {localTipo === 'condominio'
-              ? `Continuar com ${confirmedCount > 0 ? confirmedCount : ''} equipamento(s) →`
-              : `Salvar ${confirmedCount > 0 ? `${confirmedCount} equipamento(s)` : 'equipamentos'}`
-            }
+            {detecting ? 'A IA está analisando...' : `Identificar e adicionar à lista`}
           </Button>
           <button
             type="button"
-            onClick={() => {
-              setDetected(null)
-              setPreviews([])
-              setUploadedUrls([])
-              setStep('upload')
-            }}
+            onClick={() => { setError(null); setStep('select') }}
             className="text-sm text-white/40 hover:text-white/70 transition-colors"
           >
-            Tirar novas fotos
+            ← Voltar à lista de equipamentos
           </button>
         </div>
       </div>
     )
   }
 
-  // ---- Etapa 3: Dados do condomínio (apenas condominio) ----
+  // ── Etapa: condo (apenas condominio) ──────────────────────────────────────
   const cepValido = condominioCep.replace(/\D/g, '').length === 8
   const nomeValido = condominioNome.trim().length >= 2
 
@@ -424,13 +480,30 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         </p>
         <h2 className="text-xl font-bold">Dados do condomínio</h2>
         <p className="mt-1 text-sm text-white/50">
-          Isso fica salvo no seu perfil junto com as fotos e equipamentos.
+          Ficam salvos no seu perfil junto com os equipamentos.
         </p>
       </div>
 
-      {/* Fotos salvas (preview mini) */}
+      {/* Resumo dos equipamentos selecionados */}
+      <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+        <p className="text-xs text-white/40 mb-1.5">Equipamentos confirmados</p>
+        <div className="flex flex-wrap gap-1.5">
+          {Array.from(selected).slice(0, 8).map((nome) => (
+            <span key={nome} className="text-[11px] px-2 py-0.5 rounded-full bg-[#FF8C00]/15 text-[#FF8C00] font-medium">
+              {nome}
+            </span>
+          ))}
+          {selected.size > 8 && (
+            <span className="text-[11px] px-2 py-0.5 rounded-full bg-white/10 text-white/40">
+              +{selected.size - 8} mais
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Fotos (se houver) */}
       {uploadedUrls.length > 0 && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           <p className="text-xs text-white/40">{uploadedUrls.length} foto(s) salvas ✓</p>
           <div className="flex gap-1.5 overflow-x-auto pb-1">
             {uploadedUrls.map((url, i) => (
@@ -442,14 +515,6 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
           </div>
         </div>
       )}
-
-      {/* Equipamentos confirmados */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
-        <p className="text-xs text-white/40 mb-1.5">Equipamentos selecionados</p>
-        <p className="text-sm font-medium text-white/80">
-          {confirmedCount} equipamento(s) detectado(s)
-        </p>
-      </div>
 
       {/* Nome do condomínio */}
       <div className="flex flex-col gap-2">
@@ -498,7 +563,7 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         </Button>
         <button
           type="button"
-          onClick={() => setStep('confirm')}
+          onClick={() => setStep('select')}
           className="text-sm text-white/40 hover:text-white/70 transition-colors"
         >
           ← Voltar aos equipamentos

@@ -68,7 +68,7 @@ export async function POST(request: Request) {
 
     supabase
       .from('user_equipment')
-      .select('nome_custom, equipment_catalog(nome)')
+      .select('nome_custom')
       .eq('user_id', user.id),
 
     supabase
@@ -92,11 +92,9 @@ export async function POST(request: Request) {
   const equipamentos: string[] =
     checkin.local_treino === 'hotel' && checkin.equipamentos_hotel?.length
       ? checkin.equipamentos_hotel
-      : (equipamentosResult.data ?? []).map((e) => {
-          if (e.nome_custom) return e.nome_custom
-          const catalog = e.equipment_catalog as { nome: string } | null
-          return catalog?.nome ?? ''
-        }).filter(Boolean)
+      : (equipamentosResult.data ?? [])
+          .map((e) => e.nome_custom ?? '')
+          .filter(Boolean)
 
   // Montar histórico: extrair nomes dos exercícios principais dos últimos 3 treinos
   // Suporta tanto o novo formato (forca) quanto o legacy (principal)
