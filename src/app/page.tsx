@@ -66,7 +66,7 @@ export default async function LandingPage() {
               <span className="text-[#FF8C00]">+</span>{' '}
               Inteligência Artificial{' '}
               <span className="text-[#FF8C00]">=</span>{' '}
-              Evolução todo dia.
+              <span className="text-[#FF8C00]">Evolução todo dia.</span>
             </h1>
 
             <p className="text-base sm:text-lg text-white/50 leading-relaxed max-w-lg">
