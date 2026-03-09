@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -35,6 +36,12 @@ export default async function LandingPage() {
             <span className="text-[#FF8C00]">LETS</span> TRAIN
           </span>
           <div className="flex items-center gap-3">
+            <Link
+              href="/condominios"
+              className="text-sm text-white/40 hover:text-white/70 transition-colors hidden sm:block"
+            >
+              Para condomínios
+            </Link>
             <Link
               href="/login"
               className="text-sm text-white/50 hover:text-white transition-colors"
@@ -394,44 +401,45 @@ export default async function LandingPage() {
 
       {/* ── Personal Trainer ────────────────────────────────── */}
       <section className="px-6 py-20 bg-white/[0.015]">
-        <div className="max-w-5xl mx-auto flex flex-col gap-10">
-          <div className="text-center">
-            <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">Profissional real</p>
-            <h2 className="text-2xl sm:text-3xl font-black">Metodologia criada por<br />um personal registrado.</h2>
-            <p className="text-sm text-white/40 mt-3 leading-relaxed max-w-lg mx-auto">
-              A IA aplica a metodologia Time Efficient desenvolvida pelo Personal Guilherme — todos os exercícios e progressões são validados por um profissional com CREF ativo.
-            </p>
-          </div>
-
-          <div className="flex justify-center">
-            <div className="rounded-3xl border border-white/[0.08] bg-white/[0.03] p-6 flex flex-col sm:flex-row items-center gap-6 max-w-md w-full">
-              <div className="shrink-0 w-28 h-28 rounded-2xl overflow-hidden border border-[#FF8C00]/30">
-                <img
-                  src="/guilherme-avatar.jpg"
-                  alt="Personal Guilherme"
-                  className="w-full h-full object-cover object-top"
+        <div className="max-w-5xl mx-auto">
+          <div className="rounded-3xl border border-white/[0.08] bg-white/[0.02] overflow-hidden">
+            <div className="flex flex-col lg:flex-row">
+              {/* Foto */}
+              <div className="relative lg:w-80 xl:w-96 shrink-0 h-72 lg:h-auto">
+                <Image
+                  src="/guilherme-personal.jpeg"
+                  alt="Guilherme Lets — Personal Trainer e criador do Método Lets Train"
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 1024px) 100vw, 384px"
                 />
               </div>
-              <div className="flex flex-col gap-2 text-center sm:text-left">
+              {/* Texto */}
+              <div className="flex flex-col justify-center gap-5 p-8 lg:p-12">
                 <div>
-                  <p className="font-black text-lg">Personal Guilherme</p>
-                  <p className="text-xs text-[#FF8C00] font-semibold mt-0.5">Criador da Metodologia Time Efficient</p>
-                  <p className="text-[11px] text-white/30 font-mono mt-1">CREF 011884-G/SC</p>
+                  <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-1">Profissional real por trás da IA</p>
+                  <p className="font-black text-2xl sm:text-3xl">Guilherme Lets</p>
+                  <p className="text-sm text-white/40 mt-1">Personal Trainer · Proprietário da Academia Lets Train · Criador do Método LETS TRAIN</p>
+                  <p className="text-[11px] text-white/25 font-mono mt-1">CREF 011884-G/SC</p>
                 </div>
-                <p className="text-xs text-white/45 leading-relaxed">
-                  A IA cruza dados com os da metodologia LETS TRAIN e prepara o seu melhor treino.
-                </p>
-                <div className="flex flex-wrap gap-1.5 justify-center sm:justify-start">
-                  {['Perda de Gordura', 'Ganho de Massa', 'Qualidade de Vida'].map((tag) => (
-                    <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full border border-white/10 text-white/40">
-                      {tag}
-                    </span>
+                <blockquote className="border-l-2 border-[#FF8C00] pl-4">
+                  <p className="text-sm text-white/70 leading-relaxed italic">
+                    "A IA executa o método. Mas o método foi construído por mim, na prática, treino a treino, em academias de condomínio, hotéis e espaços reduzidos. O que o app entrega não é uma planilha genérica: é uma metodologia real, adaptada ao espaço que você tem."
+                  </p>
+                </blockquote>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    'Proprietário da Academia Lets Train',
+                    'Criador do Método LETS TRAIN',
+                    'Milhares de vidas transformadas',
+                    'Especialista em espaços reduzidos',
+                  ].map((tag) => (
+                    <span key={tag} className="text-[10px] px-2.5 py-1 rounded-full border border-white/10 text-white/40">{tag}</span>
                   ))}
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </section>
 

@@ -1,18 +1,19 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Lets Train para Condomínios — Personal Trainer IA para todos os seus moradores',
-  description: '80% dos moradores não usam a academia do condomínio. A Lets Train ativa esse espaço com personal trainer por IA, treinos personalizados e progressão automática — por menos do que um professor de ginástica.',
+  title: 'Lets Train para Condomínios: Personal Trainer IA para todos os seus moradores',
+  description: '80% dos moradores não usam a academia do condomínio. A Lets Train ativa esse espaço com personal trainer por IA, treinos personalizados e progressão automática para todos os moradores.',
   openGraph: {
-    title: 'Lets Train para Condomínios — Academia inteligente para todos os moradores',
+    title: 'Lets Train para Condomínios: Academia inteligente para todos os moradores',
     description: 'Transforme o espaço fitness do seu condomínio em um diferencial real. Personal trainer IA disponível 24h para todos os moradores.',
     url: 'https://letstrain.com.br/condominios',
   },
   alternates: { canonical: '/condominios' },
 }
 
-const WA_LINK = 'https://wa.me/5548999999999?text=Ol%C3%A1%2C%20tenho%20interesse%20em%20conhecer%20a%20Lets%20Train%20para%20condom%C3%ADnios.'
+const WA_LINK = 'https://wa.me/5548992058877?text=Ol%C3%A1%2C%20tenho%20interesse%20em%20conhecer%20a%20Lets%20Train%20para%20condom%C3%ADnios.'
 
 export default function CondominiosPage() {
   return (
@@ -57,7 +58,7 @@ export default function CondominiosPage() {
           </h1>
 
           <p className="text-base sm:text-lg text-white/50 leading-relaxed max-w-2xl">
-            80% dos moradores não pisam na sala fitness do condomínio. A Lets Train entrega um personal trainer por IA para cada morador — sem contratar ninguém, sem obra, sem custo de equipamento.
+            80% dos moradores não pisam na sala fitness do condomínio. A Lets Train entrega um método comprovado, com suporte da inteligência artificial para cada morador, sem contratar ninguém, sem obra, sem custo de equipamento.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
@@ -88,7 +89,7 @@ export default function CondominiosPage() {
         <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
           {[
             { num: '80%', label: 'dos moradores nunca usa a academia do condomínio' },
-            { num: '520 mil', label: 'condomínios no Brasil — crescendo 23,8% em 8 anos' },
+            { num: '520 mil', label: 'condomínios no Brasil, crescendo 23,8% em 8 anos' },
             { num: '68 mi', label: 'de brasileiros vivem em condomínios' },
             { num: '+10%', label: 'de valorização percebida com amenidade fitness de qualidade' },
           ].map((item) => (
@@ -107,7 +108,7 @@ export default function CondominiosPage() {
             <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">O problema</p>
             <h2 className="text-2xl sm:text-3xl font-black">O condomínio investiu.<br />Os moradores não usam.</h2>
             <p className="text-sm text-white/40 mt-3 max-w-2xl mx-auto leading-relaxed">
-              Uma academia de condomínio custa entre R$20.000 e R$150.000 para montar. Mais R$2.000 a R$8.000 por mês em manutenção rateada entre todos. E 80% dos moradores nunca entram lá. O problema não é o equipamento — é a falta de orientação.
+              Uma academia de condomínio custa entre R$80.000 e R$350.000 para montar. Mais o custo mensal em manutenção rateada entre todos. E 80% dos moradores nunca entram lá. O problema não é o equipamento: é a falta de orientação e método.
             </p>
           </div>
 
@@ -144,9 +145,9 @@ export default function CondominiosPage() {
         <div className="max-w-5xl mx-auto flex flex-col gap-12">
           <div className="text-center">
             <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">A solução</p>
-            <h2 className="text-2xl sm:text-3xl font-black">Personal trainer por IA<br />para cada morador.</h2>
+            <h2 className="text-2xl sm:text-3xl font-black">APP pioneiro no Brasil<br />com IA para todos os moradores.</h2>
             <p className="text-sm text-white/40 mt-3 max-w-2xl mx-auto leading-relaxed">
-              A Lets Train entrega o Método LETS TRAIN — 15 anos de metodologia validada em campo — via inteligência artificial. Cada morador abre o app, faz o check-in e recebe um treino personalizado para os equipamentos que existem na academia do seu condomínio.
+              A Lets Train entrega o Método LETS TRAIN, 15 anos de metodologia validada em campo, via inteligência artificial. Cada morador abre o app, faz o check-in e recebe um treino personalizado para os equipamentos que existem na academia do seu condomínio.
             </p>
           </div>
 
@@ -162,7 +163,7 @@ export default function CondominiosPage() {
               },
               {
                 title: 'Progressão automática',
-                desc: '15 níveis de progressão. O app sobe o nível automaticamente conforme o morador evolui — sem depender de orientação presencial.',
+                desc: '15 níveis de progressão. O app sobe o nível automaticamente conforme o morador evolui, sem depender de orientação presencial.',
               },
               {
                 title: 'Gamificação e engajamento',
@@ -174,7 +175,7 @@ export default function CondominiosPage() {
               },
               {
                 title: 'Relatório de uso para o síndico',
-                desc: 'O gestor acompanha quantos moradores estão ativos, quais horários de pico e o engajamento geral — argumento concreto para assembleias.',
+                desc: 'O gestor acompanha quantos moradores estão ativos, quais horários de pico e o engajamento geral. Um argumento concreto para apresentar em assembleias.',
               },
             ].map((f) => (
               <div
@@ -186,6 +187,49 @@ export default function CondominiosPage() {
                 <p className="text-xs text-white/45 leading-relaxed">{f.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Personal Guilherme ──────────────────────────────── */}
+      <section className="px-6 py-20">
+        <div className="max-w-5xl mx-auto">
+          <div className="rounded-3xl border border-white/[0.08] bg-white/[0.02] overflow-hidden">
+            <div className="flex flex-col lg:flex-row">
+              {/* Foto */}
+              <div className="relative lg:w-80 xl:w-96 shrink-0 h-72 lg:h-auto">
+                <Image
+                  src="/guilherme-personal.jpeg"
+                  alt="Guilherme Lets — Personal Trainer e criador do Método Lets Train"
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 1024px) 100vw, 384px"
+                />
+              </div>
+              {/* Texto */}
+              <div className="flex flex-col justify-center gap-5 p-8 lg:p-12">
+                <div>
+                  <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-1">Quem está por trás</p>
+                  <p className="font-black text-2xl sm:text-3xl">Guilherme Lets</p>
+                  <p className="text-sm text-white/40 mt-1">Personal Trainer · Proprietário da Academia Lets Train · Criador do Método LETS TRAIN</p>
+                </div>
+                <blockquote className="border-l-2 border-[#FF8C00] pl-4">
+                  <p className="text-sm text-white/70 leading-relaxed italic">
+                    "A IA executa o método. Mas o método foi construído por mim, na prática, treino a treino, em academias de condomínio, hotéis e espaços reduzidos. O que o app entrega não é uma planilha genérica: é uma metodologia real, adaptada ao espaço que cada morador tem."
+                  </p>
+                </blockquote>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    'Proprietário da Academia Lets Train',
+                    'Criador do Método LETS TRAIN',
+                    'Milhares de vidas transformadas',
+                    'Especialista em espaços reduzidos',
+                  ].map((tag) => (
+                    <span key={tag} className="text-[10px] px-2.5 py-1 rounded-full border border-white/10 text-white/40">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -209,7 +253,7 @@ export default function CondominiosPage() {
               <div className="flex flex-col gap-3">
                 <p className="font-black text-base text-[#FF8C00]">Construtoras e Incorporadoras</p>
                 <p className="text-sm text-white/55 leading-relaxed">
-                  75% dos compradores consideram academia essencial na escolha do imóvel. Inclua a Lets Train como amenidade digital no seu lançamento — sem custo de obra adicional, sem aprovação de CREF, sem projeto arquitetônico. Um diferencial de venda concreto que pode ser comunicado no stand, no material de vendas e no app do empreendimento.
+                  75% dos compradores consideram academia essencial na escolha do imóvel. Inclua a Lets Train como amenidade digital no seu lançamento. Um diferencial de venda concreto que pode ser comunicado no stand, no material de vendas e no app do empreendimento.
                 </p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {['Diferencial de lançamento', 'Sem CAPEX adicional', 'Argumento documentável +10% valorização', 'Implantação na entrega das chaves'].map(t => (
@@ -229,7 +273,7 @@ export default function CondominiosPage() {
               <div className="flex flex-col gap-3">
                 <p className="font-black text-base">Síndicos Profissionais</p>
                 <p className="text-sm text-white/55 leading-relaxed">
-                  O síndico profissional médio gerencia 5 a 20 edifícios. A demanda por síndicos profissionais cresce 25-30% ao ano. Diferenciação de gestão é o ativo mais escasso dessa profissão. A Lets Train é a prova concreta de uma gestão orientada a qualidade de vida — um argumento direto para conquistar e reter contratos, melhorar o NPS dos moradores e destacar seu portfolio.
+                  O síndico profissional médio gerencia 5 a 20 edifícios. A demanda por síndicos profissionais cresce 25-30% ao ano. Diferenciação de gestão é o ativo mais escasso dessa profissão. A Lets Train é a prova concreta de uma gestão orientada a qualidade de vida, um argumento direto para conquistar e reter contratos, melhorar o NPS dos moradores e destacar seu portfolio.
                 </p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {['Melhora NPS de moradores', 'Diferencial de gestão', 'Relatório de uso por assembleia', 'Argumento para novos contratos'].map(t => (
@@ -249,7 +293,7 @@ export default function CondominiosPage() {
               <div className="flex flex-col gap-3">
                 <p className="font-black text-base">Administradoras de Condomínios</p>
                 <p className="text-sm text-white/55 leading-relaxed">
-                  O mercado condominial movimenta R$300 bilhões por ano no Brasil. As taxas subiram 25% em 3 anos — moradores exigem mais em troca. A Lets Train é o benefício de saúde e bem-estar que ainda não está no portfolio das grandes administradoras. Quem oferecer primeiro captura um diferencial de mercado antes dos concorrentes.
+                  O mercado condominial movimenta R$300 bilhões por ano no Brasil. As taxas subiram 25% em 3 anos e os moradores exigem mais em troca. A Lets Train é o benefício de saúde e bem-estar que ainda não está no portfolio das grandes administradoras. Quem oferecer primeiro captura um diferencial de mercado antes dos concorrentes.
                 </p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {['Portfolio diferenciado', 'R$300bi de mercado', 'Bem-estar como serviço', 'Retenção de contratos'].map(t => (
@@ -262,75 +306,41 @@ export default function CondominiosPage() {
         </div>
       </section>
 
-      {/* ── Comparativo ─────────────────────────────────────── */}
+      {/* ── Diferenciais ─────────────────────────────────────── */}
       <section className="px-6 py-20 bg-white/[0.015]">
         <div className="max-w-5xl mx-auto flex flex-col gap-10">
           <div className="text-center">
             <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">Por que Lets Train</p>
-            <h2 className="text-2xl sm:text-3xl font-black">Mais valor.<br />Menos custo.</h2>
+            <h2 className="text-2xl sm:text-3xl font-black">Um modelo diferente.<br />Feito para condomínios.</h2>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full max-w-3xl mx-auto text-sm">
-              <thead>
-                <tr className="border-b border-white/[0.06]">
-                  <th className="text-left py-3 px-4 text-white/40 font-medium text-xs">Solução</th>
-                  <th className="text-center py-3 px-4 text-white/40 font-medium text-xs">Custo médio</th>
-                  <th className="text-center py-3 px-4 text-white/40 font-medium text-xs">Moradores atendidos</th>
-                  <th className="text-center py-3 px-4 text-white/40 font-medium text-xs">Personalização</th>
-                  <th className="text-center py-3 px-4 text-white/40 font-medium text-xs">Disponibilidade</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  {
-                    sol: 'Personal trainer presencial',
-                    custo: 'R$3k–8k/mês',
-                    moradores: '1–5 por sessão',
-                    personaliz: 'Alta',
-                    disp: '2–3h/dia',
-                    destaque: false,
-                  },
-                  {
-                    sol: 'Gestora esportiva',
-                    custo: 'R$10–30/apto/mês',
-                    moradores: 'Turmas fixas',
-                    personaliz: 'Baixa',
-                    disp: 'Horários fixos',
-                    destaque: false,
-                  },
-                  {
-                    sol: 'Wellhub / Gympass',
-                    custo: 'R$29,90/pessoa/mês',
-                    moradores: 'Quem assinar',
-                    personaliz: 'Média',
-                    disp: 'Depende de academia',
-                    destaque: false,
-                  },
-                  {
-                    sol: 'Lets Train para Condomínios',
-                    custo: 'A partir de R$790/mês',
-                    moradores: 'Todos os moradores',
-                    personaliz: 'Alta — por IA',
-                    disp: '24h · 7 dias',
-                    destaque: true,
-                  },
-                ].map((row) => (
-                  <tr
-                    key={row.sol}
-                    className={`border-b border-white/[0.04] ${row.destaque ? 'bg-[#FF8C00]/[0.06]' : ''}`}
-                  >
-                    <td className={`py-3 px-4 font-medium text-sm ${row.destaque ? 'text-[#FF8C00]' : 'text-white/70'}`}>
-                      {row.sol}
-                    </td>
-                    <td className="py-3 px-4 text-center text-xs text-white/55">{row.custo}</td>
-                    <td className="py-3 px-4 text-center text-xs text-white/55">{row.moradores}</td>
-                    <td className="py-3 px-4 text-center text-xs text-white/55">{row.personaliz}</td>
-                    <td className="py-3 px-4 text-center text-xs text-white/55">{row.disp}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              {
+                label: 'Preço por condomínio. Não por pessoa.',
+                desc: 'Um único contrato cobre todos os moradores. Não importa se o prédio tem 50 ou 100 unidades. R$790/mês para todos é menos do que R$7,90/unidade.',
+                destaque: 'A partir de R$790/mês',
+              },
+              {
+                label: 'Disponível 24 horas, todos os dias.',
+                desc: 'Personal trainer presencial atende 2 a 3 horas por dia. A Lets Train funciona quando o morador quiser, no horário que ele tem. Sem agenda, sem espera.',
+                destaque: '24h · 7 dias',
+              },
+              {
+                label: 'No espaço de vocês. Com o equipamento de vocês.',
+                desc: 'Soluções como Gympass levam o morador para fora do condomínio. A Lets Train usa a sala fitness que já existe e ativa um espaço que estava parado.',
+                destaque: 'Zero obra adicional',
+              },
+            ].map((d) => (
+              <div
+                key={d.label}
+                className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 flex flex-col gap-4"
+              >
+                <p className="text-[#FF8C00] font-black text-sm">{d.destaque}</p>
+                <p className="font-semibold text-sm leading-snug">{d.label}</p>
+                <p className="text-xs text-white/45 leading-relaxed">{d.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -342,7 +352,7 @@ export default function CondominiosPage() {
             <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">Planos para condomínios</p>
             <h2 className="text-2xl sm:text-3xl font-black">Preço por condomínio.<br />Acesso para todos os moradores.</h2>
             <p className="text-sm text-white/40 mt-3 max-w-lg mx-auto">
-              Um único contrato para o condomínio. Todos os moradores têm acesso completo — sem limite de usuários por unidade.
+              Um único contrato para o condomínio. Todos os moradores têm acesso completo, sem limite de usuários por unidade.
             </p>
           </div>
 
@@ -356,7 +366,7 @@ export default function CondominiosPage() {
                 destaque: false,
                 features: [
                   'Todos os moradores com acesso',
-                  'Treinos gerados por IA',
+                  'Inteligência Artificial embarcada',
                   'Detecção de equipamentos por foto',
                   '15 níveis de progressão',
                   'Onboarding assistido',
@@ -441,8 +451,8 @@ export default function CondominiosPage() {
 
           <div className="flex flex-col gap-2 max-w-md mx-auto w-full">
             {[
-              '✅ Sem taxa de setup — implantação inclusa',
-              '✅ Sem fidelidade — cancele quando quiser',
+              '✅ Sem taxa de setup. Implantação inclusa.',
+              '✅ Fidelidade mínima de 12 meses.',
               '✅ Onboarding assistido para os moradores',
               '✅ Todos os moradores com acesso ilimitado',
             ].map((item) => (
@@ -464,7 +474,7 @@ export default function CondominiosPage() {
             {[
               {
                 q: 'O condomínio precisa comprar novos equipamentos?',
-                a: 'Não. A plataforma funciona com o que já existe na sala fitness — halteres, cabo, esteira, peso corporal. No onboarding, cada morador fotografa o espaço e a IA mapeia os equipamentos disponíveis.',
+                a: 'Não. A plataforma funciona com o que já existe na sala fitness: halteres, cabo, esteira, peso corporal. No onboarding, cada morador fotografa o espaço e a IA mapeia os equipamentos disponíveis.',
               },
               {
                 q: 'Como funciona o acesso dos moradores?',
@@ -476,15 +486,15 @@ export default function CondominiosPage() {
               },
               {
                 q: 'Como o síndico acompanha o uso?',
-                a: 'O plano Pro inclui um dashboard exclusivo para o gestor com dados de moradores ativos, frequência de uso, horários de pico e engajamento. Um relatório em PDF é enviado mensalmente — pronto para apresentar em assembleia.',
+                a: 'O plano Pro inclui um dashboard exclusivo para o gestor com dados de moradores ativos, frequência de uso, horários de pico e engajamento. Um relatório em PDF é enviado mensalmente, pronto para apresentar em assembleia.',
               },
               {
                 q: 'Qual é o modelo de contrato?',
-                a: 'Contrato mensal sem fidelidade. O condomínio pode cancelar a qualquer momento sem multa. Oferecemos também contratos anuais com desconto de até 15% para quem prefere previsibilidade orçamentária.',
+                a: 'Contrato mínimo de 12 meses. Após o período, o condomínio pode renovar ou cancelar sem multa. O contrato anual garante previsibilidade orçamentária e é o modelo padrão para todos os planos.',
               },
               {
                 q: 'Funciona para construtoras em fase de lançamento?',
-                a: 'Sim. Trabalhamos com construtoras e incorporadoras desde a fase de lançamento — a Lets Train é comunicada como amenidade digital do empreendimento e ativada na entrega das chaves. Entre em contato para discutir o modelo de parceria.',
+                a: 'Sim. Trabalhamos com construtoras e incorporadoras desde a fase de lançamento. A Lets Train é comunicada como amenidade digital do empreendimento e ativada na entrega das chaves. Entre em contato para discutir o modelo de parceria.',
               },
             ].map((faq) => (
               <details
