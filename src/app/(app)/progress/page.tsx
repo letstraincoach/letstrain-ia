@@ -898,7 +898,12 @@ export default async function ProgressPage() {
         {/* Treinos Recentes */}
         {historico.length > 0 && (
           <div className="flex flex-col gap-4">
-            <h2 className="text-base font-bold">Treinos Recentes</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-bold">Treinos Recentes</h2>
+              <Link href="/historico" className="text-xs text-[#FF8C00] hover:text-[#E07000] transition-colors">
+                Ver todos →
+              </Link>
+            </div>
             <div className="flex flex-col gap-2">
               {historico.map((w) => {
                 const ex = w.exercicios as { nome?: string } | null
