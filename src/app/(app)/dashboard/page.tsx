@@ -355,9 +355,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Jejum Intermitente */}
-        <JejumTimer jejumInicio={profile?.jejum_inicio ?? null} />
-
         {/* Registro Alimentar */}
         <NutritionWidget
           calorias={Math.round(caloriasHoje)}
@@ -365,6 +362,9 @@ export default async function DashboardPage() {
           proteina={parseFloat(proteinaHoje.toFixed(1))}
           metaProteina={metaProteina}
         />
+
+        {/* Jejum Intermitente */}
+        <JejumTimer jejumInicio={profile?.jejum_inicio ?? null} />
 
         {/* Conquistas — acesso rápido */}
         <Link
