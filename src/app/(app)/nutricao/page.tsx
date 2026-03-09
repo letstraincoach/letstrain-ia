@@ -6,12 +6,8 @@ import NutritionSummary from '@/components/nutrition/NutritionSummary'
 import FoodLoggerWrapper from '@/components/nutrition/FoodLoggerWrapper'
 import DeleteButton from '@/components/nutrition/DeleteButton'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySupabase = any
-
 export default async function NutricaoPage() {
   const supabase = await createClient()
-  const sb = supabase as AnySupabase
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')

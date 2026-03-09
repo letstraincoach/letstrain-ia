@@ -6,10 +6,6 @@ import type { Json } from '@/types/database.types'
 
 export const maxDuration = 120
 
-// Supabase client typed as any for new tables not yet in generated types
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySupabase = any
-
 async function callClaude(prompt: string, apiKey: string): Promise<string> {
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -41,7 +37,6 @@ export async function POST() {
   }
 
   const supabase = await createClient()
-  const sb = supabase as AnySupabase
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
@@ -63,7 +58,7 @@ export async function POST() {
 
   // ── Verificar se já tem plano ativo ──────────────────────────────────────
   const hoje = new Date().toISOString().split('T')[0]
-  const { data: planoAtivo } = await sb
+  const { data: planoAtivo } = await supabase
     .from('training_plans')
     .select('id')
     .eq('user_id', user.id)
@@ -144,7 +139,7 @@ export async function POST() {
     .toISOString()
     .split('T')[0]
 
-  const { data: savedPlan, error: planError } = await sb
+  const { data: savedPlan, error: planError } = await supabase
     .from('training_plans')
     .insert({
       user_id: user.id,
@@ -171,11 +166,11 @@ export async function POST() {
     workout_json: treino as unknown as Json,
   }))
 
-  const { error: workoutsError } = await sb.from('plan_workouts').insert(planWorkoutsRows)
+  const { error: workoutsError } = await supabase.from('plan_workouts').insert(planWorkoutsRows)
 
   if (workoutsError) {
     console.error('[training-plan/generate] Erro ao salvar treinos do plano:', workoutsError)
-    await sb.from('training_plans').delete().eq('id', savedPlan.id)
+    await supabase.from('training_plans').delete().eq('id', savedPlan.id)
     return NextResponse.json({ error: 'Erro ao salvar treinos do plano.' }, { status: 500 })
   }
 

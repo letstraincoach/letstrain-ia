@@ -93,8 +93,7 @@ export default async function DashboardPage() {
       .maybeSingle(),
 
     // Plano semanal ativo
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (supabase as any)
+    supabase
       .from('training_plans')
       .select('id, nome_plano, total_dias, plan_workouts(dia_numero, executado)')
       .eq('user_id', user.id)
@@ -102,7 +101,7 @@ export default async function DashboardPage() {
       .gte('valido_ate', hoje)
       .order('criado_em', { ascending: false })
       .limit(1)
-      .maybeSingle() as Promise<{ data: { id: string; nome_plano: string; total_dias: number; plan_workouts: { dia_numero: number; executado: boolean }[] } | null; error: unknown }>,
+      .maybeSingle(),
   ])
 
   const profile         = profileResult.data

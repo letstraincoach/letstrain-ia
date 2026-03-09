@@ -43,8 +43,7 @@ export default function CheckinPage() {
       }
 
       // Verificar se tem plano ativo com treinos disponíveis
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: plano } = await (supabase as any)
+      const { data: plano } = await supabase
         .from('training_plans')
         .select('id, nome_plano, plan_workouts(dia_numero, executado)')
         .eq('user_id', data.user.id)

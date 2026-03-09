@@ -534,6 +534,89 @@ export type Database = {
         }
         Relationships: []
       }
+      training_plans: {
+        Row: {
+          id: string
+          user_id: string
+          nome_plano: string
+          nivel: string
+          objetivo: string
+          local_treino: string
+          equipamentos: string[]
+          status: string
+          total_dias: number
+          criado_em: string
+          valido_ate: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          nome_plano?: string
+          nivel: string
+          objetivo: string
+          local_treino: string
+          equipamentos?: string[]
+          status?: string
+          total_dias?: number
+          criado_em?: string
+          valido_ate: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          nome_plano?: string
+          nivel?: string
+          objetivo?: string
+          local_treino?: string
+          equipamentos?: string[]
+          status?: string
+          total_dias?: number
+          criado_em?: string
+          valido_ate?: string
+        }
+        Relationships: []
+      }
+      plan_workouts: {
+        Row: {
+          id: string
+          plan_id: string
+          user_id: string
+          dia_numero: number
+          workout_json: Json
+          executado: boolean
+          workout_id: string | null
+          criado_em: string
+        }
+        Insert: {
+          id?: string
+          plan_id: string
+          user_id: string
+          dia_numero: number
+          workout_json: Json
+          executado?: boolean
+          workout_id?: string | null
+          criado_em?: string
+        }
+        Update: {
+          id?: string
+          plan_id?: string
+          user_id?: string
+          dia_numero?: number
+          workout_json?: Json
+          executado?: boolean
+          workout_id?: string | null
+          criado_em?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_workouts_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "training_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       food_logs: {
         Row: {
           id: string

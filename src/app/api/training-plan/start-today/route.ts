@@ -4,14 +4,10 @@ import { adjustWorkout, type DailyCheckin } from '@/lib/training/daily-adjustmen
 import { NextResponse } from 'next/server'
 import type { Json } from '@/types/database.types'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySupabase = any
-
 export const maxDuration = 30
 
 export async function POST(request: Request) {
   const supabase = await createClient()
-  const sb = supabase as AnySupabase
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
 
@@ -67,7 +63,7 @@ export async function POST(request: Request) {
   const proximoTreino = planWorkouts.find((pw) => !pw.executado)
 
   if (!proximoTreino) {
-    await sb.from('training_plans').update({ status: 'concluido' }).eq('id', planoAtivo.id)
+    await supabase.from('training_plans').update({ status: 'concluido' }).eq('id', planoAtivo.id)
     return NextResponse.json({ plan_complete: true, error: 'Plano concluído! Gere um novo plano.' }, { status: 404 })
   }
 
