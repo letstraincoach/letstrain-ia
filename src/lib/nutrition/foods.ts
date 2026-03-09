@@ -1,5 +1,16 @@
 export type FoodCategory = 'proteinas' | 'carboidratos' | 'extras'
 
+export interface FoodLogItem {
+  food_id: string
+  nome: string
+  icone: string
+  quantidade: number
+  calorias: number
+  proteina_g: number
+  carbo_g: number
+  gordura_g: number
+}
+
 export interface Food {
   id: string
   nome: string
@@ -55,6 +66,40 @@ export const FOODS_BY_CATEGORY = {
 }
 
 export const FOOD_MAP: Record<string, Food> = Object.fromEntries(FOODS.map((f) => [f.id, f]))
+
+export const TIPO_LABELS: Record<string, string> = {
+  cafe_manha: 'Café da manhã',
+  almoco: 'Almoço',
+  lanche: 'Lanche',
+  jantar: 'Jantar',
+  pos_treino: 'Pós-treino',
+  outro: 'Outro',
+}
+
+export const TIPO_ICONS: Record<string, string> = {
+  cafe_manha: '☀️',
+  almoco: '🍽️',
+  lanche: '🍎',
+  jantar: '🌙',
+  pos_treino: '💪',
+  outro: '🍴',
+}
+
+export function calcularTotais(items: Array<{ food_id: string; quantidade: number }>) {
+  return items.reduce(
+    (acc, item) => {
+      const food = FOOD_MAP[item.food_id]
+      if (!food) return acc
+      return {
+        calorias: acc.calorias + Math.round(food.calorias * item.quantidade),
+        proteina_g: +(acc.proteina_g + food.proteina_g * item.quantidade).toFixed(1),
+        carbo_g: +(acc.carbo_g + food.carbo_g * item.quantidade).toFixed(1),
+        gordura_g: +(acc.gordura_g + food.gordura_g * item.quantidade).toFixed(1),
+      }
+    },
+    { calorias: 0, proteina_g: 0, carbo_g: 0, gordura_g: 0 }
+  )
+}
 
 // ─── Metas nutricionais ───────────────────────────────────────────────────────
 

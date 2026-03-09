@@ -16,7 +16,7 @@ export default function NutritionWidget({ calorias, metaCalorias, proteina, meta
   if (semRegistro) {
     return (
       <Link
-        href="/calorias"
+        href="/nutricao"
         className="flex items-center justify-between w-full h-14 rounded-2xl bg-[#FF8C00] px-5 hover:bg-[#E07000] transition-colors active:scale-[0.98]"
       >
         <div className="flex items-center gap-2.5">
@@ -30,7 +30,7 @@ export default function NutritionWidget({ calorias, metaCalorias, proteina, meta
 
   return (
     <Link
-      href="/calorias"
+      href="/nutricao"
       className="block rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 hover:border-white/[0.12] transition-colors"
     >
       <div className="flex items-center justify-between mb-3">
