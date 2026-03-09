@@ -137,12 +137,30 @@ Inclua: 1–2 de mobilidade, 1 de ativação (glúteo, core ou escápulas), 1 ca
 Séries: 1 série. Repetições/tempo: 30–60 segundos ou 10–15 reps leves.
 
 BLOCO 2 — FORÇA (${Math.round(temMinutos * 0.40)} min): ${blocos.forcaExs} exercícios
-Objetivo: força guiada ou funcional com base nos equipamentos disponíveis.
-Se há máquinas/polia → priorize exercícios guiados (leg press, chest press, puxada, remada baixa).
-Se apenas peso livre/corporal → exercícios compostos (goblet squat, supino halteres, remada halteres).
+Objetivo: força guiada ou funcional — USE os equipamentos disponíveis listados acima.
 Séries: ${ctx.nivel.startsWith('adaptacao') ? '2' : ctx.nivel.startsWith('iniciante') ? '3' : '3–4'}.
 Repetições: ${ctx.nivel.startsWith('adaptacao') ? '12–15' : '8–12'} (foco em técnica antes de carga).
 Padrões obrigatórios: inclua pelo menos um empurrar + um puxar no bloco.
+
+MAPEAMENTO DE EQUIPAMENTOS → EXERCÍCIOS (use conforme disponível):
+- Leg Press → Leg Press 45°
+- Extensora → Cadeira Extensora
+- Flexora → Cadeira Flexora
+- Supino Máquina → Supino na Máquina (Chest Press)
+- Voador → Voador / Pec Deck
+- Remada Máquina → Remada no Aparelho (Seated Row)
+- Cadeira Adutora → Cadeira Adutora
+- Cadeira Abdutora → Cadeira Abdutora
+- Cadeira Romana → Cadeira Romana (Hiperextensão)
+- Panturrilha Máquina → Panturrilha na Máquina
+- Pulldown / Polia / Cross Over → Puxada na Polia (Lat Pulldown), Remada Baixa na Polia, Tríceps Corda na Polia, Tríceps Pushdown, Rosca no Cabo, Face Pull na Polia, Elevação Lateral na Polia, Crucifixo no Cabo (Cable Crossover), Pull-over na Polia
+- Halter / Kettlebell → Supino Reto, Supino Inclinado, Remada Curvada, Remada Unilateral, Desenvolvimento, Agachamento Goblet, Stiff, Hip Thrust, Rosca Direta, Rosca Martelo, Tríceps Coice, Rosca Concentrada
+- Barra Fixa → Barra Fixa (pronada), Barra Fixa Supinada (Chin-up)
+- Elástico → Remada Baixa, Face Pull, Abdução de Quadril, Push-down, Rosca, Rotação Externa
+- Peso corporal → Flexão de Solo, Agachamento Livre, Avanço, Dips (Mergulho no Banco), Prancha, Glúteo Solo
+
+PRIORIDADE de seleção: máquinas guiadas > polia/crossover > peso livre > corporal.
+Se não há equipamento algum: exercícios apenas corporais.
 ${ctx.nivel.startsWith('avancado') ? `
 BI-SETS OBRIGATÓRIOS (nível avançado):
 Organize o Bloco 2 inteiramente em pares de bi-set — 2 exercícios executados em sequência sem descanso entre si.

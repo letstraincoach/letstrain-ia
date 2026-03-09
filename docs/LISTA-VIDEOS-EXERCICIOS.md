@@ -1,6 +1,6 @@
 # Lista de Vídeos — Exercícios Lets Train
 
-> **Total:** 85 exercícios | **Formato:** MP4 · Vertical (9:16) ou Quadrado (1:1)
+> **Total:** 109 exercícios | **Formato:** MP4 · Vertical (9:16) ou Quadrado (1:1)
 > Nomear cada arquivo com o slug do exercício (ex: `flexao-de-solo.mp4`)
 > Upload em: Supabase Storage → bucket `exercise-videos`
 
@@ -177,6 +177,48 @@
 
 ---
 
+## 🔩 POLIA / CROSSOVER / CABO (12 exercícios)
+
+> Exercícios com polia alta, polia baixa ou crossover. Presentes na maioria das academias de condomínio e hotel com estação multifuncional.
+
+| # | Exercício | Equipamento | Nível | Status |
+|---|-----------|-------------|-------|--------|
+| 86 | Puxada na Polia (Lat Pulldown) | Polia / Pulldown | Iniciante | ☐ |
+| 87 | Remada Baixa na Polia | Polia / Crossover | Iniciante | ☐ |
+| 88 | Tríceps Corda na Polia | Polia | Iniciante | ☐ |
+| 89 | Tríceps Barra na Polia (Pushdown) | Polia | Iniciante | ☐ |
+| 90 | Rosca no Cabo (Polia Baixa) | Polia | Iniciante | ☐ |
+| 91 | Crucifixo no Cabo (Cable Crossover) | Crossover | Intermediário | ☐ |
+| 92 | Face Pull na Polia | Polia / Crossover | Iniciante | ☐ |
+| 93 | Elevação Lateral na Polia | Polia | Intermediário | ☐ |
+| 94 | Pull-over na Polia | Polia | Intermediário | ☐ |
+| 95 | Woodchopper na Polia (Rotação) | Polia | Intermediário | ☐ |
+| 96 | Abdução de Quadril na Polia | Polia | Iniciante | ☐ |
+| 97 | Puxada Unilateral na Polia | Polia | Intermediário | ☐ |
+
+---
+
+## 🏋️ MÁQUINAS / MULTIESTAÇÃO (12 exercícios)
+
+> Exercícios em máquinas guiadas — extensora, flexora, leg press, supino máquina, remada máquina. Frequentes em academias de condomínio com estação completa.
+
+| # | Exercício | Equipamento | Nível | Status |
+|---|-----------|-------------|-------|--------|
+| 98  | Cadeira Extensora | Extensora | Iniciante | ☐ |
+| 99  | Cadeira Flexora | Flexora | Iniciante | ☐ |
+| 100 | Leg Press 45° | Leg Press | Iniciante | ☐ |
+| 101 | Supino na Máquina (Chest Press) | Supino Máquina | Iniciante | ☐ |
+| 102 | Desenvolvimento na Máquina (Shoulder Press) | Multiestação | Iniciante | ☐ |
+| 103 | Voador / Pec Deck | Voador | Iniciante | ☐ |
+| 104 | Remada no Aparelho (Seated Row) | Remada Máquina | Iniciante | ☐ |
+| 105 | Cadeira Adutora | Cadeira Adutora | Iniciante | ☐ |
+| 106 | Cadeira Abdutora | Cadeira Abdutora | Iniciante | ☐ |
+| 107 | Panturrilha na Máquina | Panturrilha Máquina | Iniciante | ☐ |
+| 108 | Abdominal na Máquina | Multiestação | Iniciante | ☐ |
+| 109 | Cadeira Romana (Hiperextensão) | Cadeira Romana | Iniciante | ☐ |
+
+---
+
 ## Prioridade de Gravação
 
 Para lançar o mais rápido possível, grave nesta ordem:
@@ -199,11 +241,23 @@ Exercícios compostos do Bloco 2 e de mobilidade do Bloco 1:
 14. Hip 90/90 (#81)
 15. Cat-Cow (#82)
 
+### 🟠 Alta prioridade — máquinas (gravar logo após os 15 acima)
+16. Puxada na Polia (#86)
+17. Remada Baixa na Polia (#87)
+18. Tríceps Corda na Polia (#88)
+19. Cadeira Extensora (#98)
+20. Cadeira Flexora (#99)
+21. Leg Press 45° (#100)
+22. Supino na Máquina (#101)
+23. Remada no Aparelho (#104)
+24. Face Pull na Polia (#92)
+25. Voador / Pec Deck (#103)
+
 ### 🟡 Média prioridade — frequentes mas não diários
-16–40: Todos os demais exercícios de iniciante/intermediário
+26–70: Todos os demais exercícios de iniciante/intermediário (livres + máquinas restantes)
 
 ### 🟢 Baixa prioridade — avançados e atletas
-41–85: Exercícios avançados (Archer, Nordic Curl, Man Maker, etc.)
+71–109: Exercícios avançados (Archer, Nordic Curl, Man Maker, Woodchopper, etc.)
 
 ---
 
