@@ -143,6 +143,15 @@ Se apenas peso livre/corporal → exercícios compostos (goblet squat, supino ha
 Séries: ${ctx.nivel.startsWith('adaptacao') ? '2' : ctx.nivel.startsWith('iniciante') ? '3' : '3–4'}.
 Repetições: ${ctx.nivel.startsWith('adaptacao') ? '12–15' : '8–12'} (foco em técnica antes de carga).
 Padrões obrigatórios: inclua pelo menos um empurrar + um puxar no bloco.
+${ctx.nivel.startsWith('avancado') ? `
+BI-SETS OBRIGATÓRIOS (nível avançado):
+Organize o Bloco 2 inteiramente em pares de bi-set — 2 exercícios executados em sequência sem descanso entre si.
+Regras do bi-set no JSON:
+- 1º exercício do par → "biset": true, "descanso_segundos": 0
+- 2º exercício do par → "biset": false (ou omita), descanso normal 60–90s após o par completo
+- Use 2 a 3 pares (4–6 exercícios totais no bloco 2)
+- Priorize pares antagonistas: peito+costas, bíceps+tríceps, quadríceps+posterior
+- Exemplos: Supino c/ Halteres + Remada Unilateral · Desenvolvimento + Remada Alta · Agachamento + Stiff · Rosca Direta + Tríceps Coice` : ''}
 
 ${bloco3Prompt}
 
@@ -170,7 +179,7 @@ Responda EXATAMENTE neste JSON (sem campos extras, sem texto antes ou depois):
     { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }
   ],
   "forca": [
-    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }
+    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string, "biset": boolean }
   ],
   ${bloco3JsonKey}: [
     { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }

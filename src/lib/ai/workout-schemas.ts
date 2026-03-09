@@ -8,6 +8,7 @@ const ExerciseSchema = z.object({
   descanso_segundos: z.number().int().min(0).max(300),
   youtube_url: z.string().optional(),
   instrucoes: z.string().optional(),
+  biset: z.boolean().optional(), // true = 1º exercício do par (execute o próximo sem descanso)
 })
 
 // Nova estrutura Lets Train — 4 blocos
