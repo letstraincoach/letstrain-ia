@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import CheckinForm, { type CheckinData } from '@/components/workout/CheckinForm'
 import WorkoutGeneratingLoader from '@/components/workout/WorkoutGeneratingLoader'
 
-type PageState = 'loading' | 'checkin' | 'generating' | 'error' | 'done_today'
+type PageState = 'loading' | 'checkin' | 'generating_plan' | 'starting' | 'error' | 'done_today'
 
 export default function CheckinPage() {
   const router = useRouter()
@@ -15,6 +15,8 @@ export default function CheckinPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | undefined>()
   const [treinoConcluidoId, setTreinoConcluidoId] = useState<string | null>(null)
+  const [hasActivePlan, setHasActivePlan] = useState(false)
+  const [planPreview, setPlanPreview] = useState<{ nome_plano: string; dia: number; total: number } | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
@@ -22,8 +24,9 @@ export default function CheckinPage() {
       if (!data.user) return
       setUserId(data.user.id)
 
-      // Verificar se já treinou hoje
       const hoje = new Date().toISOString().split('T')[0]
+
+      // Verificar treino do dia
       const { data: treinoHoje } = await supabase
         .from('workouts')
         .select('id, status')
@@ -36,16 +39,144 @@ export default function CheckinPage() {
       if (treinoHoje) {
         setTreinoConcluidoId(treinoHoje.id)
         setPageState('done_today')
-      } else {
-        setPageState('checkin')
+        return
       }
+
+      // Verificar se tem plano ativo com treinos disponíveis
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: plano } = await (supabase as any)
+        .from('training_plans')
+        .select('id, nome_plano, plan_workouts(dia_numero, executado)')
+        .eq('user_id', data.user.id)
+        .eq('status', 'ativo')
+        .gte('valido_ate', hoje)
+        .order('criado_em', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (plano) {
+        const planWorkouts = (plano.plan_workouts ?? []) as Array<{ dia_numero: number; executado: boolean }>
+        const sorted = planWorkouts.sort((a, b) => a.dia_numero - b.dia_numero)
+        const proxIdx = sorted.findIndex((pw) => !pw.executado)
+        const executados = sorted.filter((pw) => pw.executado).length
+
+        if (proxIdx !== -1) {
+          setHasActivePlan(true)
+          setPlanPreview({
+            nome_plano: plano.nome_plano as string,
+            dia: executados + 1,
+            total: sorted.length,
+          })
+        }
+      }
+
+      setPageState('checkin')
     })
   }, [])
 
   async function handleCheckinSubmit(data: CheckinData) {
-    setPageState('generating')
     setErrorMsg(null)
 
+    // ── Caminho 1: tem plano ativo → start-today (sem IA, rápido) ────────────
+    if (hasActivePlan) {
+      setPageState('starting')
+      try {
+        const res = await fetch('/api/training-plan/start-today', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            disposicao: data.disposicao,
+            tempo_disponivel: data.tempo_disponivel,
+            ultima_refeicao: data.ultima_refeicao,
+          }),
+        })
+
+        const json = await res.json() as {
+          workout_id?: string
+          error?: string
+          paywall?: boolean
+          no_plan?: boolean
+          plan_complete?: boolean
+        }
+
+        if (res.status === 409 && json.workout_id) {
+          router.push(`/workout/${json.workout_id}`)
+          return
+        }
+
+        if (json.no_plan || json.plan_complete) {
+          // Plano acabou → gerar novo
+          setHasActivePlan(false)
+          await generateAndStart(data)
+          return
+        }
+
+        if (!res.ok || !json.workout_id) {
+          setErrorMsg(json.error ?? 'Erro ao iniciar treino. Tente novamente.')
+          setPageState('error')
+          return
+        }
+
+        router.push(`/workout/${json.workout_id}`)
+      } catch {
+        setErrorMsg('Erro de conexão. Verifique sua internet e tente novamente.')
+        setPageState('error')
+      }
+      return
+    }
+
+    // ── Caminho 2: sem plano → gerar plano + iniciar treino ──────────────────
+    await generateAndStart(data)
+  }
+
+  async function generateAndStart(data: CheckinData) {
+    // Passo 1: gerar plano (com IA — mostra loader especial)
+    setPageState('generating_plan')
+
+    try {
+      const genRes = await fetch('/api/training-plan/generate', { method: 'POST' })
+      const genJson = await genRes.json() as { plan_id?: string; error?: string; paywall?: boolean; already_exists?: boolean }
+
+      if (genRes.status === 402 || genJson.paywall) {
+        router.push('/assinatura')
+        return
+      }
+
+      if (!genRes.ok && !genJson.already_exists) {
+        // Fallback: usar gerador por-treino legado
+        await legacyGenerate(data)
+        return
+      }
+
+      // Passo 2: iniciar treino do plano
+      setPageState('starting')
+      const startRes = await fetch('/api/training-plan/start-today', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          disposicao: data.disposicao,
+          tempo_disponivel: data.tempo_disponivel,
+          ultima_refeicao: data.ultima_refeicao,
+        }),
+      })
+
+      const startJson = await startRes.json() as { workout_id?: string; error?: string }
+
+      if (!startRes.ok || !startJson.workout_id) {
+        // Fallback: legado
+        await legacyGenerate(data)
+        return
+      }
+
+      router.push(`/workout/${startJson.workout_id}`)
+    } catch {
+      // Fallback: tentar gerador legado
+      await legacyGenerate(data)
+    }
+  }
+
+  async function legacyGenerate(data: CheckinData) {
+    setPageState('generating_plan')
     try {
       const res = await fetch('/api/workout/generate', {
         method: 'POST',
@@ -53,15 +184,13 @@ export default function CheckinPage() {
         body: JSON.stringify(data),
       })
 
-      const json = (await res.json()) as { workout_id?: string; error?: string; paywall?: boolean }
+      const json = await res.json() as { workout_id?: string; error?: string; paywall?: boolean }
 
-      // Paywall — redirecionar para assinatura
       if (res.status === 402 || json.paywall) {
         router.push('/assinatura')
         return
       }
 
-      // Já treinou hoje — redirecionar para o treino concluído
       if (res.status === 409 && json.workout_id) {
         router.push(`/workout/${json.workout_id}`)
         return
@@ -80,6 +209,8 @@ export default function CheckinPage() {
     }
   }
 
+  // ── Estados de tela ───────────────────────────────────────────────────────
+
   if (pageState === 'loading') {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a]">
@@ -88,7 +219,22 @@ export default function CheckinPage() {
     )
   }
 
-  if (pageState === 'generating') {
+  if (pageState === 'generating_plan') {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0a0a] px-6 text-center gap-6">
+        <div className="w-10 h-10 rounded-full border-3 border-white/20 border-t-[#FF8C00] animate-spin" />
+        <div>
+          <p className="text-sm text-[#FF8C00] font-semibold uppercase tracking-widest mb-2">Lets Train</p>
+          <h2 className="text-xl font-bold">Preparando seu plano semanal...</h2>
+          <p className="text-sm text-white/50 mt-2">
+            Isso acontece uma vez por semana. Na próxima vez será instantâneo.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (pageState === 'starting') {
     return <WorkoutGeneratingLoader />
   }
 
@@ -97,20 +243,17 @@ export default function CheckinPage() {
       <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0a0a] px-6">
         <div className="w-full max-w-sm flex flex-col items-center gap-6 text-center">
           <span className="text-6xl">✅</span>
-
           <div>
             <h1 className="text-2xl font-bold">Treino de hoje concluído!</h1>
             <p className="text-sm text-white/50 mt-2 leading-relaxed">
               Você já treinou hoje. Descanse, recupere-se e volte amanhã mais forte.
             </p>
           </div>
-
           <div className="w-full rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/05 px-5 py-4">
             <p className="text-xs text-white/40 leading-relaxed">
               A trava diária garante recuperação muscular adequada e evita o overtraining. Um treino bem feito vale mais do que dois apressados.
             </p>
           </div>
-
           <div className="flex flex-col gap-3 w-full">
             {treinoConcluidoId && (
               <Link
@@ -144,8 +287,22 @@ export default function CheckinPage() {
         </button>
         <h1 className="text-2xl font-bold">Check-in de hoje</h1>
         <p className="mt-1 text-sm text-white/50">
-          4 perguntas rápidas para personalizar seu treino.
+          {hasActivePlan
+            ? '3 perguntas rápidas — seu treino já está pronto.'
+            : '3 perguntas rápidas para personalizar seu treino.'}
         </p>
+
+        {/* Preview do plano */}
+        {hasActivePlan && planPreview && (
+          <div className="mt-4 flex items-center gap-3 rounded-xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.05] px-4 py-3">
+            <span className="text-lg">📋</span>
+            <div className="min-w-0">
+              <p className="text-[10px] text-[#FF8C00] uppercase tracking-wider font-semibold">Plano ativo</p>
+              <p className="text-sm font-semibold truncate">{planPreview.nome_plano}</p>
+              <p className="text-xs text-white/40">Treino {planPreview.dia} de {planPreview.total}</p>
+            </div>
+          </div>
+        )}
       </div>
 
       {pageState === 'error' && errorMsg && (

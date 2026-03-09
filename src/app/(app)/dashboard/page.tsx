@@ -33,6 +33,7 @@ export default async function DashboardPage() {
     userAchievementsResult,
     foodLogsResult,
     activeSubResult,
+    activePlanResult,
   ] = await Promise.all([
     supabase
       .from('user_profiles')
@@ -90,6 +91,18 @@ export default async function DashboardPage() {
       .eq('status', 'ativa')
       .limit(1)
       .maybeSingle(),
+
+    // Plano semanal ativo
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (supabase as any)
+      .from('training_plans')
+      .select('id, nome_plano, total_dias, plan_workouts(dia_numero, executado)')
+      .eq('user_id', user.id)
+      .eq('status', 'ativo')
+      .gte('valido_ate', hoje)
+      .order('criado_em', { ascending: false })
+      .limit(1)
+      .maybeSingle() as Promise<{ data: { id: string; nome_plano: string; total_dias: number; plan_workouts: { dia_numero: number; executado: boolean }[] } | null; error: unknown }>,
   ])
 
   const profile         = profileResult.data
@@ -100,6 +113,15 @@ export default async function DashboardPage() {
   const temAssinatura   = !!activeSubResult.data
   const treinosGratuitos = Math.min(progress?.treinos_totais ?? 0, 3)
   const treinosRestantes = Math.max(3 - treinosGratuitos, 0)
+
+  // Plano semanal
+  const planoAtivo = activePlanResult?.data ?? null
+  const planWorkoutsSorted = planoAtivo
+    ? (planoAtivo.plan_workouts as Array<{ dia_numero: number; executado: boolean }>)
+        .sort((a, b) => a.dia_numero - b.dia_numero)
+    : []
+  const planDiaAtual = planWorkoutsSorted.filter((pw) => pw.executado).length + 1
+  const planTemTreino = planWorkoutsSorted.some((pw) => !pw.executado)
 
   if (profile && !profile.onboarding_completo) redirect('/quiz')
 
@@ -162,6 +184,29 @@ export default async function DashboardPage() {
             </div>
           </Link>
         </div>
+
+        {/* Card do plano semanal — só aparece se tem plano ativo com treinos disponíveis */}
+        {planoAtivo && planTemTreino && !treinouHoje && (
+          <div className="flex items-center gap-3 rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.05] px-4 py-3">
+            <span className="text-xl shrink-0">📋</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] text-[#FF8C00] uppercase tracking-widest font-semibold">Plano ativo</p>
+              <p className="text-sm font-semibold truncate">{planoAtivo.nome_plano}</p>
+              <p className="text-xs text-white/40">
+                Treino {planDiaAtual} de {planWorkoutsSorted.length} — Apenas 3 perguntas rápidas
+              </p>
+            </div>
+            <div className="flex gap-1 shrink-0">
+              {planWorkoutsSorted.map((pw, i) => (
+                <div
+                  key={i}
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: pw.executado ? '#FF8C00' : 'rgba(255,255,255,0.15)' }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Card principal — status do dia */}
         <div
