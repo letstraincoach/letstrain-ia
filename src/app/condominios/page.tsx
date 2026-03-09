@@ -53,7 +53,7 @@ export default function CondominiosPage() {
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight max-w-4xl">
             A academia do seu condomínio
-            {' '}<span className="text-[#FF8C00]">está parada.</span>
+            {' '}<span className="text-[#FF8C00]">está parada?</span>
             {' '}Nós ativamos ela.
           </h1>
 
