@@ -148,16 +148,16 @@ Responda EXATAMENTE neste JSON (sem campos extras, sem texto antes ou depois):
   "nome": "string (nome criativo e motivacional para o treino)",
   "duracao_estimada": number,
   "preparacao": [
-    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "youtube_url": string, "instrucoes": string }
+    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }
   ],
   "forca": [
-    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "youtube_url": string, "instrucoes": string }
+    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }
   ],
   "circuito": [
-    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "youtube_url": string, "instrucoes": string }
+    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }
   ],
   "finisher": [
-    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "youtube_url": string, "instrucoes": string }
+    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }
   ]
 }`
 }

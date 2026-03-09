@@ -53,7 +53,13 @@ export default function CheckinPage() {
         body: JSON.stringify(data),
       })
 
-      const json = (await res.json()) as { workout_id?: string; error?: string }
+      const json = (await res.json()) as { workout_id?: string; error?: string; paywall?: boolean }
+
+      // Paywall — redirecionar para assinatura
+      if (res.status === 402 || json.paywall) {
+        router.push('/assinatura')
+        return
+      }
 
       // Já treinou hoje — redirecionar para o treino concluído
       if (res.status === 409 && json.workout_id) {

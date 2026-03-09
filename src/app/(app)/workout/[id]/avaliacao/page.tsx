@@ -424,7 +424,7 @@ export default function AvaliacaoPage() {
                   </button>
                 ))}
               </div>
-              <a href="/nutricao" className="text-xs text-white/25 hover:text-[#FF8C00] transition-colors">
+              <a href="/calorias" className="text-xs text-white/25 hover:text-[#FF8C00] transition-colors">
                 Registrar refeição completa →
               </a>
             </>

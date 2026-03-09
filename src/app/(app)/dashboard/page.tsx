@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { LEVEL_CONFIG } from '@/lib/training/levels.config'
 import type { TrainingLevel } from '@/types/database.types'
 import JejumTimer from '@/components/dashboard/JejumTimer'
-import LetsCoinsWidget from '@/components/dashboard/LetsCoinsWidget'
 import NutritionWidget from '@/components/nutrition/NutritionWidget'
 import { getTrainer } from '@/lib/trainers/config'
 import { calcularMetaCalorica, calcularMetaProteina } from '@/lib/nutrition/foods'
@@ -33,6 +32,7 @@ export default async function DashboardPage() {
     achievementsResult,
     userAchievementsResult,
     foodLogsResult,
+    activeSubResult,
   ] = await Promise.all([
     supabase
       .from('user_profiles')
@@ -81,6 +81,15 @@ export default async function DashboardPage() {
       .select('calorias_total, proteina_total')
       .eq('user_id', user.id)
       .eq('data', hoje),
+
+    // Assinatura ativa (para exibir ou não banner freemium)
+    supabase
+      .from('subscriptions')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('status', 'ativa')
+      .limit(1)
+      .maybeSingle(),
   ])
 
   const profile         = profileResult.data
@@ -88,6 +97,9 @@ export default async function DashboardPage() {
   const lastWorkout     = lastWorkoutResult.data
   const weeklyCount     = weeklyResult.data?.length ?? 0
   const metaSemanal     = profile?.dias_por_semana ?? 3
+  const temAssinatura   = !!activeSubResult.data
+  const treinosGratuitos = Math.min(progress?.treinos_totais ?? 0, 3)
+  const treinosRestantes = Math.max(3 - treinosGratuitos, 0)
 
   if (profile && !profile.onboarding_completo) redirect('/quiz')
 
@@ -215,6 +227,47 @@ export default async function DashboardPage() {
           )}
         </div>
 
+        {/* Banner freemium — só para usuários sem assinatura */}
+        {!temAssinatura && (
+          <Link
+            href="/assinatura"
+            className={`rounded-2xl border p-4 flex flex-col gap-3 transition-colors active:scale-[0.98] ${
+              treinosRestantes === 0
+                ? 'border-[#FF8C00]/40 bg-[#FF8C00]/10 hover:bg-[#FF8C00]/15'
+                : 'border-white/10 bg-white/[0.03] hover:border-white/20'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-white/50 mb-0.5">
+                  {treinosRestantes === 0 ? '🔒 Plano gratuito encerrado' : '🎁 Plano gratuito'}
+                </p>
+                <p className={`text-sm font-semibold ${treinosRestantes === 0 ? 'text-[#FF8C00]' : 'text-white/80'}`}>
+                  {treinosRestantes === 0
+                    ? 'Assine para continuar treinando'
+                    : `${treinosRestantes} treino${treinosRestantes !== 1 ? 's' : ''} gratuito${treinosRestantes !== 1 ? 's' : ''} restante${treinosRestantes !== 1 ? 's' : ''}`}
+                </p>
+              </div>
+              <div className="flex gap-1.5 shrink-0">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="w-2.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: i < treinosGratuitos ? '#FF8C00' : 'rgba(255,255,255,0.12)' }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className={`w-full h-9 rounded-xl font-semibold text-xs flex items-center justify-center ${
+              treinosRestantes === 0
+                ? 'bg-[#FF8C00] text-black'
+                : 'border border-[#FF8C00]/30 text-[#FF8C00]'
+            }`}>
+              {treinosRestantes === 0 ? 'Assinar Agora →' : 'Ver planos →'}
+            </div>
+          </Link>
+        )}
+
         {/* Meta Semanal */}
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
@@ -301,9 +354,6 @@ export default async function DashboardPage() {
             <p className="text-xs text-white/50">Melhor sequência</p>
           </div>
         </div>
-
-        {/* Lets Coins */}
-        <LetsCoinsWidget coins={progress?.lets_coins ?? 0} />
 
         {/* Jejum Intermitente */}
         <JejumTimer jejumInicio={profile?.jejum_inicio ?? null} />

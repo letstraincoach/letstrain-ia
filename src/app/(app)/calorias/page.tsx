@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { calcularMetaCalorica, calcularMetaProteina } from '@/lib/nutrition/foods'
 import NutritionSummary from '@/components/nutrition/NutritionSummary'
@@ -153,17 +154,22 @@ export default function NutricaoPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       {/* Header */}
-      <div className="border-b border-white/[0.06] px-4 py-4 flex items-center justify-between max-w-sm mx-auto">
-        <div>
+      <div className="border-b border-white/[0.06] px-4 py-4 max-w-sm mx-auto">
+        <div className="flex items-center justify-between">
+          <Link href="/dashboard" className="text-white/30 hover:text-white/60 transition-colors text-sm">
+            ← Dashboard
+          </Link>
+          <button
+            onClick={() => setShowLogger(true)}
+            className="bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black font-bold text-sm px-4 py-2 rounded-xl transition-colors"
+          >
+            + Registrar
+          </button>
+        </div>
+        <div className="mt-2">
           <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold">Registro alimentar</p>
           <p className="text-sm text-white/40 capitalize mt-0.5">{hoje}</p>
         </div>
-        <button
-          onClick={() => setShowLogger(true)}
-          className="bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black font-bold text-sm px-4 py-2 rounded-xl transition-colors"
-        >
-          + Registrar
-        </button>
       </div>
 
       <div className="max-w-sm mx-auto px-4 py-6 flex flex-col gap-6">

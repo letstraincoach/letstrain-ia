@@ -1,4 +1,3 @@
-import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@/lib/supabase/server'
 import { buildWorkoutPrompt } from '@/lib/ai/workout-generator'
 import { fetchExerciseCatalog, formatCatalogForPrompt } from '@/lib/ai/exercise-catalog'
@@ -6,7 +5,7 @@ import { WorkoutSchema, type GeneratedWorkout } from '@/lib/ai/workout-schemas'
 import { NextResponse } from 'next/server'
 import type { Json } from '@/types/database.types'
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+export const maxDuration = 60
 
 interface CheckinPayload {
   local_treino?: string
@@ -16,7 +15,36 @@ interface CheckinPayload {
   equipamentos_hotel?: string[]
 }
 
+async function callClaude(prompt: string, apiKey: string): Promise<string> {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  })
+
+  if (!res.ok) {
+    const body = await res.text()
+    throw new Error(`Anthropic HTTP ${res.status}: ${body}`)
+  }
+
+  const data = await res.json() as { content: { type: string; text: string }[] }
+  return data.content[0]?.type === 'text' ? data.content[0].text : ''
+}
+
 export async function POST(request: Request) {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) {
+    return NextResponse.json({ error: 'DEBUG: ANTHROPIC_API_KEY não configurada no Vercel' }, { status: 500 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -30,6 +58,33 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: 'Payload inválido' }, { status: 400 })
   }
+
+  // ── Paywall: 3 treinos gratuitos ─────────────────────────────────────────
+  const [paywallSubResult, paywallProgressResult] = await Promise.all([
+    supabase
+      .from('subscriptions')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('status', 'ativa')
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from('user_progress')
+      .select('treinos_totais')
+      .eq('id', user.id)
+      .single(),
+  ])
+
+  const temAssinatura = !!paywallSubResult.data
+  const treinosUsados = paywallProgressResult.data?.treinos_totais ?? 0
+
+  if (!temAssinatura && treinosUsados >= 3) {
+    return NextResponse.json(
+      { paywall: true, error: 'Seus 3 treinos gratuitos foram usados. Assine para continuar treinando!' },
+      { status: 402 }
+    )
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   // ── Trava: 1 treino por dia ───────────────────────────────────────────────
   const hoje = new Date().toISOString().split('T')[0]
@@ -51,26 +106,20 @@ export async function POST(request: Request) {
   }
 
   if (treinoHoje?.status === 'gerado') {
-    // Já existe um treino gerado hoje — redirecionar sem gerar outro
     return NextResponse.json({ workout_id: treinoHoje.id })
   }
   // ─────────────────────────────────────────────────────────────────────────
 
-  // Buscar perfil + equipamentos do usuário em paralelo
   const [profileResult, equipamentosResult, historicoResult] = await Promise.all([
     supabase
       .from('user_profiles')
-      .select(
-        'nivel_atual, objetivo, preferencia_treino, lesao_cronica, lesao_descricao, doenca_cardiaca, local_treino'
-      )
+      .select('nivel_atual, objetivo, preferencia_treino, lesao_cronica, lesao_descricao, doenca_cardiaca, local_treino')
       .eq('id', user.id)
       .single(),
-
     supabase
       .from('user_equipment')
       .select('nome_custom')
       .eq('user_id', user.id),
-
     supabase
       .from('workouts')
       .select('exercicios')
@@ -86,22 +135,15 @@ export async function POST(request: Request) {
 
   const profile = profileResult.data
 
-  // Montar lista de equipamentos:
-  // - Hotel com detecção por foto → usa os equipamentos detectados no check-in (temporários)
-  // - Demais locais → usa equipamentos salvos no perfil do usuário
   const equipamentos: string[] =
     checkin.local_treino === 'hotel' && checkin.equipamentos_hotel?.length
       ? checkin.equipamentos_hotel
-      : (equipamentosResult.data ?? [])
-          .map((e) => e.nome_custom ?? '')
-          .filter(Boolean)
+      : (equipamentosResult.data ?? []).map((e) => e.nome_custom ?? '').filter(Boolean)
 
-  // Montar histórico: extrair nomes dos exercícios principais dos últimos 3 treinos
-  // Suporta tanto o novo formato (forca) quanto o legacy (principal)
   const historico = (historicoResult.data ?? []).map((w) => {
     const ex = w.exercicios as {
-      forca?: { nome: string }[]    // novo formato 4 blocos
-      principal?: { nome: string }[] // legacy
+      forca?: { nome: string }[]
+      principal?: { nome: string }[]
     }
     const principais = [...(ex?.forca ?? []), ...(ex?.principal ?? [])].map((e) => e.nome)
     return { exercicios_principais: principais }
@@ -125,38 +167,25 @@ export async function POST(request: Request) {
     historico_recente: historico,
   }
 
-  // Buscar catálogo de exercícios validados e injetar no prompt
   const catalogExercises = await fetchExerciseCatalog(localTreino, nivelAtual)
   const exerciseCatalog = formatCatalogForPrompt(catalogExercises)
-
   const prompt = buildWorkoutPrompt(context, exerciseCatalog)
 
-  // Chamar Claude com retry em caso de JSON inválido
+  // Chamar Claude via fetch direto (sem SDK) com retry
   let generatedWorkout: GeneratedWorkout | null = null
   let lastError: unknown = null
 
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
-      const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 2048,
-        messages: [{ role: 'user', content: prompt }],
-      })
-
-      const rawText =
-        response.content[0].type === 'text' ? response.content[0].text : ''
-
-      // Extrair JSON (defensivo contra prefixos de texto)
+      const rawText = await callClaude(prompt, apiKey)
       const jsonMatch = rawText.match(/\{[\s\S]*\}/)
       if (!jsonMatch) throw new Error('Resposta sem JSON')
-
       const parsed = JSON.parse(jsonMatch[0])
       generatedWorkout = WorkoutSchema.parse(parsed)
       break
     } catch (err) {
       lastError = err
       if (attempt === 2) break
-      // Aguardar brevemente antes da 2ª tentativa
       await new Promise((r) => setTimeout(r, 500))
     }
   }
@@ -169,7 +198,6 @@ export async function POST(request: Request) {
     )
   }
 
-  // Salvar treino no banco
   const { data: savedWorkout, error: saveError } = await supabase
     .from('workouts')
     .insert([{

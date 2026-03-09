@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import Stripe from 'stripe'
 import { stripe, PLANOS, type PlanoKey } from '@/lib/stripe/config'
 import { createClient } from '@/lib/supabase/server'
 
@@ -23,9 +22,10 @@ export async function POST(request: Request) {
   }
 
   const planoCfg = PLANOS[plano]
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://letstrain.com.br'
 
   try {
-    // Reutilizar stripe_customer_id se usuário já tem assinatura
+    // Reutilizar stripe_customer_id se usuário já tem registro
     const { data: existingSub } = await supabase
       .from('subscriptions')
       .select('stripe_customer_id')
@@ -44,10 +44,13 @@ export async function POST(request: Request) {
       customerId = customer.id
     }
 
-    // Criar Subscription com trial de 3 dias
-    const subscription = await stripe.subscriptions.create({
+    // Stripe Checkout Session — pagamento direto, sem trial nem cartão antecipado
+    const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      items: [{
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      locale: 'pt-BR',
+      line_items: [{
         price_data: {
           currency: 'brl',
           product_data: { name: planoCfg.label },
@@ -56,24 +59,18 @@ export async function POST(request: Request) {
             interval: plano === 'anual' ? 'year' : 'month',
           },
         },
+        quantity: 1,
       }],
-      trial_period_days: 3,
-      payment_behavior: 'default_incomplete',
-      payment_settings: { save_default_payment_method: 'on_subscription' },
-      expand: ['pending_setup_intent'],
+      // Metadata no subscription para o webhook conseguir identificar o usuário
+      subscription_data: {
+        metadata: { user_id: user.id, plano },
+      },
+      success_url: `${appUrl}/assinatura/sucesso?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/assinatura`,
       metadata: { user_id: user.id, plano },
     })
 
-    const setupIntent = subscription.pending_setup_intent as Stripe.SetupIntent | null
-
-    if (!setupIntent?.client_secret) {
-      throw new Error('SetupIntent não disponível')
-    }
-
-    return NextResponse.json({
-      clientSecret: setupIntent.client_secret,
-      subscriptionId: subscription.id,
-    })
+    return NextResponse.json({ url: session.url })
   } catch (err) {
     console.error('[checkout/create] Erro Stripe:', err)
     return NextResponse.json({ error: 'Erro ao criar sessão de pagamento' }, { status: 500 })

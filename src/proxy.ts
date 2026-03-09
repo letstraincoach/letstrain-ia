@@ -49,35 +49,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  // Verificação de assinatura (rotas protegidas do app)
-  if (user && isProtectedRoute) {
-    const gracePeriodEnd = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
-    const now = new Date().toISOString()
-
-    // Assinatura ativa (com grace period de 3 dias)
-    const { data: activeSub } = await supabase
-      .from('subscriptions')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('status', 'ativa')
-      .gte('fim', gracePeriodEnd)
-      .limit(1)
-      .maybeSingle()
-
-    // Trial válido (trial_ends_at no futuro)
-    const { data: trialSub } = !activeSub ? await supabase
-      .from('subscriptions')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('status', 'trial')
-      .gt('trial_ends_at', now)
-      .limit(1)
-      .maybeSingle() : { data: null }
-
-    if (!activeSub && !trialSub) {
-      return NextResponse.redirect(new URL('/assinatura', request.url))
-    }
-  }
+  // Assinatura verificada no momento da geração do treino (modelo freemium 3 treinos)
+  // Usuários autenticados acessam o app livremente; paywall ocorre na 4ª geração de treino.
 
   return supabaseResponse
 }

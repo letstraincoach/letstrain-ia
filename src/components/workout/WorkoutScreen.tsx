@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { GeneratedWorkout, WorkoutExercise } from '@/lib/ai/workout-schemas'
 import { isNewFormat } from '@/lib/ai/workout-schemas'
 import Button from '@/components/ui/Button'
+import { getExerciseVideoUrl } from '@/lib/training/exercise-videos'
 
 // Achata todas as seções em uma lista linear com separadores de seção
 type SecaoNova = 'Preparação' | 'Força' | 'Circuito' | 'Finisher'
@@ -240,6 +241,7 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
   const [direction, setDirection] = useState(1) // 1 = forward, -1 = back
   const [showConfirm, setShowConfirm] = useState(false)
   const [completing, setCompleting] = useState(false)
+  const [videoExercise, setVideoExercise] = useState<string | null>(null)
 
   if (view === 'overview') {
     return <WorkoutOverview workout={workout} nivel={nivel} onStart={() => setView('exercise')} />
@@ -250,7 +252,8 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
   const progressPct = Math.round(((current + 1) / total) * 100)
 
   function goNext() {
-    if (isLast) { setShowConfirm(true); return }
+    if (isLast && !jaExecutado) { setShowConfirm(true); return }
+    if (isLast) return
     setDirection(1)
     setCurrent((c) => c + 1)
   }
@@ -297,7 +300,7 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
               onClick={() => router.push('/dashboard')}
               className="text-sm text-white/40 hover:text-white/70 transition-colors mb-4 flex items-center gap-1"
             >
-              ← Sair
+              {jaExecutado ? '← Dashboard' : '← Sair'}
             </button>
             <h1 className="text-lg font-bold leading-tight truncate">{workout.nome}</h1>
             <div className="flex items-center gap-3 mt-1 text-xs text-white/40">
@@ -392,16 +395,13 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                   )}
 
                   {/* Ver vídeo */}
-                  {ex.youtube_url && (
-                    <a
-                      href={ex.youtube_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 h-10 rounded-xl border border-white/15 text-sm text-white/70 hover:border-white/30 hover:text-white transition-all"
-                    >
-                      <span className="text-red-500">▶</span> Ver demonstração no YouTube
-                    </a>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => setVideoExercise(ex.nome)}
+                    className="flex items-center justify-center gap-2 h-10 w-full rounded-xl border border-[#FF8C00]/30 bg-[#FF8C00]/[0.06] text-sm text-[#FF8C00] hover:bg-[#FF8C00]/[0.12] transition-all"
+                  >
+                    <span>▶</span> Visualizar vídeo
+                  </button>
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -410,18 +410,69 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
 
         {/* Navegação */}
         <div className="px-6 pb-10 pt-4">
-          <div className="max-w-sm mx-auto flex gap-3">
-            {current > 0 && (
-              <Button variant="outline" onClick={goPrev} className="flex-none w-14">
-                ←
+          {jaExecutado ? (
+            <div className="max-w-sm mx-auto flex gap-3">
+              {current > 0 && (
+                <Button variant="outline" onClick={goPrev} className="flex-none w-14">
+                  ←
+                </Button>
+              )}
+              {!isLast && (
+                <Button fullWidth onClick={goNext}>
+                  Próximo →
+                </Button>
+              )}
+              {isLast && (
+                <Button fullWidth onClick={() => router.push('/dashboard')}>
+                  🏠 Ir para o Dashboard
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="max-w-sm mx-auto flex gap-3">
+              {current > 0 && (
+                <Button variant="outline" onClick={goPrev} className="flex-none w-14">
+                  ←
+                </Button>
+              )}
+              <Button fullWidth onClick={goNext}>
+                {isLast ? '🏁 Concluir Treino' : 'Próximo →'}
               </Button>
-            )}
-            <Button fullWidth onClick={goNext}>
-              {isLast ? '🏁 Concluir Treino' : 'Próximo →'}
-            </Button>
-          </div>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Modal de vídeo */}
+      {videoExercise && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4"
+          onClick={() => setVideoExercise(null)}
+        >
+          <div
+            className="w-full max-w-sm bg-[#111] rounded-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+              <p className="text-sm font-semibold truncate pr-2">{videoExercise}</p>
+              <button
+                onClick={() => setVideoExercise(null)}
+                className="text-white/40 hover:text-white transition-colors text-lg shrink-0"
+              >
+                ✕
+              </button>
+            </div>
+            <video
+              key={videoExercise}
+              src={getExerciseVideoUrl(videoExercise)}
+              controls
+              autoPlay
+              playsInline
+              className="w-full aspect-video bg-black"
+            />
+          </div>
+        </div>
+      )}
     </>
   )
 }

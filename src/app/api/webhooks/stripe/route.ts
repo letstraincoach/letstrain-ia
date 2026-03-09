@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
   const supabase = createServiceClient()
 
-  // ── customer.subscription.created (trial iniciado) ──────────────────────
+  // ── customer.subscription.created ───────────────────────────────────────
   if (event.type === 'customer.subscription.created') {
     const sub = event.data.object as Stripe.Subscription
     const { user_id, plano: planoRaw } = sub.metadata ?? {}
@@ -39,24 +39,26 @@ export async function POST(request: Request) {
     const plano = planoRaw as PlanoKey
     const planoCfg = PLANOS[plano]
     const inicio = new Date()
-    const trialEndsAt = sub.trial_end
-      ? new Date(sub.trial_end * 1000)
-      : new Date(inicio.getTime() + 3 * 24 * 60 * 60 * 1000)
     const fim = new Date(inicio.getTime() + planoCfg.duracao_dias * 24 * 60 * 60 * 1000)
+
+    // Sem trial_end = Stripe Checkout direto (pagamento imediato → status 'ativa')
+    // Com trial_end = fluxo antigo de trial gratuito
+    const comTrial = !!sub.trial_end
+    const trialEndsAt = comTrial ? new Date(sub.trial_end! * 1000) : null
 
     const { error } = await supabase.from('subscriptions').insert({
       user_id,
       plano,
-      status: 'trial',
+      status: comTrial ? 'trial' : 'ativa',
       stripe_subscription_id: sub.id,
       stripe_customer_id: typeof sub.customer === 'string' ? sub.customer : sub.customer.id,
-      trial_ends_at: trialEndsAt.toISOString(),
+      ...(trialEndsAt ? { trial_ends_at: trialEndsAt.toISOString() } : {}),
       inicio: inicio.toISOString(),
       fim: fim.toISOString(),
     })
 
     if (error) {
-      console.error('[stripe/webhook] Erro ao criar assinatura (trial):', error)
+      console.error('[stripe/webhook] Erro ao criar assinatura:', error)
       return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
     }
 

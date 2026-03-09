@@ -19,6 +19,75 @@ interface EquipmentManagerProps {
   condominioFotos: string[]
 }
 
+const EQUIPMENT_CATEGORIES = [
+  {
+    label: 'Cardio',
+    cor: 'text-red-400',
+    items: [
+      { icone: '🏃', nome: 'Esteira' },
+      { icone: '🚴', nome: 'Bike' },
+      { icone: '🚵', nome: 'Ergométrica' },
+      { icone: '⭕', nome: 'Elíptico' },
+      { icone: '🚣', nome: 'Remo' },
+      { icone: '⬆️', nome: 'Escada' },
+    ],
+  },
+  {
+    label: 'Máquinas',
+    cor: 'text-blue-400',
+    items: [
+      { icone: '🔩', nome: 'Polia' },
+      { icone: '✖️', nome: 'Cross Over' },
+      { icone: '🏋️', nome: 'Barra Smith' },
+      { icone: '🦵', nome: 'Extensora' },
+      { icone: '🦵', nome: 'Flexora' },
+      { icone: '🦵', nome: 'Leg Press' },
+      { icone: '💺', nome: 'Cadeira Adutora' },
+      { icone: '💺', nome: 'Cadeira Abdutora' },
+      { icone: '💺', nome: 'Cadeira Romana' },
+      { icone: '🔘', nome: 'Hack Squat' },
+      { icone: '🏋️', nome: 'Supino Máquina' },
+      { icone: '🔁', nome: 'Remada Máquina' },
+      { icone: '💪', nome: 'Pulldown' },
+      { icone: '🔲', nome: 'Voador' },
+      { icone: '🦾', nome: 'Panturrilha Máquina' },
+    ],
+  },
+  {
+    label: 'Funcional',
+    cor: 'text-green-400',
+    items: [
+      { icone: '🏋️', nome: 'Halter' },
+      { icone: '⚫', nome: 'Kettlebell' },
+      { icone: '🔴', nome: 'Mini Band' },
+      { icone: '🟢', nome: 'Elástico' },
+      { icone: '🪢', nome: 'TRX' },
+      { icone: '🏐', nome: 'Medicine Ball' },
+      { icone: '🎯', nome: 'Bosu' },
+      { icone: '🪃', nome: 'Battle Rope' },
+      { icone: '📦', nome: 'Slam Ball' },
+      { icone: '🔗', nome: 'Corrente' },
+    ],
+  },
+  {
+    label: 'Acessórios',
+    cor: 'text-yellow-400',
+    items: [
+      { icone: '🪑', nome: 'Banco Ajustável' },
+      { icone: '🛋️', nome: 'Banco de Supino' },
+      { icone: '📦', nome: 'Caixote' },
+      { icone: '🪜', nome: 'Step' },
+      { icone: '🔵', nome: 'Barra' },
+      { icone: '🔴', nome: 'Anilha' },
+      { icone: '🧲', nome: 'Paralela' },
+      { icone: '🤸', nome: 'Barra Fixa' },
+      { icone: '🪢', nome: 'Corda' },
+      { icone: '🧱', nome: 'Colchonete' },
+      { icone: '🟤', nome: 'Foam Roller' },
+    ],
+  },
+]
+
 export default function EquipmentManager({
   userId,
   localTipo,
@@ -35,6 +104,18 @@ export default function EquipmentManager({
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [showDetector, setShowDetector] = useState(false)
+
+  function isSelected(nome: string) {
+    return items.some((i) => i.name.toLowerCase() === nome.toLowerCase())
+  }
+
+  function toggleEquipment(nome: string) {
+    if (isSelected(nome)) {
+      setItems((prev) => prev.filter((i) => i.name.toLowerCase() !== nome.toLowerCase()))
+    } else {
+      setItems((prev) => [...prev, { name: nome, isNew: true }])
+    }
+  }
 
   function addItem() {
     const name = customName.trim()
@@ -157,39 +238,60 @@ export default function EquipmentManager({
         </section>
       )}
 
-      {/* Lista de equipamentos */}
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">
-            Equipamentos
-          </h2>
-          <span className="text-xs text-white/30">{items.length} item(s)</span>
-        </div>
-
-        {items.length === 0 ? (
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-6 text-center">
-            <p className="text-sm text-white/40">Nenhum equipamento cadastrado</p>
-            <p className="text-xs text-white/25 mt-1">Adicione abaixo ou re-analise as fotos</p>
+      {/* Quick-select por categoria */}
+      <section className="flex flex-col gap-4">
+        <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">
+          Selecionar equipamentos
+        </h2>
+        {EQUIPMENT_CATEGORIES.map((cat) => (
+          <div key={cat.label} className="flex flex-col gap-2">
+            <p className={`text-[10px] uppercase tracking-widest font-semibold ${cat.cor}`}>
+              {cat.label}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {cat.items.map((eq) => {
+                const selected = isSelected(eq.nome)
+                return (
+                  <button
+                    key={eq.nome}
+                    type="button"
+                    onClick={() => toggleEquipment(eq.nome)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm transition-all ${
+                      selected
+                        ? 'border-[#FF8C00]/40 bg-[#FF8C00]/10 text-white'
+                        : 'border-white/[0.07] bg-white/[0.02] text-white/50 hover:text-white/80 hover:border-white/[0.15]'
+                    }`}
+                  >
+                    <span>{eq.icone}</span>
+                    <span>{eq.nome}</span>
+                  </button>
+                )
+              })}
+            </div>
           </div>
-        ) : (
-          <div className="flex flex-col gap-2">
+        ))}
+      </section>
+
+      {/* Lista de equipamentos selecionados */}
+      {items.length > 0 && (
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">
+              Selecionados
+            </h2>
+            <span className="text-xs text-white/30">{items.length} item(s)</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {items.map((item, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
+                className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-1.5"
               >
-                <div className="flex items-center gap-2.5">
-                  {item.isNew && (
-                    <span className="text-[10px] font-semibold text-[#FF8C00] bg-[#FF8C00]/10 rounded-full px-1.5 py-0.5">
-                      novo
-                    </span>
-                  )}
-                  <p className="text-sm">{item.name}</p>
-                </div>
+                <p className="text-sm text-white/70">{item.name}</p>
                 <button
                   type="button"
                   onClick={() => removeItem(i)}
-                  className="text-white/30 hover:text-red-400 transition-colors text-sm"
+                  className="text-white/25 hover:text-red-400 transition-colors text-xs ml-0.5"
                   aria-label="Remover"
                 >
                   ✕
@@ -197,13 +299,13 @@ export default function EquipmentManager({
               </div>
             ))}
           </div>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* Adicionar manualmente */}
       <section className="flex flex-col gap-2">
         <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">
-          Adicionar equipamento
+          Outro equipamento
         </h2>
         <div className="flex gap-2">
           <Input
