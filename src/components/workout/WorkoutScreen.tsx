@@ -199,9 +199,9 @@ function WorkoutOverview({
                     {bloco.exs.map((ex, j) => (
                       <div key={j} className="flex items-center justify-between py-1">
                         <div className="flex items-center gap-2 min-w-0">
-                          {ex.biset && (
+                          {(ex.biset || ex.triset) && (
                             <span className="shrink-0 text-[9px] text-[#FF8C00] font-bold uppercase tracking-wider bg-[#FF8C00]/10 border border-[#FF8C00]/20 px-1.5 py-0.5 rounded">
-                              BI-SET
+                              {ex.triset ? 'TRI-SET' : 'BI-SET'}
                             </span>
                           )}
                           <span className="text-sm text-white/70 truncate">{ex.nome}</span>
@@ -366,10 +366,12 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
 
                 {/* Card principal */}
                 <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 flex flex-col gap-4">
-                  {/* Bi-set banner */}
-                  {ex.biset && (
+                  {/* Bi-set / Tri-set banner */}
+                  {(ex.biset || ex.triset) && (
                     <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#FF8C00]/25 bg-[#FF8C00]/[0.06]">
-                      <span className="text-[#FF8C00] text-xs font-bold">🔗 BI-SET</span>
+                      <span className="text-[#FF8C00] text-xs font-bold">
+                        {ex.triset ? '🔗🔗 TRI-SET' : '🔗 BI-SET'}
+                      </span>
                       <span className="text-white/40 text-xs">Execute em seguida, sem descanso</span>
                       {flatList[current + 1] && (
                         <span className="text-white/55 text-xs font-semibold ml-auto shrink-0">

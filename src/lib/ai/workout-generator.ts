@@ -152,6 +152,17 @@ Regras do bi-set no JSON:
 - Use 2 a 3 pares (4–6 exercícios totais no bloco 2)
 - Priorize pares antagonistas: peito+costas, bíceps+tríceps, quadríceps+posterior
 - Exemplos: Supino c/ Halteres + Remada Unilateral · Desenvolvimento + Remada Alta · Agachamento + Stiff · Rosca Direta + Tríceps Coice` : ''}
+${ctx.nivel.startsWith('atleta') ? `
+TRI-SETS OBRIGATÓRIOS (nível atleta):
+Organize o Bloco 2 inteiramente em trios de tri-set — 3 exercícios executados em sequência sem descanso entre si.
+Regras do tri-set no JSON:
+- 1º exercício do trio → "triset": true, "descanso_segundos": 0
+- 2º exercício do trio → "triset": true, "descanso_segundos": 0
+- 3º exercício do trio → "triset": false (ou omita), descanso 90–120s após o trio completo
+- Use 2 trios (6 exercícios totais no bloco 2)
+- Combine 3 padrões diferentes por trio: empurrar + puxar + pernas OU peito + costas + ombros OU quadríceps + posterior + core
+- Exemplos de trios: Supino + Remada + Desenvolvimento · Agachamento + Stiff + Avanço · Rosca + Tríceps + Elevação Lateral
+- Intensidade máxima: repetições 8–12 com carga alta, técnica rigorosa mesmo sob fadiga acumulada` : ''}
 
 ${bloco3Prompt}
 
@@ -179,7 +190,7 @@ Responda EXATAMENTE neste JSON (sem campos extras, sem texto antes ou depois):
     { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }
   ],
   "forca": [
-    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string, "biset": boolean }
+    { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string, "biset": boolean, "triset": boolean }
   ],
   ${bloco3JsonKey}: [
     { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }
