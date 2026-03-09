@@ -5,6 +5,7 @@ import { LEVEL_CONFIG } from '@/lib/training/levels.config'
 import type { TrainingLevel } from '@/types/database.types'
 import AlbumConquistas from '@/components/gamification/AlbumConquistas'
 import LetsCoinsSection from '@/components/dashboard/LetsCoinsSection'
+import WeightChart from '@/components/progress/WeightChart'
 
 type Sexo = 'masculino' | 'feminino'
 
@@ -354,7 +355,7 @@ export default async function ProgressPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [profileResult, progressResult, workoutsResult, allAchievementsResult, userAchievementsResult, historicoResult, resgatesResult] =
+  const [profileResult, progressResult, workoutsResult, allAchievementsResult, userAchievementsResult, historicoResult, resgatesResult, pesoHistoricoResult] =
     await Promise.all([
       supabase
         .from('user_profiles')
@@ -400,6 +401,13 @@ export default async function ProgressPage() {
         .eq('user_id', user.id)
         .order('criado_em', { ascending: false })
         .limit(10),
+
+      supabase
+        .from('peso_historico')
+        .select('data, peso')
+        .eq('user_id', user.id)
+        .order('data', { ascending: false })
+        .limit(90),
     ])
 
   const profile         = profileResult.data
@@ -409,6 +417,7 @@ export default async function ProgressPage() {
   const allAchievements = allAchievementsResult.data ?? []
   const userAchievements = userAchievementsResult.data ?? []
   const historico       = historicoResult.data ?? []
+  const pesoEntries     = (pesoHistoricoResult.data ?? []).map(e => ({ data: e.data as string, peso: Number(e.peso) }))
 
   const nivel     = (profile?.nivel_atual ?? 'adaptacao') as TrainingLevel
   const levelCfg  = LEVEL_CONFIG[nivel]
@@ -886,6 +895,12 @@ export default async function ProgressPage() {
             </div>
           </div>
         )}
+
+        {/* Evolução de Peso */}
+        <div className="flex flex-col gap-4">
+          <h2 className="text-base font-bold">Evolução de Peso</h2>
+          <WeightChart entries={pesoEntries} pesoAtual={profile?.peso ?? null} />
+        </div>
 
         {/* Calendário */}
         <div className="flex flex-col gap-4">
