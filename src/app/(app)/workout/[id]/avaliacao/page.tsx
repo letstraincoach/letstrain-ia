@@ -78,6 +78,25 @@ export default function AvaliacaoPage() {
   const [screen, setScreen] = useState<Screen>('form')
   const [levelUpData, setLevelUpData] = useState<{ previous: TrainingLevel; next: TrainingLevel } | null>(null)
   const [achievements, setAchievements] = useState<NewAchievement[]>([])
+  const [postWorkoutRegistered, setPostWorkoutRegistered] = useState(false)
+  const [registeringPosTreino, setRegisteringPosTreino] = useState<string | null>(null)
+
+  async function registrarPosTreino(foodId: string, nome: string, icone: string, calorias: number, proteina_g: number, carbo_g: number, gordura_g: number) {
+    setRegisteringPosTreino(foodId)
+    try {
+      await fetch('/api/nutrition/log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tipo: 'pos_treino',
+          items: [{ food_id: foodId, nome, icone, quantidade: 1, calorias, proteina_g, carbo_g, gordura_g }],
+        }),
+      })
+      setPostWorkoutRegistered(true)
+    } finally {
+      setRegisteringPosTreino(null)
+    }
+  }
 
   async function handleSubmit() {
     if (!rating) return
@@ -371,6 +390,44 @@ export default function AvaliacaoPage() {
               </div>
               <div className="h-4" />
             </motion.div>
+          )}
+        </div>
+
+        {/* Prompt pós-treino: refeição rápida */}
+        <div className={`rounded-2xl border p-4 flex flex-col gap-3 transition-colors ${postWorkoutRegistered ? 'border-green-400/20 bg-green-400/5' : 'border-white/[0.07] bg-white/[0.02]'}`}>
+          {postWorkoutRegistered ? (
+            <div className="flex items-center gap-2">
+              <span className="text-lg">✅</span>
+              <p className="text-sm text-green-400 font-medium">Refeição pós-treino registrada!</p>
+            </div>
+          ) : (
+            <>
+              <div>
+                <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-0.5">Refeição pós-treino</p>
+                <p className="text-sm text-white/60">Já fez sua refeição? Registre em 1 clique:</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'banana', nome: 'Banana', icone: '🍌', calorias: 89, proteina_g: 1.1, carbo_g: 23.0, gordura_g: 0.3 },
+                  { id: 'whey', nome: 'Whey', icone: '🥤', calorias: 110, proteina_g: 23.0, carbo_g: 3.0, gordura_g: 1.5 },
+                  { id: 'ovo', nome: 'Ovos', icone: '🥚', calorias: 72, proteina_g: 6.3, carbo_g: 0.4, gordura_g: 4.8 },
+                  { id: 'frango', nome: 'Frango', icone: '🍗', calorias: 165, proteina_g: 31.0, carbo_g: 0.0, gordura_g: 3.6 },
+                ].map((f) => (
+                  <button
+                    key={f.id}
+                    disabled={!!registeringPosTreino}
+                    onClick={() => registrarPosTreino(f.id, f.nome, f.icone, f.calorias, f.proteina_g, f.carbo_g, f.gordura_g)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm text-white/60 hover:border-[#FF8C00]/30 hover:text-white/80 transition-colors disabled:opacity-50"
+                  >
+                    <span>{f.icone}</span>
+                    <span>{registeringPosTreino === f.id ? '...' : f.nome}</span>
+                  </button>
+                ))}
+              </div>
+              <a href="/nutricao" className="text-xs text-white/25 hover:text-[#FF8C00] transition-colors">
+                Registrar refeição completa →
+              </a>
+            </>
           )}
         </div>
 

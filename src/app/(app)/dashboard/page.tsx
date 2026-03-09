@@ -5,7 +5,9 @@ import { LEVEL_CONFIG } from '@/lib/training/levels.config'
 import type { TrainingLevel } from '@/types/database.types'
 import JejumTimer from '@/components/dashboard/JejumTimer'
 import LetsCoinsWidget from '@/components/dashboard/LetsCoinsWidget'
+import NutritionWidget from '@/components/nutrition/NutritionWidget'
 import { getTrainer } from '@/lib/trainers/config'
+import { calcularMetaCalorica, calcularMetaProteina } from '@/lib/nutrition/foods'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,10 +32,11 @@ export default async function DashboardPage() {
     weeklyResult,
     achievementsResult,
     userAchievementsResult,
+    foodLogsResult,
   ] = await Promise.all([
     supabase
       .from('user_profiles')
-      .select('nome, nivel_atual, objetivo, onboarding_completo, jejum_inicio, dias_por_semana, personal_slug')
+      .select('nome, nivel_atual, objetivo, onboarding_completo, jejum_inicio, dias_por_semana, personal_slug, peso, altura, idade, sexo')
       .eq('id', user.id)
       .single(),
 
@@ -71,6 +74,13 @@ export default async function DashboardPage() {
       .from('user_achievements')
       .select('achievement_id')
       .eq('user_id', user.id),
+
+    // Food logs de hoje para o widget de nutrição
+    supabase
+      .from('food_logs')
+      .select('calorias_total, proteina_total')
+      .eq('user_id', user.id)
+      .eq('data', hoje),
   ])
 
   const profile         = profileResult.data
@@ -96,6 +106,20 @@ export default async function DashboardPage() {
   const unlockedIds   = new Set((userAchievementsResult.data ?? []).map(a => a.achievement_id))
   const proximaConquista = (achievementsResult.data ?? [])
     .find(a => !unlockedIds.has(a.id) && (a.criterio_valor ?? 0) > treinosTotal) ?? null
+
+  // Nutrição — totais do dia para o widget
+  const foodLogs = foodLogsResult.data ?? []
+  const caloriasHoje = foodLogs.reduce((s, l) => s + (l.calorias_total ?? 0), 0)
+  const proteinaHoje = foodLogs.reduce((s, l) => s + parseFloat(String(l.proteina_total ?? 0)), 0)
+  const metaCalorias = calcularMetaCalorica({
+    peso: profile?.peso ?? null,
+    altura: profile?.altura ?? null,
+    idade: profile?.idade ?? null,
+    sexo: (profile?.sexo ?? null) as 'masculino' | 'feminino' | null,
+    objetivo: profile?.objetivo ?? null,
+    dias_por_semana: profile?.dias_por_semana ?? null,
+  })
+  const metaProteina = calcularMetaProteina(profile?.peso ?? null)
 
   const trainer   = getTrainer(profile?.personal_slug)
   const firstName = profile?.nome?.split(' ')[0] ?? 'Atleta'
@@ -283,6 +307,14 @@ export default async function DashboardPage() {
 
         {/* Jejum Intermitente */}
         <JejumTimer jejumInicio={profile?.jejum_inicio ?? null} />
+
+        {/* Registro Alimentar */}
+        <NutritionWidget
+          calorias={Math.round(caloriasHoje)}
+          metaCalorias={metaCalorias}
+          proteina={parseFloat(proteinaHoje.toFixed(1))}
+          metaProteina={metaProteina}
+        />
 
         {/* Conquistas — acesso rápido */}
         <Link

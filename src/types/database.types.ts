@@ -534,6 +534,45 @@ export type Database = {
         }
         Relationships: []
       }
+      food_logs: {
+        Row: {
+          id: string
+          user_id: string
+          data: string
+          tipo: string
+          items: Json
+          calorias_total: number
+          proteina_total: number
+          carbo_total: number
+          gordura_total: number
+          criado_em: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          data: string
+          tipo: string
+          items?: Json
+          calorias_total?: number
+          proteina_total?: number
+          carbo_total?: number
+          gordura_total?: number
+          criado_em?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          data?: string
+          tipo?: string
+          items?: Json
+          calorias_total?: number
+          proteina_total?: number
+          carbo_total?: number
+          gordura_total?: number
+          criado_em?: string
+        }
+        Relationships: []
+      }
       workout_evaluations: {
         Row: {
           comentario: string | null
