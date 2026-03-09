@@ -143,9 +143,16 @@ export async function POST(request: Request) {
   const historico = (historicoResult.data ?? []).map((w) => {
     const ex = w.exercicios as {
       forca?: { nome: string }[]
+      cardio?: { nome: string }[]
+      circuito?: { nome: string }[]
       principal?: { nome: string }[]
     }
-    const principais = [...(ex?.forca ?? []), ...(ex?.principal ?? [])].map((e) => e.nome)
+    const principais = [
+      ...(ex?.forca ?? []),
+      ...(ex?.cardio ?? []),
+      ...(ex?.circuito ?? []),
+      ...(ex?.principal ?? []),
+    ].map((e) => e.nome)
     return { exercicios_principais: principais }
   })
 

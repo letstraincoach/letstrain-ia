@@ -66,12 +66,16 @@ export function buildWorkoutPrompt(ctx: WorkoutContext, exerciseCatalog?: string
           .join('\n')
       : '  - Sem histórico recente (primeiro treino)'
 
+  // Bloco 3: cardio (emagrecimento/qualidade_vida) ou circuito (hipertrofia)
+  const objetivos = ctx.objetivo.split(',').map((o) => o.trim())
+  const usaCardio = objetivos.some((o) => o === 'perda_peso' || o === 'qualidade_vida')
+
   // Volumes baseados no tempo disponível
   const temMinutos = ctx.tempo_disponivel
   const blocos = {
     preparacaoExs: 3,
     forcaExs: temMinutos <= 30 ? 3 : temMinutos <= 45 ? 4 : 5,
-    circuitoExs: temMinutos <= 30 ? 3 : 4,
+    bloco3Exs: temMinutos <= 30 ? 2 : 3,
     finisherExs: ctx.disposicao <= 4 ? 1 : 2,
   }
 
@@ -84,6 +88,25 @@ Circuito metabólico sem impacto: mountain climber (lento), kettelbell swing (se
     : ''
 
   const catalogSection = exerciseCatalog ? `${exerciseCatalog}\n` : ''
+
+  // Bloco 3: cardio ou circuito — instruções para o prompt e template JSON
+  const bloco3Prompt = usaCardio
+    ? `BLOCO 3 — CARDIO (${Math.round(temMinutos * 0.25)} min): ${blocos.bloco3Exs} exercício(s)
+Objetivo: condicionamento aeróbico e aceleração do metabolismo.
+${ctx.doenca_cardiaca ? 'ATENÇÃO — condição cardíaca: cardio LEVE apenas, frequência moderada, sem alta intensidade.' : ''}
+Se há esteira, bicicleta ergométrica ou elíptico disponível:
+  - 1 exercício de 12–20 min em intensidade moderada (ex: "Corrida na Esteira", "Bike Ergométrica", "Elíptico").
+  - repeticoes: tempo em minutos (ex: "15 min"), series: 1, descanso_segundos: 0.
+Se NÃO há equipamento de cardio:
+  - ${blocos.bloco3Exs} exercícios aeróbicos sem impacto${isHotel ? ' (MODO SILENCIOSO: sem saltos)' : ''}: mountain climber, agachamento contínuo, polichinelo lento, corda de pular (se disponível).
+  - Formato: 3–4 rounds de 40s de trabalho / 20s de descanso.`
+    : `BLOCO 3 — CIRCUITO METABÓLICO (${Math.round(temMinutos * 0.25)} min): ${blocos.bloco3Exs} exercícios em circuito
+Objetivo: elevação de FC e queima metabólica com foco em hipertrofia.
+Formato: circuito sem descanso entre exercícios (descanso_segundos: 0 em todos), descanse 60–90s entre rounds.
+Inclua: 1 de membros inferiores + 1 de membros superiores + 1 de core.
+${isHotel ? 'Sem impacto: use mountain climber lento, agachamento, remada halteres, prancha com variação.' : 'Exercícios como kettlebell swing, mountain climber, lunge walk, russian twist, burpee (se adequado ao nível).'}`
+
+  const bloco3JsonKey = usaCardio ? '"cardio"' : '"circuito"'
 
   return `${catalogSection}Você é um personal trainer da academia Lets Train, especialista na metodologia Time Efficient.
 Gere um treino completo em 4 blocos para ${temMinutos} minutos. Responda APENAS com JSON válido. Sem texto extra.
@@ -121,11 +144,7 @@ Séries: ${ctx.nivel.startsWith('adaptacao') ? '2' : ctx.nivel.startsWith('inici
 Repetições: ${ctx.nivel.startsWith('adaptacao') ? '12–15' : '8–12'} (foco em técnica antes de carga).
 Padrões obrigatórios: inclua pelo menos um empurrar + um puxar no bloco.
 
-BLOCO 3 — CIRCUITO METABÓLICO (${Math.round(temMinutos * 0.25)} min): ${blocos.circuitoExs} exercícios em circuito
-Objetivo: elevação de FC e queima metabólica.
-Formato: circuito sem descanso entre exercícios (descanso_segundos: 0 em todos), descanse 60–90s entre rounds.
-Inclua: 1 de membros inferiores + 1 de membros superiores + 1 de core.
-${isHotel ? 'Sem impacto: use mountain climber lento, agachamento, remada halteres, prancha com variação.' : 'Exercícios como kettlebell swing, mountain climber, lunge walk, russian twist, burpee (se adequado ao nível).'}
+${bloco3Prompt}
 
 BLOCO 4 — FINISHER (3–5 min): ${blocos.finisherExs} exercício(s)
 Objetivo: estímulo final curto e intenso.
@@ -153,7 +172,7 @@ Responda EXATAMENTE neste JSON (sem campos extras, sem texto antes ou depois):
   "forca": [
     { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }
   ],
-  "circuito": [
+  ${bloco3JsonKey}: [
     { "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }
   ],
   "finisher": [

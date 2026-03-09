@@ -9,7 +9,7 @@ import Button from '@/components/ui/Button'
 import { getExerciseVideoUrl } from '@/lib/training/exercise-videos'
 
 // Achata todas as seções em uma lista linear com separadores de seção
-type SecaoNova = 'Preparação' | 'Força' | 'Circuito' | 'Finisher'
+type SecaoNova = 'Preparação' | 'Força' | 'Circuito' | 'Cardio' | 'Finisher'
 type SecaoLegacy = 'Aquecimento' | 'Principal' | 'Cooldown'
 type Secao = SecaoNova | SecaoLegacy
 
@@ -27,6 +27,7 @@ function buildFlatList(workout: GeneratedWorkout): FlatExercise[] {
     ;(workout.preparacao ?? []).forEach((e) => items.push({ ex: e, secao: 'Preparação' }))
     ;(workout.forca ?? []).forEach((e) => items.push({ ex: e, secao: 'Força' }))
     ;(workout.circuito ?? []).forEach((e) => items.push({ ex: e, secao: 'Circuito' }))
+    ;(workout.cardio ?? []).forEach((e) => items.push({ ex: e, secao: 'Cardio' }))
     ;(workout.finisher ?? []).forEach((e) => items.push({ ex: e, secao: 'Finisher' }))
   } else {
     // Legacy 3 blocos (treinos antigos no banco)
@@ -44,6 +45,7 @@ const SECAO_COLOR: Record<Secao, string> = {
   'Preparação': '#F59E0B',
   'Força':      '#FF8C00',
   'Circuito':   '#A855F7',
+  'Cardio':     '#22C55E',
   'Finisher':   '#EF4444',
   // Legacy
   'Aquecimento': '#F59E0B',
@@ -132,7 +134,9 @@ function WorkoutOverview({
     ? [
         { label: 'Preparação',          cor: '#F59E0B', exs: workout.preparacao ?? [], desc: 'Mobilidade · Ativação · Cardio leve' },
         { label: 'Força',               cor: '#FF8C00', exs: workout.forca      ?? [], desc: 'Força guiada ou funcional' },
-        { label: 'Circuito Metabólico', cor: '#A855F7', exs: workout.circuito   ?? [], desc: 'Sem descanso entre exercícios' },
+        ...(workout.cardio?.length
+          ? [{ label: 'Cardio',              cor: '#22C55E', exs: workout.cardio,            desc: 'Condicionamento aeróbico' }]
+          : [{ label: 'Circuito Metabólico', cor: '#A855F7', exs: workout.circuito ?? [],   desc: 'HIIT · Sem descanso entre exercícios' }]),
         { label: 'Finisher',            cor: '#EF4444', exs: workout.finisher   ?? [], desc: 'Estímulo final curto e intenso' },
       ]
     : [
@@ -149,6 +153,9 @@ function WorkoutOverview({
         <div className="max-w-sm mx-auto flex flex-col gap-6">
           {/* Header */}
           <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+            <p className="text-xs text-[#FF8C00] font-semibold uppercase tracking-widest mb-2">
+              A Lets Train preparou para você
+            </p>
             <h1 className="text-2xl font-bold leading-tight">{workout.nome}</h1>
             <div className="flex items-center gap-3 mt-2 text-xs text-white/40">
               <span>⏱ {workout.duracao_estimada} min</span>

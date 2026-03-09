@@ -18,7 +18,8 @@ export const WorkoutSchema = z.object({
   // ── Nova estrutura (4 blocos) ───────────────────────────
   preparacao: z.array(ExerciseSchema).min(1).max(5).optional(),  // mobilidade + ativação + cardio leve
   forca: z.array(ExerciseSchema).min(2).max(10).optional(),       // força guiada ou funcional
-  circuito: z.array(ExerciseSchema).min(2).max(8).optional(),     // circuito metabólico
+  circuito: z.array(ExerciseSchema).min(2).max(8).optional(),     // circuito metabólico (hipertrofia)
+  cardio: z.array(ExerciseSchema).min(1).max(6).optional(),       // cardio aeróbico (emagrecimento/qualidade)
   finisher: z.array(ExerciseSchema).min(1).max(4).optional(),     // finisher curto e intenso
 
   // ── Legacy (treinos gerados antes da migração) ──────────
@@ -32,5 +33,5 @@ export type WorkoutExercise = z.infer<typeof ExerciseSchema>
 
 /** Verifica se o workout usa a nova estrutura de 4 blocos */
 export function isNewFormat(w: GeneratedWorkout): boolean {
-  return !!(w.preparacao || w.forca || w.circuito || w.finisher)
+  return !!(w.preparacao || w.forca || w.circuito || w.cardio || w.finisher)
 }
