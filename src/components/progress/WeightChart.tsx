@@ -11,6 +11,7 @@ interface WeightEntry {
 interface Props {
   entries: WeightEntry[]
   pesoAtual: number | null
+  insightInicial: string | null
 }
 
 const W = 320
@@ -24,12 +25,14 @@ function buildPath(points: { x: number; y: number }[]): string {
     .join(' ')
 }
 
-export default function WeightChart({ entries, pesoAtual }: Props) {
+export default function WeightChart({ entries, pesoAtual, insightInicial }: Props) {
   const router = useRouter()
   const [input, setInput] = useState(pesoAtual ? String(pesoAtual) : '')
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
+  const [insight, setInsight] = useState<string | null>(insightInicial)
+  const [insightLoading, setInsightLoading] = useState(false)
 
   async function handleSave() {
     const peso = parseFloat(input.replace(',', '.'))
@@ -38,6 +41,7 @@ export default function WeightChart({ entries, pesoAtual }: Props) {
       return
     }
     setLoading(true)
+    setInsightLoading(true)
     setError('')
     const res = await fetch('/api/weight', {
       method: 'POST',
@@ -46,9 +50,13 @@ export default function WeightChart({ entries, pesoAtual }: Props) {
     })
     setLoading(false)
     if (res.ok) {
+      const json = await res.json() as { ok: boolean; insight?: string }
+      if (json.insight) setInsight(json.insight)
+      setInsightLoading(false)
       setSaved(true)
-      setTimeout(() => { setSaved(false); router.refresh() }, 1500)
+      setTimeout(() => { setSaved(false); router.refresh() }, 1800)
     } else {
+      setInsightLoading(false)
       setError('Erro ao salvar')
     }
   }
@@ -70,7 +78,6 @@ export default function WeightChart({ entries, pesoAtual }: Props) {
   const points = sorted.map((e, i) => ({ x: toX(i), y: toY(e.peso) }))
   const pathD = buildPath(points)
 
-  // Area fill
   const areaD = points.length > 0
     ? `${pathD} L ${points[points.length - 1].x.toFixed(1)} ${(PAD.top + chartH).toFixed(1)} L ${points[0].x.toFixed(1)} ${(PAD.top + chartH).toFixed(1)} Z`
     : ''
@@ -78,7 +85,6 @@ export default function WeightChart({ entries, pesoAtual }: Props) {
   const diff = sorted.length >= 2
     ? (sorted[sorted.length - 1].peso - sorted[0].peso).toFixed(1)
     : null
-
   const diffNum = diff ? parseFloat(diff) : null
   const diffColor = diffNum === null ? '' : diffNum < 0 ? 'text-green-400' : diffNum > 0 ? 'text-red-400' : 'text-white/40'
   const diffLabel = diffNum === null ? '' : diffNum < 0 ? `${diff} kg` : diffNum > 0 ? `+${diff} kg` : '0 kg'
@@ -110,8 +116,6 @@ export default function WeightChart({ entries, pesoAtual }: Props) {
                 <stop offset="100%" stopColor="#FF8C00" stopOpacity="0" />
               </linearGradient>
             </defs>
-
-            {/* Y axis labels */}
             {[0, 0.5, 1].map((t) => {
               const val = minP + t * (maxP - minP)
               const y = toY(val)
@@ -126,23 +130,15 @@ export default function WeightChart({ entries, pesoAtual }: Props) {
                 </g>
               )
             })}
-
-            {/* Area */}
             {areaD && <path d={areaD} fill="url(#weightGrad)" />}
-
-            {/* Line */}
             {pathD && (
               <path d={pathD} fill="none" stroke="#FF8C00" strokeWidth="2"
                 strokeLinecap="round" strokeLinejoin="round" />
             )}
-
-            {/* Dots */}
             {points.map((p, i) => (
               <circle key={i} cx={p.x} cy={p.y} r="3"
                 fill="#FF8C00" stroke="#0a0a0a" strokeWidth="1.5" />
             ))}
-
-            {/* X axis labels: first and last */}
             {sorted.length >= 2 && (
               <>
                 <text x={points[0].x} y={H - 4} textAnchor="middle"
@@ -164,6 +160,19 @@ export default function WeightChart({ entries, pesoAtual }: Props) {
               ? 'Registre o peso amanhã para ver o gráfico de evolução'
               : 'Registre o seu peso para acompanhar a evolução'}
           </p>
+        </div>
+      )}
+
+      {/* AI Insight */}
+      {insightLoading && (
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.015] px-4 py-3 flex items-center gap-2">
+          <span className="text-xs text-white/30 animate-pulse">Analisando sua evolução...</span>
+        </div>
+      )}
+      {!insightLoading && insight && (
+        <div className="rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.04] px-4 py-3">
+          <p className="text-[10px] text-[#FF8C00]/60 uppercase tracking-widest mb-1">Análise do treinador</p>
+          <p className="text-sm text-white/70 leading-relaxed">{insight}</p>
         </div>
       )}
 

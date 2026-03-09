@@ -359,7 +359,7 @@ export default async function ProgressPage() {
     await Promise.all([
       supabase
         .from('user_profiles')
-        .select('nome, nivel_atual, peso, altura, idade, sexo, objetivo, dias_por_semana')
+        .select('nome, nivel_atual, peso, altura, idade, sexo, objetivo, dias_por_semana, peso_insight')
         .eq('id', user.id)
         .single(),
 
@@ -899,7 +899,7 @@ export default async function ProgressPage() {
         {/* Evolução de Peso */}
         <div className="flex flex-col gap-4">
           <h2 className="text-base font-bold">Evolução de Peso</h2>
-          <WeightChart entries={pesoEntries} pesoAtual={profile?.peso ?? null} />
+          <WeightChart entries={pesoEntries} pesoAtual={profile?.peso ?? null} insightInicial={profile?.peso_insight ?? null} />
         </div>
 
         {/* Calendário */}
