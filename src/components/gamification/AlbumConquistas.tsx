@@ -4,12 +4,24 @@ import { motion } from 'framer-motion'
 import Figurinha, { type FigurinhaData } from './Figurinha'
 
 async function shareAchievement(fig: FigurinhaData) {
-  const text = `Desbloqueei ${fig.emoji} "${fig.nome}" na Lets Train! 💪\n\nTreina comigo → https://letstrain.com.br`
+  const imageUrl = `/api/share/conquista/${fig.codigo}?` + new URLSearchParams({
+    emoji: fig.emoji,
+    nome: fig.nome,
+    descricao: fig.descricao ?? '',
+  }).toString()
+
+  const text = `Desbloqueei ${fig.emoji} "${fig.nome}" no Lets Train! 💪\n\nTreina comigo → https://letstrain.com.br`
   try {
-    if (navigator.share) {
-      await navigator.share({ text })
+    const res = await fetch(imageUrl)
+    const blob = await res.blob()
+    const file = new File([blob], 'conquista.png', { type: 'image/png' })
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], text, title: 'Lets Train' })
+    } else if (navigator.share) {
+      await navigator.share({ text, title: 'Lets Train' })
     } else {
-      await navigator.clipboard.writeText(text)
+      window.open(imageUrl, '_blank')
     }
   } catch { /* usuário cancelou */ }
 }

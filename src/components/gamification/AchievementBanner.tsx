@@ -8,6 +8,7 @@ export interface NewAchievement {
   codigo: string
   nome: string
   icone_emoji: string
+  descricao?: string
 }
 
 interface AchievementBannerProps {
@@ -57,6 +58,7 @@ export default function AchievementBanner({ achievements, onDone }: AchievementB
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(false)
   const [shared, setShared] = useState(false)
+  const [sharing, setSharing] = useState(false)
 
   const current = achievements[index]
   const isLast = index === achievements.length - 1
@@ -80,17 +82,50 @@ export default function AchievementBanner({ achievements, onDone }: AchievementB
     }
   }
 
+  function buildImageUrl(ach: NewAchievement) {
+    const base = `/api/share/conquista/${ach.codigo}`
+    const p = new URLSearchParams({
+      emoji: ach.icone_emoji,
+      nome: ach.nome,
+      descricao: ach.descricao ?? '',
+    })
+    return `${base}?${p.toString()}`
+  }
+
   async function handleShare() {
-    const text = `Desbloqueei ${current.icone_emoji} "${current.nome}" na Lets Train! 💪\n\nTreina comigo → https://letstrain.com.br`
+    setSharing(true)
+    const imageUrl = buildImageUrl(current)
+    const text = `Desbloqueei ${current.icone_emoji} "${current.nome}" no Lets Train! 💪\n\nTreina comigo → https://letstrain.com.br`
     try {
-      if (navigator.share) {
-        await navigator.share({ text })
+      const res = await fetch(imageUrl)
+      const blob = await res.blob()
+      const file = new File([blob], 'conquista.png', { type: 'image/png' })
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], text, title: 'Lets Train' })
+      } else if (navigator.share) {
+        await navigator.share({ text, title: 'Lets Train' })
       } else {
         await navigator.clipboard.writeText(text)
         setShared(true)
         setTimeout(() => setShared(false), 2500)
       }
     } catch { /* usuário cancelou */ }
+    finally { setSharing(false) }
+  }
+
+  function handleWhatsApp() {
+    const text = encodeURIComponent(
+      `Desbloqueei ${current.icone_emoji} "${current.nome}" no Lets Train! 💪\n\nTreina comigo → https://letstrain.com.br`
+    )
+    window.open(`https://wa.me/?text=${text}`, '_blank')
+  }
+
+  function handleSaveImage() {
+    const a = document.createElement('a')
+    a.href = buildImageUrl(current)
+    a.download = `conquista-${current.codigo}.png`
+    a.click()
   }
 
   return (
@@ -239,12 +274,31 @@ export default function AchievementBanner({ achievements, onDone }: AchievementB
             animate={{ opacity: revealed ? 1 : 0 }}
             transition={{ delay: 0.5 }}
           >
+            {/* Compartilhar (native share com imagem) */}
             <button
               onClick={handleShare}
-              className="w-full h-11 rounded-xl border border-[#F59E0B]/30 bg-[#F59E0B]/08 text-[#F59E0B] font-semibold text-sm flex items-center justify-center gap-2 hover:bg-[#F59E0B]/12 transition-colors active:scale-[0.98]"
+              disabled={sharing}
+              className="w-full h-11 rounded-xl border border-[#F59E0B]/30 bg-[#F59E0B]/08 text-[#F59E0B] font-semibold text-sm flex items-center justify-center gap-2 hover:bg-[#F59E0B]/12 transition-colors active:scale-[0.98] disabled:opacity-60"
             >
-              {shared ? '✅ Copiado!' : '📤 Compartilhar conquista'}
+              {sharing ? '...' : shared ? '✅ Copiado!' : '📤 Compartilhar conquista'}
             </button>
+
+            {/* WhatsApp + Salvar em linha */}
+            <div className="flex gap-2">
+              <button
+                onClick={handleWhatsApp}
+                className="flex-1 h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/60 text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-white/[0.06] transition-colors active:scale-[0.98]"
+              >
+                <span>💬</span> WhatsApp
+              </button>
+              <button
+                onClick={handleSaveImage}
+                className="flex-1 h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/60 text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-white/[0.06] transition-colors active:scale-[0.98]"
+              >
+                <span>💾</span> Salvar
+              </button>
+            </div>
+
             <Button fullWidth onClick={handleNext}>
               {isLast ? 'Ver álbum 🎴' : `Próxima (${index + 1}/${achievements.length})`}
             </Button>
