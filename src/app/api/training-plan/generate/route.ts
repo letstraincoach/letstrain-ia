@@ -72,13 +72,20 @@ export async function POST() {
   }
 
   // ── Dados do usuário ──────────────────────────────────────────────────────
-  const [profileResult, equipamentosResult] = await Promise.all([
+  const [profileResult, equipamentosResult, historicoResult] = await Promise.all([
     supabase
       .from('user_profiles')
       .select('nivel_atual, objetivo, preferencia_treino, lesao_cronica, lesao_descricao, doenca_cardiaca, local_treino, dias_por_semana')
       .eq('id', user.id)
       .single(),
     supabase.from('user_equipment').select('nome_custom').eq('user_id', user.id),
+    supabase
+      .from('training_plans')
+      .select('nome_plano')
+      .eq('user_id', user.id)
+      .neq('status', 'ativo')
+      .order('created_at', { ascending: false })
+      .limit(2),
   ])
 
   if (!profileResult.data) {
@@ -87,6 +94,7 @@ export async function POST() {
 
   const profile = profileResult.data
   const equipamentos = (equipamentosResult.data ?? []).map((e) => e.nome_custom ?? '').filter(Boolean)
+  const historicoSemanas = (historicoResult.data ?? []).map((p) => p.nome_plano).filter(Boolean) as string[]
   const nivelAtual = profile.nivel_atual ?? 'adaptacao'
   const localTreino = profile.local_treino ?? 'condominio'
   const diasPorSemana = Math.min(5, Math.max(3, profile.dias_por_semana ?? 3))
@@ -105,6 +113,7 @@ export async function POST() {
     local_treino: localTreino as Parameters<typeof buildPlanPrompt>[0]['local_treino'],
     equipamentos,
     dias_por_semana: diasPorSemana,
+    historico_semanas: historicoSemanas,
   }
 
   const prompt = buildPlanPrompt(ctx, exerciseCatalog)

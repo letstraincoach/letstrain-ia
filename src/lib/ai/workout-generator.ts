@@ -20,6 +20,14 @@ export interface WorkoutContext {
   historico_recente: { exercicios_principais: string[] }[]
 }
 
+function getLevelRules(nivel: string): { series: string; reps: string; descanso: string } {
+  if (nivel.startsWith('adaptacao'))    return { series: '2',   reps: '12–15', descanso: '60–90s' }
+  if (nivel.startsWith('iniciante'))    return { series: '3',   reps: '10–15', descanso: '60–90s' }
+  if (nivel.startsWith('intermediario'))return { series: '3–4', reps: '8–12',  descanso: '60–90s' }
+  if (nivel.startsWith('avancado'))     return { series: '4',   reps: '6–12',  descanso: '90–120s após o par completo (bi-set)' }
+  /* atleta */                          return { series: '4–5', reps: '6–12',  descanso: '90–120s após o trio completo (tri-set)' }
+}
+
 // Classifica a academia com base nos equipamentos detectados
 function classificarAcademia(equipamentos: string[]): string {
   const eq = equipamentos.map((e) => e.toLowerCase())
@@ -88,6 +96,7 @@ Circuito metabólico sem impacto: mountain climber (lento), kettelbell swing (se
     : ''
 
   const catalogSection = exerciseCatalog ? `${exerciseCatalog}\n` : ''
+  const levelRules = getLevelRules(ctx.nivel)
 
   // Bloco 3: cardio ou circuito — instruções para o prompt e template JSON
   const bloco3Prompt = usaCardio
@@ -138,8 +147,9 @@ Séries: 1 série. Repetições/tempo: 30–60 segundos ou 10–15 reps leves.
 
 BLOCO 2 — FORÇA (${Math.round(temMinutos * 0.40)} min): ${blocos.forcaExs} exercícios
 Objetivo: força guiada ou funcional — USE os equipamentos disponíveis listados acima.
-Séries: ${ctx.nivel.startsWith('adaptacao') ? '2' : ctx.nivel.startsWith('iniciante') ? '3' : '3–4'}.
-Repetições: ${ctx.nivel.startsWith('adaptacao') ? '12–15' : '8–12'} (foco em técnica antes de carga).
+Séries: ${levelRules.series}.
+Repetições: ${levelRules.reps} (foco em técnica antes de carga).
+Descanso entre séries: ${levelRules.descanso}.
 Padrões obrigatórios: inclua pelo menos um empurrar + um puxar no bloco.
 
 MAPEAMENTO DE EQUIPAMENTOS → EXERCÍCIOS (use conforme disponível):

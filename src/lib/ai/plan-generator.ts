@@ -20,6 +20,15 @@ export interface PlanContext {
   local_treino: TrainingLocation
   equipamentos: string[]
   dias_por_semana: number  // 3–5
+  historico_semanas?: string[] | null  // nomes dos últimos planos concluídos
+}
+
+function getLevelRules(nivel: string): { series: string; reps: string; descanso: string } {
+  if (nivel.startsWith('adaptacao'))    return { series: '2',   reps: '12–15', descanso: '60–90s' }
+  if (nivel.startsWith('iniciante'))    return { series: '3',   reps: '10–15', descanso: '60–90s' }
+  if (nivel.startsWith('intermediario'))return { series: '3–4', reps: '8–12',  descanso: '60–90s' }
+  if (nivel.startsWith('avancado'))     return { series: '4',   reps: '6–12',  descanso: '90–120s após o par completo (bi-set)' }
+  /* atleta */                          return { series: '4–5', reps: '6–12',  descanso: '90–120s após o trio completo (tri-set)' }
 }
 
 // Rotação de grupos musculares por preferência de treino
@@ -85,11 +94,17 @@ export function buildPlanPrompt(ctx: PlanContext, exerciseCatalog?: string): str
 
   const catalogSection = exerciseCatalog ? `${exerciseCatalog}\n` : ''
 
+  const historicoSection = ctx.historico_semanas?.length
+    ? `HISTÓRICO (últimas semanas — varie metodologia, grupos musculares e nome do plano):\n${ctx.historico_semanas.map((n, i) => `  - ${i + 1} semana(s) atrás: "${n}"`).join('\n')}\n\n`
+    : ''
+
   // Template JSON do treino individual (repetido N vezes)
   const bloco3Key = usaCardio ? '"cardio"' : '"circuito"'
   const workoutTemplate = `{ "nome": string, "duracao_estimada": number, "preparacao": [...], "forca": [...], ${bloco3Key}: [...], "finisher": [...] }`
 
-  return `${catalogSection}Você é um especialista em periodização da Lets Train. Gere um plano semanal de ${totalDias} treinos completos.
+  const levelRules = getLevelRules(ctx.nivel)
+
+  return `${catalogSection}${historicoSection}Você é um especialista em periodização da Lets Train. Gere um plano semanal de ${totalDias} treinos completos.
 Responda APENAS com JSON válido. Sem texto extra.${modoSilencioso}
 PERFIL:
 Nível: ${ctx.nivel} (${levelLabel})
@@ -108,8 +123,9 @@ ${buildRotacao(ctx.preferencia_treino, totalDias)}
 REGRAS DE PERIODIZAÇÃO:
 - Treinos ${Math.ceil(totalDias / 2) + 1}–${totalDias} devem ter 1 série a mais que os treinos 1–${Math.ceil(totalDias / 2)} (sobrecarga progressiva)
 - Cada treino segue a estrutura de 4 blocos: preparacao → forca → ${usaCardio ? 'cardio' : 'circuito'} → finisher
-- Séries no Bloco 2: ${ctx.nivel.startsWith('adaptacao') ? '2' : ctx.nivel.startsWith('iniciante') ? '3' : '3–4'}
-- Repetições: ${ctx.nivel.startsWith('adaptacao') ? '12–15' : '8–12'}
+- Séries no Bloco 2: ${levelRules.series}
+- Repetições por série: ${levelRules.reps}
+- Descanso entre séries/pares: ${levelRules.descanso}
 - instrucoes: escreva como personal trainer, imperativo, 1–2 frases corridas (SEM listas, SEM hífens)${biTriSetNote}
 
 MAPEAMENTO EQUIPAMENTO → EXERCÍCIO:
