@@ -5,52 +5,291 @@ import { createClient } from '@/lib/supabase/client'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 
-// ── Listas de equipamentos comuns por local ────────────────────────────────────
+// ── SVG icons ─────────────────────────────────────────────────────────────────
+type IconProps = { className?: string }
+
+const IcoHalteres = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="2" y="14" width="7" height="12" rx="2"/>
+    <rect x="8" y="16" width="5" height="8" rx="1.5"/>
+    <line x1="13" y1="20" x2="27" y2="20" strokeWidth="2"/>
+    <rect x="27" y="16" width="5" height="8" rx="1.5"/>
+    <rect x="31" y="14" width="7" height="12" rx="2"/>
+  </svg>
+)
+
+const IcoKettlebell = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M14 18 Q13 8 20 8 Q27 8 26 18"/>
+    <path d="M11 22 Q11 34 20 34 Q29 34 29 22 Q29 16 20 16 Q11 16 11 22Z"/>
+  </svg>
+)
+
+const IcoBarra = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="2" y1="20" x2="38" y2="20" strokeWidth="2"/>
+    <rect x="2" y="11" width="6" height="18" rx="2"/>
+    <rect x="7" y="14" width="5" height="12" rx="1.5"/>
+    <rect x="32" y="11" width="6" height="18" rx="2"/>
+    <rect x="28" y="14" width="5" height="12" rx="1.5"/>
+  </svg>
+)
+
+const IcoBanco = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="20" y="20" width="16" height="5" rx="2"/>
+    <path d="M6 30 L6 16 Q6 10 12 10 L20 10 L20 20"/>
+    <rect x="4" y="28" width="5" height="8" rx="1.5"/>
+    <line x1="34" y1="25" x2="34" y2="34"/>
+    <line x1="22" y1="25" x2="22" y2="34"/>
+    <line x1="20" y1="34" x2="36" y2="34"/>
+  </svg>
+)
+
+const IcoBarraFixa = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="3" y1="10" x2="37" y2="10" strokeWidth="2.5"/>
+    <line x1="8" y1="10" x2="8" y2="36"/>
+    <line x1="32" y1="10" x2="32" y2="36"/>
+    <line x1="4" y1="36" x2="14" y2="36"/>
+    <line x1="26" y1="36" x2="36" y2="36"/>
+    <line x1="8" y1="36" x2="8" y2="32"/>
+    <line x1="32" y1="36" x2="32" y2="32"/>
+  </svg>
+)
+
+const IcoParalelas = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="3" y1="16" x2="37" y2="16" strokeWidth="2.5"/>
+    <line x1="3" y1="24" x2="37" y2="24" strokeWidth="2.5"/>
+    <line x1="10" y1="16" x2="10" y2="36"/>
+    <line x1="30" y1="16" x2="30" y2="36"/>
+    <line x1="6" y1="36" x2="14" y2="36"/>
+    <line x1="26" y1="36" x2="34" y2="36"/>
+  </svg>
+)
+
+const IcoLegPress = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="4" y1="36" x2="36" y2="36"/>
+    <rect x="28" y="24" width="8" height="12" rx="2"/>
+    <line x1="28" y1="30" x2="10" y2="14"/>
+    <rect x="4" y="6" width="12" height="10" rx="2"/>
+    <line x1="36" y1="30" x2="36" y2="24"/>
+    <line x1="10" y1="14" x2="4" y2="16"/>
+  </svg>
+)
+
+const IcoExtensora = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="22" y="8" width="5" height="14" rx="2"/>
+    <rect x="10" y="20" width="16" height="5" rx="2"/>
+    <path d="M14 25 L8 34"/>
+    <ellipse cx="6" cy="35" rx="3" ry="2"/>
+    <line x1="10" y1="25" x2="10" y2="36"/>
+    <line x1="26" y1="25" x2="26" y2="36"/>
+    <line x1="8" y1="36" x2="28" y2="36"/>
+  </svg>
+)
+
+const IcoFlexora = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="6" y="18" width="26" height="5" rx="2"/>
+    <path d="M28 23 Q36 23 36 30 Q36 36 28 36"/>
+    <ellipse cx="27" cy="36" rx="3" ry="2"/>
+    <line x1="10" y1="23" x2="10" y2="36"/>
+    <line x1="26" y1="23" x2="26" y2="36"/>
+    <line x1="8" y1="36" x2="26" y2="36"/>
+  </svg>
+)
+
+const IcoPuxador = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="6" y1="4" x2="34" y2="4" strokeWidth="2"/>
+    <line x1="6" y1="4" x2="6" y2="36"/>
+    <line x1="34" y1="4" x2="34" y2="36"/>
+    <circle cx="20" cy="6" r="3"/>
+    <line x1="20" y1="9" x2="20" y2="20"/>
+    <path d="M12 20 Q16 15 20 20 Q24 25 28 20"/>
+    <rect x="12" y="28" width="16" height="4" rx="2"/>
+    <line x1="4" y1="36" x2="36" y2="36"/>
+  </svg>
+)
+
+const IcoCrossover = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="6" y1="4" x2="6" y2="36"/>
+    <line x1="34" y1="4" x2="34" y2="36"/>
+    <circle cx="6" cy="8" r="2.5"/>
+    <circle cx="34" cy="8" r="2.5"/>
+    <line x1="8.5" y1="8" x2="22" y2="26"/>
+    <line x1="31.5" y1="8" x2="18" y2="26"/>
+    <circle cx="22" cy="26" r="2"/>
+    <circle cx="18" cy="26" r="2"/>
+    <line x1="2" y1="36" x2="12" y2="36"/>
+    <line x1="28" y1="36" x2="38" y2="36"/>
+  </svg>
+)
+
+const IcoSupino = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="6" y="26" width="28" height="5" rx="2"/>
+    <line x1="30" y1="8" x2="30" y2="26"/>
+    <line x1="24" y1="8" x2="24" y2="26"/>
+    <line x1="22" y1="8" x2="32" y2="8"/>
+    <line x1="3" y1="16" x2="37" y2="16" strokeWidth="2"/>
+    <rect x="3" y="10" width="5" height="12" rx="2"/>
+    <rect x="32" y="10" width="5" height="12" rx="2"/>
+    <line x1="10" y1="31" x2="10" y2="38"/>
+    <line x1="30" y1="31" x2="30" y2="38"/>
+  </svg>
+)
+
+const IcoEsteira = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="4" y="24" width="32" height="7" rx="3"/>
+    <rect x="16" y="6" width="10" height="8" rx="2"/>
+    <line x1="13" y1="14" x2="16" y2="6"/>
+    <line x1="27" y1="14" x2="24" y2="6"/>
+    <line x1="10" y1="24" x2="13" y2="14"/>
+    <line x1="30" y1="24" x2="27" y2="14"/>
+    <line x1="4" y1="31" x2="2" y2="38"/>
+    <line x1="36" y1="31" x2="38" y2="38"/>
+  </svg>
+)
+
+const IcoBicicleta = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <circle cx="11" cy="28" r="8"/>
+    <circle cx="11" cy="28" r="2"/>
+    <line x1="11" y1="28" x2="23" y2="18"/>
+    <line x1="23" y1="18" x2="30" y2="24"/>
+    <line x1="23" y1="18" x2="25" y2="9"/>
+    <line x1="21" y1="7" x2="29" y2="7"/>
+    <line x1="30" y1="24" x2="33" y2="14"/>
+    <line x1="29" y1="12" x2="37" y2="12"/>
+    <circle cx="22" cy="26" r="2"/>
+    <line x1="30" y1="24" x2="29" y2="36"/>
+    <line x1="37" y1="12" x2="37" y2="36"/>
+    <line x1="27" y1="36" x2="39" y2="36"/>
+  </svg>
+)
+
+const IcoEliptico = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="4" y1="36" x2="36" y2="36"/>
+    <line x1="10" y1="36" x2="16" y2="8"/>
+    <ellipse cx="24" cy="30" rx="11" ry="4" transform="rotate(-8 24 30)"/>
+    <line x1="16" y1="8" x2="24" y2="14"/>
+    <line x1="24" y1="14" x2="32" y2="8"/>
+    <line x1="30" y1="6" x2="38" y2="10"/>
+    <line x1="32" y1="36" x2="36" y2="20"/>
+  </svg>
+)
+
+const IcoColchonete = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <ellipse cx="20" cy="20" rx="16" ry="7" transform="rotate(-20 20 20)"/>
+    <ellipse cx="20" cy="20" rx="10" ry="4.5" transform="rotate(-20 20 20)"/>
+    <ellipse cx="20" cy="20" rx="4" ry="2" transform="rotate(-20 20 20)"/>
+    <ellipse cx="29" cy="13" rx="3" ry="7" transform="rotate(-20 29 13)"/>
+    <ellipse cx="11" cy="27" rx="3" ry="7" transform="rotate(-20 11 27)"/>
+  </svg>
+)
+
+const IcoElasticos = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <ellipse cx="20" cy="20" rx="15" ry="10"/>
+    <ellipse cx="20" cy="20" rx="9" ry="6"/>
+    <line x1="11" y1="13" x2="13" y2="11"/>
+    <line x1="20" y1="10" x2="22" y2="8"/>
+    <line x1="29" y1="13" x2="31" y2="11"/>
+  </svg>
+)
+
+const IcoStep = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M5 26 L35 26 L39 21 L9 21 Z"/>
+    <path d="M5 26 L35 26 L35 34 L5 34 Z"/>
+    <path d="M35 26 L39 21 L39 29 L35 34 Z"/>
+  </svg>
+)
+
+const IcoCorda = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <circle cx="20" cy="9" r="3"/>
+    <line x1="20" y1="12" x2="20" y2="24"/>
+    <path d="M5 30 Q10 10 20 8 Q30 10 35 30"/>
+    <line x1="20" y1="18" x2="8" y2="26"/>
+    <line x1="20" y1="18" x2="32" y2="26"/>
+    <line x1="20" y1="24" x2="15" y2="34"/>
+    <line x1="20" y1="24" x2="25" y2="34"/>
+  </svg>
+)
+
+const IcoBola = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <circle cx="20" cy="22" r="16"/>
+    <path d="M5 22 Q20 14 35 22"/>
+    <path d="M7 15 Q20 7 33 15"/>
+    <line x1="20" y1="6" x2="20" y2="38"/>
+  </svg>
+)
+
+const IcoTRX = ({ className }: IconProps) => (
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="15" y="2" width="10" height="4" rx="2"/>
+    <line x1="18" y1="6" x2="11" y2="24"/>
+    <line x1="22" y1="6" x2="29" y2="24"/>
+    <rect x="7" y="24" width="8" height="4" rx="2"/>
+    <rect x="25" y="24" width="8" height="4" rx="2"/>
+    <ellipse cx="11" cy="33" rx="5" ry="3"/>
+    <ellipse cx="29" cy="33" rx="5" ry="3"/>
+    <line x1="11" y1="28" x2="11" y2="30"/>
+    <line x1="29" y1="28" x2="29" y2="30"/>
+  </svg>
+)
+
+// ── Tipos ──────────────────────────────────────────────────────────────────────
 interface EquipItem {
   nome: string
   categoria: string
-  emoji: string
+  icon: (props: IconProps) => React.ReactElement
 }
 
 const CONDOMINIO_ITEMS: EquipItem[] = [
-  // Pesos livres
-  { nome: 'Halteres', categoria: 'pesos_livres', emoji: '🏋️' },
-  { nome: 'Kettlebell', categoria: 'pesos_livres', emoji: '🔔' },
-  { nome: 'Barras e anilhas', categoria: 'pesos_livres', emoji: '🥊' },
-  // Banco / suporte
-  { nome: 'Banco ajustável', categoria: 'maquinas', emoji: '🛋️' },
-  // Barras
-  { nome: 'Barra fixa', categoria: 'funcionais', emoji: '⬛' },
-  { nome: 'Paralelas', categoria: 'funcionais', emoji: '⚌' },
-  // Máquinas
-  { nome: 'Leg Press', categoria: 'maquinas', emoji: '🦵' },
-  { nome: 'Extensora', categoria: 'maquinas', emoji: '🦿' },
-  { nome: 'Flexora', categoria: 'maquinas', emoji: '🦿' },
-  { nome: 'Puxador / Lat Pull-down', categoria: 'maquinas', emoji: '⬇️' },
-  { nome: 'Crossover / Polia', categoria: 'maquinas', emoji: '🔀' },
-  { nome: 'Supino (banco + barra)', categoria: 'maquinas', emoji: '💪' },
-  // Cardio
-  { nome: 'Esteira', categoria: 'cardio', emoji: '🏃' },
-  { nome: 'Bicicleta ergométrica', categoria: 'cardio', emoji: '🚴' },
-  { nome: 'Elíptico', categoria: 'cardio', emoji: '🔁' },
-  // Funcionais
-  { nome: 'Colchonete / Tapete', categoria: 'funcionais', emoji: '🛏️' },
-  { nome: 'Elásticos / Miniband', categoria: 'funcionais', emoji: '🎗️' },
-  { nome: 'Step / Banco baixo', categoria: 'funcionais', emoji: '🪜' },
-  { nome: 'Corda de pular', categoria: 'funcionais', emoji: '🪢' },
-  { nome: 'Bola suíça', categoria: 'funcionais', emoji: '⚽' },
-  { nome: 'TRX / Suspensão', categoria: 'funcionais', emoji: '🧗' },
+  { nome: 'Halteres',               categoria: 'pesos_livres', icon: IcoHalteres    },
+  { nome: 'Kettlebell',             categoria: 'pesos_livres', icon: IcoKettlebell  },
+  { nome: 'Barras e anilhas',       categoria: 'pesos_livres', icon: IcoBarra       },
+  { nome: 'Banco ajustável',        categoria: 'maquinas',     icon: IcoBanco       },
+  { nome: 'Barra fixa',             categoria: 'funcionais',   icon: IcoBarraFixa   },
+  { nome: 'Paralelas',              categoria: 'funcionais',   icon: IcoParalelas   },
+  { nome: 'Leg Press',              categoria: 'maquinas',     icon: IcoLegPress    },
+  { nome: 'Extensora',              categoria: 'maquinas',     icon: IcoExtensora   },
+  { nome: 'Flexora',                categoria: 'maquinas',     icon: IcoFlexora     },
+  { nome: 'Puxador / Lat Pull-down',categoria: 'maquinas',     icon: IcoPuxador     },
+  { nome: 'Crossover / Polia',      categoria: 'maquinas',     icon: IcoCrossover   },
+  { nome: 'Supino (banco + barra)', categoria: 'maquinas',     icon: IcoSupino      },
+  { nome: 'Esteira',                categoria: 'cardio',       icon: IcoEsteira     },
+  { nome: 'Bicicleta ergométrica',  categoria: 'cardio',       icon: IcoBicicleta   },
+  { nome: 'Elíptico',               categoria: 'cardio',       icon: IcoEliptico    },
+  { nome: 'Colchonete / Tapete',    categoria: 'funcionais',   icon: IcoColchonete  },
+  { nome: 'Elásticos / Miniband',   categoria: 'funcionais',   icon: IcoElasticos   },
+  { nome: 'Step / Banco baixo',     categoria: 'funcionais',   icon: IcoStep        },
+  { nome: 'Corda de pular',         categoria: 'funcionais',   icon: IcoCorda       },
+  { nome: 'Bola suíça',             categoria: 'funcionais',   icon: IcoBola        },
+  { nome: 'TRX / Suspensão',        categoria: 'funcionais',   icon: IcoTRX         },
 ]
 
 const HOTEL_ITEMS: EquipItem[] = [
-  { nome: 'Colchonete / Tapete', categoria: 'funcionais', emoji: '🛏️' },
-  { nome: 'Halteres leves', categoria: 'pesos_livres', emoji: '🏋️' },
-  { nome: 'Elásticos / Miniband', categoria: 'funcionais', emoji: '🎗️' },
-  { nome: 'Corda de pular', categoria: 'funcionais', emoji: '🪢' },
-  { nome: 'Banco / Cadeira', categoria: 'maquinas', emoji: '🛋️' },
-  { nome: 'Esteira', categoria: 'cardio', emoji: '🏃' },
-  { nome: 'Bicicleta ergométrica', categoria: 'cardio', emoji: '🚴' },
-  { nome: 'Bola de exercício', categoria: 'funcionais', emoji: '⚽' },
+  { nome: 'Colchonete / Tapete',    categoria: 'funcionais',   icon: IcoColchonete  },
+  { nome: 'Halteres leves',         categoria: 'pesos_livres', icon: IcoHalteres    },
+  { nome: 'Elásticos / Miniband',   categoria: 'funcionais',   icon: IcoElasticos   },
+  { nome: 'Corda de pular',         categoria: 'funcionais',   icon: IcoCorda       },
+  { nome: 'Banco / Cadeira',        categoria: 'maquinas',     icon: IcoBanco       },
+  { nome: 'Esteira',                categoria: 'cardio',       icon: IcoEsteira     },
+  { nome: 'Bicicleta ergométrica',  categoria: 'cardio',       icon: IcoBicicleta   },
+  { nome: 'Bola de exercício',      categoria: 'funcionais',   icon: IcoBola        },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -70,26 +309,21 @@ function formatCep(value: string) {
 export default function EquipmentDetector({ userId, localTipo, onSaved }: EquipmentDetectorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Controle de etapas
   const [step, setStep] = useState<'select' | 'upload' | 'condo'>('select')
 
-  // Equipamentos selecionados (nomes)
   const commonList = localTipo === 'condominio' ? CONDOMINIO_ITEMS : HOTEL_ITEMS
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [customName, setCustomName] = useState('')
   const [customItems, setCustomItems] = useState<string[]>([])
 
-  // Upload / detecção por foto
   const [previews, setPreviews] = useState<string[]>([])
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
   const [detecting, setDetecting] = useState(false)
 
-  // Condo info
   const [condominioNome, setCondominioNome] = useState('')
   const [condominioCep, setCondominioCep] = useState('')
 
-  // Shared
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -180,14 +414,12 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         return
       }
 
-      // Mescla os detectados com a seleção atual
       const detectados = data.equipamentos ?? []
       setSelected((prev) => {
         const next = new Set(prev)
         detectados.forEach(({ nome }) => next.add(nome))
         return next
       })
-      // Adiciona à lista de custom os que não estão na lista padrão
       const commonNames = commonList.map((i) => i.nome)
       const novosCustom = detectados
         .map(({ nome }) => nome)
@@ -197,7 +429,6 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         return [...prev, ...novosCustom.filter((n) => !existing.has(n))]
       })
 
-      // Volta para select com os itens detectados já marcados
       setStep('select')
     } catch {
       setError('Erro de conexão. Tente novamente.')
@@ -206,7 +437,6 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
     }
   }
 
-  // ── Avançar do select ──────────────────────────────────────────────────────
   function handleSelectNext() {
     if (selected.size === 0) {
       setError('Selecione ao menos um equipamento.')
@@ -220,7 +450,6 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
     }
   }
 
-  // ── Salvar ─────────────────────────────────────────────────────────────────
   async function doSave() {
     setSaving(true)
     setError(null)
@@ -265,30 +494,37 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
           </p>
         </div>
 
-        {/* Grid de equipamentos comuns */}
-        <div className="flex flex-wrap gap-2">
+        {/* Grid de equipamentos */}
+        <div className="grid grid-cols-3 gap-2">
           {commonList.map((item) => {
             const isSelected = selected.has(item.nome)
+            const Icon = item.icon
             return (
               <button
                 key={item.nome}
                 type="button"
                 onClick={() => toggleItem(item.nome)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-all duration-150 active:scale-[0.97]
+                className={`relative flex flex-col items-center gap-2 p-3 rounded-xl border text-center transition-all duration-150 active:scale-[0.96]
                   ${isSelected
-                    ? 'border-[#FF8C00] bg-[#FF8C00]/15 text-[#FF8C00]'
-                    : 'border-white/10 bg-white/[0.03] text-white/60 hover:border-white/20'
+                    ? 'border-[#FF8C00] bg-[#FF8C00]/12 text-[#FF8C00]'
+                    : 'border-white/10 bg-white/[0.03] text-white/40 hover:border-white/20 hover:text-white/60'
                   }`}
               >
-                <span className="text-base leading-none">{item.emoji}</span>
-                <span>{item.nome}</span>
-                {isSelected && <span className="text-xs leading-none">✓</span>}
+                {isSelected && (
+                  <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[#FF8C00] flex items-center justify-center">
+                    <svg viewBox="0 0 10 10" fill="none" className="w-2.5 h-2.5">
+                      <path d="M2 5 L4 7 L8 3" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                )}
+                <Icon className="w-9 h-9" />
+                <span className="text-[11px] font-medium leading-tight">{item.nome}</span>
               </button>
             )
           })}
         </div>
 
-        {/* Itens personalizados adicionados */}
+        {/* Itens personalizados */}
         {customItems.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {customItems.map((nome) => (
@@ -371,7 +607,7 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
     )
   }
 
-  // ── Etapa: upload (detectar por foto) ─────────────────────────────────────
+  // ── Etapa: upload ──────────────────────────────────────────────────────────
   if (step === 'upload') {
     const atLimit = uploadedUrls.length >= 12
     const remaining = 12 - uploadedUrls.length
@@ -421,9 +657,7 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         {previews.length > 0 && (
           <div className="flex flex-col gap-2">
             <p className="text-xs text-white/40">
-              {uploading
-                ? 'Enviando...'
-                : `${uploadedUrls.length} foto(s) enviada(s)`}
+              {uploading ? 'Enviando...' : `${uploadedUrls.length} foto(s) enviada(s)`}
             </p>
             <div className="grid grid-cols-3 gap-2">
               {previews.map((url, i) => (
@@ -454,7 +688,7 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
             loading={detecting}
             onClick={handleDetect}
           >
-            {detecting ? 'A IA está analisando...' : `Identificar e adicionar à lista`}
+            {detecting ? 'A IA está analisando...' : 'Identificar e adicionar à lista'}
           </Button>
           <button
             type="button"
@@ -468,7 +702,7 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
     )
   }
 
-  // ── Etapa: condo (apenas condominio) ──────────────────────────────────────
+  // ── Etapa: condo ───────────────────────────────────────────────────────────
   const cepValido = condominioCep.replace(/\D/g, '').length === 8
   const nomeValido = condominioNome.trim().length >= 2
 
@@ -484,7 +718,7 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         </p>
       </div>
 
-      {/* Resumo dos equipamentos selecionados */}
+      {/* Resumo dos equipamentos */}
       <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
         <p className="text-xs text-white/40 mb-1.5">Equipamentos confirmados</p>
         <div className="flex flex-wrap gap-1.5">
@@ -501,7 +735,6 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         </div>
       </div>
 
-      {/* Fotos (se houver) */}
       {uploadedUrls.length > 0 && (
         <div className="flex flex-col gap-1.5">
           <p className="text-xs text-white/40">{uploadedUrls.length} foto(s) salvas ✓</p>
@@ -516,7 +749,6 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         </div>
       )}
 
-      {/* Nome do condomínio */}
       <div className="flex flex-col gap-2">
         <label className="text-sm font-medium text-white/70">
           Nome do condomínio <span className="text-[#FF8C00]">*</span>
@@ -529,7 +761,6 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
         />
       </div>
 
-      {/* CEP */}
       <div className="flex flex-col gap-2">
         <label className="text-sm font-medium text-white/70">
           CEP <span className="text-[#FF8C00]">*</span>
