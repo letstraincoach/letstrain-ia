@@ -21,11 +21,67 @@ const FEEDBACK_OPTIONS: { value: Feedback; label: string; emoji: string }[] = [
 
 const STAR_EMOJIS = ['😞', '😕', '😐', '😊', '🤩']
 
-function CelebrationScreen({ onClose }: { onClose: () => void }) {
+interface ShareData {
+  nomeTreino: string
+  duracao: number
+  streak: number
+  rating: number
+}
+
+function CelebrationScreen({ onClose, shareData }: { onClose: () => void; shareData: ShareData | null }) {
+  const [sharing, setSharing] = useState(false)
+  const [shared, setShared] = useState(false)
+
+  function buildShareUrl() {
+    if (!shareData) return ''
+    const p = new URLSearchParams({
+      nome: shareData.nomeTreino,
+      duracao: String(shareData.duracao),
+      streak: String(shareData.streak),
+      rating: String(shareData.rating),
+    })
+    return `/api/share/treino?${p.toString()}`
+  }
+
+  async function handleShare() {
+    setSharing(true)
+    const imageUrl = buildShareUrl()
+    const text = `Acabei de concluir "${shareData?.nomeTreino ?? 'meu treino'}" no Lets Train! 💪\n\nTreina comigo → https://letstrain.com.br`
+    try {
+      const res = await fetch(imageUrl)
+      const blob = await res.blob()
+      const file = new File([blob], 'treino.png', { type: 'image/png' })
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], text, title: 'Lets Train' })
+      } else if (navigator.share) {
+        await navigator.share({ text, title: 'Lets Train' })
+      } else {
+        await navigator.clipboard.writeText(text)
+        setShared(true)
+        setTimeout(() => setShared(false), 2500)
+      }
+    } catch { /* usuário cancelou */ }
+    finally { setSharing(false) }
+  }
+
+  function handleWhatsApp() {
+    const text = encodeURIComponent(
+      `Acabei de concluir "${shareData?.nomeTreino ?? 'meu treino'}" no Lets Train! 💪\n\nTreina comigo → https://letstrain.com.br`
+    )
+    window.open(`https://wa.me/?text=${text}`, '_blank')
+  }
+
+  function handleSaveImage() {
+    const a = document.createElement('a')
+    a.href = buildShareUrl()
+    a.download = 'treino-concluido.png'
+    a.click()
+  }
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center px-6 text-center">
       <motion.div
-        className="flex flex-col items-center gap-6"
+        className="flex flex-col items-center gap-6 max-w-sm w-full"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
@@ -50,7 +106,40 @@ function CelebrationScreen({ onClose }: { onClose: () => void }) {
             </motion.span>
           ))}
         </motion.div>
-        <Button fullWidth onClick={onClose} className="mt-4">
+
+        {/* Share buttons */}
+        {shareData && (
+          <motion.div
+            className="w-full flex flex-col gap-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+          >
+            <button
+              onClick={handleShare}
+              disabled={sharing}
+              className="w-full h-11 rounded-xl border border-[#FF8C00]/30 bg-[#FF8C00]/[0.08] text-[#FF8C00] font-semibold text-sm flex items-center justify-center gap-2 hover:bg-[#FF8C00]/[0.12] transition-colors active:scale-[0.98] disabled:opacity-60"
+            >
+              {sharing ? '...' : shared ? '✅ Copiado!' : '📤 Compartilhar treino'}
+            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleWhatsApp}
+                className="flex-1 h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/60 text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-white/[0.06] transition-colors active:scale-[0.98]"
+              >
+                <span>💬</span> WhatsApp
+              </button>
+              <button
+                onClick={handleSaveImage}
+                className="flex-1 h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/60 text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-white/[0.06] transition-colors active:scale-[0.98]"
+              >
+                <span>💾</span> Salvar
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        <Button fullWidth onClick={onClose}>
           Voltar para o Dashboard
         </Button>
       </motion.div>
