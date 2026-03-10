@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { track } from '@/lib/analytics/events'
 
 // Guilherme é o único personal — auto-salva e redireciona
 export default function PersonalPage() {
@@ -19,6 +20,7 @@ export default function PersonalPage() {
         .update({ personal_slug: 'guilherme' })
         .eq('id', user.id)
 
+      track('onboarding_completed', {})
       router.push('/dashboard')
     }
     autoAssign()

@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createClient } from '@/lib/supabase/client'
 import { cadastroSchema, type CadastroFormData } from '@/lib/validations/auth'
+import { track } from '@/lib/analytics/events'
 import Button from '@/components/ui/Button'
 import LetsTrainLogo from '@/components/ui/LetsTrainLogo'
 import Input from '@/components/ui/Input'
@@ -45,6 +46,15 @@ export default function CadastroPage() {
       return
     }
 
+    track('signup_completed', { method: 'email' })
+
+    // Fire-and-forget: email de boas-vindas
+    void fetch('/api/auth/welcome-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: data.nome, email: data.email }),
+    })
+
     router.push('/boas-vindas')
   }
 
@@ -52,6 +62,8 @@ export default function CadastroPage() {
     setGoogleLoading(true)
     setServerError(null)
     const supabase = createClient()
+
+    track('signup_started', { method: 'google' })
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',

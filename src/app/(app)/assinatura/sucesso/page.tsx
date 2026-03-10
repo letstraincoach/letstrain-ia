@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
+import { track } from '@/lib/analytics/events'
 
 function SucessoContent() {
   const router = useRouter()
@@ -12,7 +13,14 @@ function SucessoContent() {
   // Trial flow: setup_intent vem no param
   // Legacy flow: payment_intent vem no param
   const setupIntentId = params.get('setup_intent')
+  const planParam = params.get('plan') as 'mensal' | 'anual' | null
   const isTrial = !!setupIntentId
+
+  // Rastrear conversão de assinatura (fire-once)
+  useEffect(() => {
+    track('subscription_started', { plan: planParam ?? 'mensal', trial: isTrial })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Countdown imediato — webhook cria a subscription em background
   useEffect(() => {

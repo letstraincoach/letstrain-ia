@@ -1,5 +1,6 @@
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 import LetsTrainLogo from '@/components/ui/LetsTrainLogo'
+import PwaInstallPrompt from '@/components/ui/PwaInstallPrompt'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -12,6 +13,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </header>
 
       {children}
+
+      {/* PWA install prompt — aparece 30s após o usuário estar no app */}
+      <PwaInstallPrompt />
     </div>
   )
 }

@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/react'
+import { PostHogProvider } from '@/components/analytics/PostHogProvider'
 import './globals.css'
 
 const geistSans = Geist({
@@ -62,7 +64,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${geistSans.variable} antialiased`}>
-        {children}
+        <PostHogProvider>
+          {children}
+        </PostHogProvider>
+        <Analytics />
       </body>
     </html>
   )
