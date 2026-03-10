@@ -45,7 +45,7 @@ export default function CadastroPage() {
       return
     }
 
-    router.push('/quiz')
+    router.push('/boas-vindas')
   }
 
   async function handleGoogleSignup() {
