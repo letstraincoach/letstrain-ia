@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { GeneratedWorkout, WorkoutExercise } from '@/lib/ai/workout-schemas'
@@ -327,6 +327,105 @@ function BiometricsBadge({
   )
 }
 
+// ---- Timer de descanso ----
+function RestTimer({
+  remaining,
+  target,
+  exerciseName,
+  currentSet,
+  totalSets,
+  onSkip,
+}: {
+  remaining: number
+  target: number
+  exerciseName: string
+  currentSet: number
+  totalSets: number
+  onSkip: () => void
+}) {
+  const radius = 54
+  const circumference = 2 * Math.PI * radius
+  const progress = target > 0 ? remaining / target : 0
+  const strokeDashoffset = circumference * (1 - progress)
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-40 bg-[#0a0a0a]/96 flex flex-col items-center justify-center px-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div className="flex flex-col items-center gap-6 w-full max-w-sm">
+        {/* Label */}
+        <p className="text-xs text-white/35 uppercase tracking-[0.2em] font-semibold">
+          Descanso
+        </p>
+
+        {/* SVG circular countdown */}
+        <div className="relative">
+          <svg width="148" height="148" viewBox="0 0 148 148">
+            {/* Track */}
+            <circle
+              cx="74" cy="74" r={radius}
+              fill="none"
+              stroke="rgba(255,255,255,0.07)"
+              strokeWidth="8"
+            />
+            {/* Progress arc */}
+            <circle
+              cx="74" cy="74" r={radius}
+              fill="none"
+              stroke="#FF8C00"
+              strokeWidth="8"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              transform="rotate(-90 74 74)"
+              style={{ transition: 'stroke-dashoffset 1s linear' }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-5xl font-bold tabular-nums leading-none">{remaining}</span>
+            <span className="text-xs text-white/30 mt-1.5">segundos</span>
+          </div>
+        </div>
+
+        {/* Próxima série info */}
+        <div className="text-center">
+          <p className="text-xs text-white/35 mb-1">Próxima série</p>
+          <p className="text-xl font-bold leading-tight">{exerciseName}</p>
+          <div className="flex items-center justify-center gap-1.5 mt-2.5">
+            {Array.from({ length: totalSets }).map((_, i) => (
+              <div
+                key={i}
+                className={`rounded-full transition-all ${
+                  i < currentSet - 1
+                    ? 'w-2.5 h-2.5 bg-[#FF8C00]'
+                    : i === currentSet - 1
+                      ? 'w-3 h-3 bg-[#FF8C00] ring-2 ring-[#FF8C00]/35'
+                      : 'w-2 h-2 bg-white/15'
+                }`}
+              />
+            ))}
+          </div>
+          <p className="text-sm text-[#FF8C00] font-semibold mt-2">
+            Série {currentSet} de {totalSets}
+          </p>
+        </div>
+
+        {/* Pular */}
+        <button
+          onClick={onSkip}
+          className="text-sm text-white/30 hover:text-white/60 transition-colors border border-white/[0.1] rounded-full px-7 py-2.5 active:scale-95"
+        >
+          Pular descanso →
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
 // ---- Overview screen ----
 function WorkoutOverview({
   workout,
@@ -506,6 +605,88 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
   const [completing, setCompleting] = useState(false)
   const [videoExercise, setVideoExercise] = useState<string | null>(null)
 
+  // ── Rest timer state ────────────────────────────────────────────────────
+  const [currentSet, setCurrentSet] = useState(1)
+  const [restActive, setRestActive] = useState(false)
+  const [restRemaining, setRestRemaining] = useState(0)
+  const [restTarget, setRestTarget] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const onRestCompleteRef = useRef<() => void>(() => {})
+
+  // Reset set counter whenever exercise changes
+  useEffect(() => {
+    setCurrentSet(1)
+  }, [current])
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [])
+
+  function playBeep(type: 'start' | 'end') {
+    try {
+      const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
+      const gain = ctx.createGain()
+      gain.gain.value = 0.25
+      gain.connect(ctx.destination)
+
+      if (type === 'start') {
+        const osc = ctx.createOscillator()
+        osc.frequency.value = 440
+        osc.connect(gain)
+        osc.start(ctx.currentTime)
+        osc.stop(ctx.currentTime + 0.18)
+      } else {
+        // Triple ascending beep: 440 → 550 → 660
+        ;[440, 550, 660].forEach((freq, i) => {
+          const osc = ctx.createOscillator()
+          osc.frequency.value = freq
+          osc.connect(gain)
+          osc.start(ctx.currentTime + i * 0.18)
+          osc.stop(ctx.currentTime + i * 0.18 + 0.14)
+        })
+      }
+
+      setTimeout(() => ctx.close(), 2000)
+    } catch {
+      // Ignore if AudioContext unavailable
+    }
+  }
+
+  function startRest(seconds: number, onComplete: () => void) {
+    if (seconds <= 0) {
+      onComplete()
+      return
+    }
+    playBeep('start')
+    onRestCompleteRef.current = onComplete
+    setRestTarget(seconds)
+    setRestRemaining(seconds)
+    setRestActive(true)
+
+    let remaining = seconds
+    timerRef.current = setInterval(() => {
+      remaining -= 1
+      if (remaining <= 0) {
+        clearInterval(timerRef.current!)
+        timerRef.current = null
+        setRestRemaining(0)
+        setRestActive(false)
+        playBeep('end')
+        onComplete()
+      } else {
+        setRestRemaining(remaining)
+      }
+    }, 1000)
+  }
+
+  function skipRest() {
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null }
+    setRestActive(false)
+    setRestRemaining(0)
+    onRestCompleteRef.current()
+  }
+
   if (view === 'overview') {
     return (
       <>
@@ -526,8 +707,27 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
   const progressPct = Math.round(((current + 1) / total) * 100)
 
   function goNext() {
-    if (isLast && !jaExecutado) { setShowConfirm(true); return }
-    if (isLast) return
+    // Modo "já executado": navegação livre sem tracking de séries
+    if (jaExecutado) {
+      if (!isLast) { setDirection(1); setCurrent((c) => c + 1) }
+      return
+    }
+
+    // Ainda tem séries a completar neste exercício
+    if (currentSet < ex.series) {
+      startRest(ex.descanso_segundos, () => {
+        setCurrentSet((s) => s + 1)
+      })
+      return
+    }
+
+    // Última série concluída
+    if (isLast) {
+      setShowConfirm(true)
+      return
+    }
+
+    // Avança para o próximo exercício
     setDirection(1)
     setCurrent((c) => c + 1)
   }
@@ -565,6 +765,20 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
           loading={completing}
         />
       )}
+
+      {/* Timer de descanso */}
+      <AnimatePresence>
+        {restActive && (
+          <RestTimer
+            remaining={restRemaining}
+            target={restTarget}
+            exerciseName={ex.nome}
+            currentSet={currentSet + 1}
+            totalSets={ex.series}
+            onSkip={skipRest}
+          />
+        )}
+      </AnimatePresence>
 
       <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
         {/* Header */}
@@ -683,6 +897,27 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                     ))}
                   </div>
 
+                  {/* Progresso de séries (apenas no modo ativo) */}
+                  {!jaExecutado && ex.series > 1 && (
+                    <div className="flex items-center justify-center gap-2">
+                      {Array.from({ length: ex.series }).map((_, i) => (
+                        <div
+                          key={i}
+                          className={`rounded-full transition-all duration-300 ${
+                            i < currentSet - 1
+                              ? 'w-2.5 h-2.5 bg-[#FF8C00]'
+                              : i === currentSet - 1
+                                ? 'w-3 h-3 bg-[#FF8C00] ring-2 ring-[#FF8C00]/35'
+                                : 'w-2 h-2 bg-white/15'
+                          }`}
+                        />
+                      ))}
+                      <span className="text-xs text-white/35 ml-1">
+                        Série {currentSet}/{ex.series}
+                      </span>
+                    </div>
+                  )}
+
                   {/* Instruções */}
                   {ex.instrucoes && (
                     <p className="text-sm text-white/60 leading-relaxed">{ex.instrucoes}</p>
@@ -713,7 +948,11 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                 <Button variant="outline" onClick={goPrev} className="flex-none w-14">←</Button>
               )}
               <Button fullWidth onClick={goNext}>
-                {isLast ? '🏁 Concluir Treino' : 'Próximo →'}
+                {currentSet < ex.series
+                  ? `✓ Série ${currentSet} de ${ex.series} concluída`
+                  : isLast
+                    ? '🏁 Concluir Treino'
+                    : 'Próximo Exercício →'}
               </Button>
             </div>
           )}
