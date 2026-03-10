@@ -511,7 +511,7 @@ export default function QuizWizard() {
                 {
                   value: 'grupos_musculares',
                   label: 'Grupos Musculares',
-                  description: 'Dois grupos por sessão (push/pull/legs)',
+                  description: 'Dois ou mais grupos por sessão (push/pull/legs)',
                   icon: '⚡',
                 },
                 {

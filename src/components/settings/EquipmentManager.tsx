@@ -192,17 +192,19 @@ export default function EquipmentManager({
         </section>
       )}
 
-      {/* Quick-select por categoria */}
-      <section className="flex flex-col gap-4">
-        <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold">
+      {/* Quick-select por categoria — lista vertical */}
+      <section className="flex flex-col gap-1">
+        <h2 className="text-xs text-white/40 uppercase tracking-widest font-semibold mb-2">
           Selecionar equipamentos
         </h2>
-        {EQUIPMENT_CATEGORIES.map((cat) => (
-          <div key={cat.label} className="flex flex-col gap-2">
-            <p className={`text-[10px] uppercase tracking-widest font-semibold ${cat.cor}`}>
+        {EQUIPMENT_CATEGORIES.map((cat, catIdx) => (
+          <div key={cat.label}>
+            {/* Separador entre categorias (exceto a primeira) */}
+            {catIdx > 0 && <div className="h-px bg-white/[0.04] my-3" />}
+            <p className={`text-[10px] uppercase tracking-widest font-semibold mb-2 ${cat.cor}`}>
               {cat.label}
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-col gap-0.5">
               {cat.items.map((nome) => {
                 const selected = isSelected(nome)
                 return (
@@ -210,13 +212,20 @@ export default function EquipmentManager({
                     key={nome}
                     type="button"
                     onClick={() => toggleEquipment(nome)}
-                    className={`px-3 py-1.5 rounded-xl border text-sm transition-all ${
+                    className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm transition-all active:scale-[0.99] ${
                       selected
-                        ? 'border-[#FF8C00]/40 bg-[#FF8C00]/10 text-white'
-                        : 'border-white/[0.07] bg-white/[0.02] text-white/50 hover:text-white/80 hover:border-white/[0.15]'
+                        ? 'bg-[#FF8C00]/10 text-white'
+                        : 'text-white/50 hover:text-white/80 hover:bg-white/[0.03]'
                     }`}
                   >
-                    {nome}
+                    <span>{nome}</span>
+                    {selected && (
+                      <span className="w-4 h-4 rounded-full bg-[#FF8C00] flex items-center justify-center shrink-0">
+                        <svg viewBox="0 0 10 10" fill="none" className="w-2.5 h-2.5">
+                          <path d="M2 5 L4 7 L8 3" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </span>
+                    )}
                   </button>
                 )
               })}
