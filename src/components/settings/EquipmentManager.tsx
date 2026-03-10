@@ -23,68 +23,22 @@ const EQUIPMENT_CATEGORIES = [
   {
     label: 'Cardio',
     cor: 'text-red-400',
-    items: [
-      { icone: '🏃', nome: 'Esteira' },
-      { icone: '🚴', nome: 'Bike' },
-      { icone: '🚵', nome: 'Ergométrica' },
-      { icone: '⭕', nome: 'Elíptico' },
-      { icone: '🚣', nome: 'Remo' },
-      { icone: '⬆️', nome: 'Escada' },
-    ],
+    items: ['Esteira', 'Bike', 'Ergométrica', 'Elíptico', 'Remo', 'Escada'],
   },
   {
     label: 'Máquinas',
     cor: 'text-blue-400',
-    items: [
-      { icone: '🔩', nome: 'Polia' },
-      { icone: '✖️', nome: 'Cross Over' },
-      { icone: '🏋️', nome: 'Barra Smith' },
-      { icone: '🦵', nome: 'Extensora' },
-      { icone: '🦵', nome: 'Flexora' },
-      { icone: '🦵', nome: 'Leg Press' },
-      { icone: '💺', nome: 'Cadeira Adutora' },
-      { icone: '💺', nome: 'Cadeira Abdutora' },
-      { icone: '💺', nome: 'Cadeira Romana' },
-      { icone: '🔘', nome: 'Hack Squat' },
-      { icone: '🏋️', nome: 'Supino Máquina' },
-      { icone: '🔁', nome: 'Remada Máquina' },
-      { icone: '💪', nome: 'Pulldown' },
-      { icone: '🔲', nome: 'Voador' },
-      { icone: '🦾', nome: 'Panturrilha Máquina' },
-    ],
+    items: ['Polia', 'Cross Over', 'Barra Smith', 'Extensora', 'Flexora', 'Leg Press', 'Cadeira Adutora', 'Cadeira Abdutora', 'Cadeira Romana', 'Hack Squat', 'Supino Máquina', 'Remada Máquina', 'Pulldown', 'Voador', 'Panturrilha Máquina'],
   },
   {
     label: 'Funcional',
     cor: 'text-green-400',
-    items: [
-      { icone: '🏋️', nome: 'Halter' },
-      { icone: '⚫', nome: 'Kettlebell' },
-      { icone: '🔴', nome: 'Mini Band' },
-      { icone: '🟢', nome: 'Elástico' },
-      { icone: '🪢', nome: 'TRX' },
-      { icone: '🏐', nome: 'Medicine Ball' },
-      { icone: '🎯', nome: 'Bosu' },
-      { icone: '🪃', nome: 'Battle Rope' },
-      { icone: '📦', nome: 'Slam Ball' },
-      { icone: '🔗', nome: 'Corrente' },
-    ],
+    items: ['Halter', 'Kettlebell', 'Mini Band', 'Elástico', 'TRX', 'Medicine Ball', 'Bosu', 'Battle Rope', 'Slam Ball', 'Corrente'],
   },
   {
     label: 'Acessórios',
     cor: 'text-yellow-400',
-    items: [
-      { icone: '🪑', nome: 'Banco Ajustável' },
-      { icone: '🛋️', nome: 'Banco de Supino' },
-      { icone: '📦', nome: 'Caixote' },
-      { icone: '🪜', nome: 'Step' },
-      { icone: '🔵', nome: 'Barra' },
-      { icone: '🔴', nome: 'Anilha' },
-      { icone: '🧲', nome: 'Paralela' },
-      { icone: '🤸', nome: 'Barra Fixa' },
-      { icone: '🪢', nome: 'Corda' },
-      { icone: '🧱', nome: 'Colchonete' },
-      { icone: '🟤', nome: 'Foam Roller' },
-    ],
+    items: ['Banco Ajustável', 'Banco de Supino', 'Caixote', 'Step', 'Barra', 'Anilha', 'Paralela', 'Barra Fixa', 'Corda', 'Colchonete', 'Foam Roller'],
   },
 ]
 
@@ -249,21 +203,20 @@ export default function EquipmentManager({
               {cat.label}
             </p>
             <div className="flex flex-wrap gap-2">
-              {cat.items.map((eq) => {
-                const selected = isSelected(eq.nome)
+              {cat.items.map((nome) => {
+                const selected = isSelected(nome)
                 return (
                   <button
-                    key={eq.nome}
+                    key={nome}
                     type="button"
-                    onClick={() => toggleEquipment(eq.nome)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm transition-all ${
+                    onClick={() => toggleEquipment(nome)}
+                    className={`px-3 py-1.5 rounded-xl border text-sm transition-all ${
                       selected
                         ? 'border-[#FF8C00]/40 bg-[#FF8C00]/10 text-white'
                         : 'border-white/[0.07] bg-white/[0.02] text-white/50 hover:text-white/80 hover:border-white/[0.15]'
                     }`}
                   >
-                    <span>{eq.icone}</span>
-                    <span>{eq.nome}</span>
+                    {nome}
                   </button>
                 )
               })}

@@ -167,6 +167,7 @@ export default function AvaliacaoPage() {
   const [screen, setScreen] = useState<Screen>('form')
   const [levelUpData, setLevelUpData] = useState<{ previous: TrainingLevel; next: TrainingLevel } | null>(null)
   const [achievements, setAchievements] = useState<NewAchievement[]>([])
+  const [shareDataState, setShareDataState] = useState<ShareData | null>(null)
   const [postWorkoutRegistered, setPostWorkoutRegistered] = useState(false)
   const [registeringPosTreino, setRegisteringPosTreino] = useState<string | null>(null)
 
@@ -231,13 +232,13 @@ export default function AvaliacaoPage() {
       }).catch(() => {/* best-effort */ })
     }
 
-    // 2. Obter nível atual (para animar transição)
-    const { data: profileData } = await supabase
-      .from('user_profiles')
-      .select('nivel_atual')
-      .eq('id', user.id)
-      .single()
-    const currentLevel = (profileData?.nivel_atual ?? 'adaptacao') as TrainingLevel
+    // 2. Obter nível atual + nome do treino em paralelo
+    const [profileResult2, workoutResult] = await Promise.all([
+      supabase.from('user_profiles').select('nivel_atual').eq('id', user.id).single(),
+      supabase.from('workouts').select('exercicios').eq('id', workoutId).eq('user_id', user.id).single(),
+    ])
+    const currentLevel = (profileResult2.data?.nivel_atual ?? 'adaptacao') as TrainingLevel
+    const exerciciosRaw = workoutResult.data?.exercicios as { nome?: string; duracao_estimada?: number } | null
 
     // 3. Chamar post-complete (level-up + achievements) — best-effort
     let leveledUp = false
@@ -259,6 +260,20 @@ export default function AvaliacaoPage() {
     } catch {
       // sem bloqueio — segue para celebração
     }
+
+    // 3b. Buscar streak atualizado (após post-complete incrementar)
+    const { data: progressData } = await supabase
+      .from('user_progress')
+      .select('streak_atual')
+      .eq('id', user.id)
+      .single()
+
+    setShareDataState({
+      nomeTreino: exerciciosRaw?.nome ?? 'Treino Concluído',
+      duracao: exerciciosRaw?.duracao_estimada ?? 30,
+      streak: progressData?.streak_atual ?? 1,
+      rating: rating ?? 5,
+    })
 
     setSaving(false)
 
@@ -296,7 +311,7 @@ export default function AvaliacaoPage() {
   }
 
   if (screen === 'celebration') {
-    return <CelebrationScreen onClose={() => router.push('/dashboard')} shareData={null} />
+    return <CelebrationScreen onClose={() => router.push('/dashboard')} shareData={shareDataState} />
   }
 
   // ── Formulário ───────────────────────────────────────────────────────────
