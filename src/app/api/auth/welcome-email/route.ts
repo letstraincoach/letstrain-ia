@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = 'Lets Train <ola@letstrain.com.br>'
 
 export async function POST(req: Request) {
@@ -11,6 +10,7 @@ export async function POST(req: Request) {
     if (!email) return NextResponse.json({ error: 'email required' }, { status: 400 })
     if (!process.env.RESEND_API_KEY) return NextResponse.json({ ok: true }) // sem-op em dev
 
+    const resend = new Resend(process.env.RESEND_API_KEY)
     const firstName = name?.split(' ')[0] ?? 'atleta'
 
     await resend.emails.send({
