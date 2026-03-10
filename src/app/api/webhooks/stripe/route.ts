@@ -68,9 +68,10 @@ export async function POST(request: Request) {
   // ── invoice.paid (trial expirou e pagamento processado) ─────────────────
   if (event.type === 'invoice.paid') {
     const invoice = event.data.object as Stripe.Invoice
-    const subscriptionId = typeof invoice.subscription === 'string'
-      ? invoice.subscription
-      : (invoice.subscription as Stripe.Subscription | null)?.id
+    const sub = (invoice as unknown as Record<string, unknown>).subscription
+    const subscriptionId = typeof sub === 'string'
+      ? sub
+      : (sub as Stripe.Subscription | null)?.id
 
     if (!subscriptionId) return NextResponse.json({ ok: true })
 
@@ -129,9 +130,10 @@ export async function POST(request: Request) {
   // ── invoice.payment_failed (pagamento falhou após trial) ─────────────────
   if (event.type === 'invoice.payment_failed') {
     const invoice = event.data.object as Stripe.Invoice
-    const subscriptionId = typeof invoice.subscription === 'string'
-      ? invoice.subscription
-      : (invoice.subscription as Stripe.Subscription | null)?.id
+    const sub2 = (invoice as unknown as Record<string, unknown>).subscription
+    const subscriptionId = typeof sub2 === 'string'
+      ? sub2
+      : (sub2 as Stripe.Subscription | null)?.id
 
     if (subscriptionId) {
       await supabase

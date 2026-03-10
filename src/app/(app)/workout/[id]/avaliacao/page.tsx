@@ -228,7 +228,7 @@ export default function AvaliacaoPage() {
           fc_maxima: fcX > 0 ? fcX : null,
           calorias_reais: cal > 0 ? cal : null,
         }),
-      }).catch(() => {/* best-effort */})
+      }).catch(() => {/* best-effort */ })
     }
 
     // 2. Obter nível atual (para animar transição)
@@ -296,7 +296,7 @@ export default function AvaliacaoPage() {
   }
 
   if (screen === 'celebration') {
-    return <CelebrationScreen onClose={() => router.push('/dashboard')} />
+    return <CelebrationScreen onClose={() => router.push('/dashboard')} shareData={null} />
   }
 
   // ── Formulário ───────────────────────────────────────────────────────────

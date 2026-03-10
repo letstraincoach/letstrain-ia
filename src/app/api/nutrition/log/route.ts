@@ -32,9 +32,9 @@ export async function GET(request: Request) {
   const totais = (logs ?? []).reduce(
     (acc, log) => ({
       calorias: acc.calorias + (log.calorias_total ?? 0),
-      proteina: acc.proteina + parseFloat(log.proteina_total ?? '0'),
-      carbo: acc.carbo + parseFloat(log.carbo_total ?? '0'),
-      gordura: acc.gordura + parseFloat(log.gordura_total ?? '0'),
+      proteina: acc.proteina + Number(log.proteina_total ?? 0),
+      carbo: acc.carbo + Number(log.carbo_total ?? 0),
+      gordura: acc.gordura + Number(log.gordura_total ?? 0),
     }),
     { calorias: 0, proteina: 0, carbo: 0, gordura: 0 }
   )
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
       user_id: user.id,
       data,
       tipo,
-      items,
+      items: items as unknown as import('@/types/database.types').Json,
       calorias_total,
       proteina_total,
       carbo_total,

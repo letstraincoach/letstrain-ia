@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   }
 
   // ── Buscar plano ativo e próximo treino não executado ─────────────────────
-  const { data: planoAtivo } = await sb
+  const { data: planoAtivo } = await supabase
     .from('training_plans')
     .select('id, nome_plano, nivel, local_treino, plan_workouts(id, dia_numero, workout_json, executado)')
     .eq('user_id', user.id)
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
   }
 
   // ── Marcar plan_workout como executado e linkar workout_id ────────────────
-  await sb
+  await supabase
     .from('plan_workouts')
     .update({ executado: true, workout_id: savedWorkout.id })
     .eq('id', proximoTreino.id)

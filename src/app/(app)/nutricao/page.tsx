@@ -20,13 +20,13 @@ export default async function NutricaoPage() {
       .select('peso, altura, idade, sexo, objetivo, dias_por_semana')
       .eq('id', user.id)
       .single(),
-    sb
+    supabase
       .from('food_logs')
       .select('*')
       .eq('user_id', user.id)
       .eq('data', hoje)
       .order('criado_em', { ascending: true }),
-    sb
+    supabase
       .from('food_logs')
       .select('id, tipo, calorias_total, items')
       .eq('user_id', user.id)
@@ -36,7 +36,7 @@ export default async function NutricaoPage() {
   ])
 
   const profile = profileResult.data
-  const logs: Array<{
+  const logs = ((logsResult.data ?? []) as unknown) as Array<{
     id: string
     tipo: string
     calorias_total: number
@@ -44,20 +44,20 @@ export default async function NutricaoPage() {
     carbo_total: number
     gordura_total: number
     items: Array<{ food_id: string; nome: string; icone: string; quantidade: number; calorias: number; proteina_g: number; carbo_g: number; gordura_g: number }>
-  }> = logsResult.data ?? []
+  }>
 
-  const logsOntem: Array<{ id: string; tipo: string; calorias_total: number; items: unknown[] }> = ontemResult.data ?? []
+  const logsOntem = (ontemResult.data ?? []) as Array<{ id: string; tipo: string; calorias_total: number; items: unknown[] }>
 
   // Metas
   const metaCalorias = profile
     ? calcularMetaCalorica({
-        peso: profile.peso,
-        altura: profile.altura,
-        idade: profile.idade,
-        sexo: profile.sexo,
-        objetivo: profile.objetivo,
-        dias_por_semana: profile.dias_por_semana,
-      })
+      peso: profile.peso,
+      altura: profile.altura,
+      idade: profile.idade,
+      sexo: profile.sexo as 'masculino' | 'feminino' | null,
+      objetivo: profile.objetivo,
+      dias_por_semana: profile.dias_por_semana,
+    })
     : 2000
 
   const metaProteina = calcularMetaProteina(profile?.peso ?? null)
