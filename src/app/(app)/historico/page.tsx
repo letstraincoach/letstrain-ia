@@ -32,8 +32,8 @@ function getWorkoutStats(exercicios: GeneratedWorkout) {
   return { totalExercicios, grupos: [...grupos].slice(0, 3) }
 }
 
-function groupByMonth(workouts: Array<{ data: string }>) {
-  const groups: Record<string, typeof workouts> = {}
+function groupByMonth<T extends { data: string }>(workouts: T[]) {
+  const groups: Record<string, T[]> = {}
   for (const w of workouts) {
     const key = w.data.slice(0, 7) // YYYY-MM
     if (!groups[key]) groups[key] = []
