@@ -146,7 +146,7 @@ export default function BoasVindasPage() {
           transition={{ duration: 0.4, delay: 0.35 }}
         >
           {[
-            { icon: '🤖', label: 'Treinos por IA' },
+            { icon: '🤖', label: 'Inteligência Artificial conectada' },
             { icon: '📊', label: 'Progresso real' },
             { icon: '🏆', label: 'Conquistas' },
           ].map((f) => (
