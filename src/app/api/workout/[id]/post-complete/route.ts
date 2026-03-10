@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { NextResponse } from 'next/server'
 import { LEVEL_CONFIG } from '@/lib/training/levels.config'
 import type { TrainingLevel } from '@/types/database.types'
@@ -287,6 +288,24 @@ export async function POST(_request: Request, { params }: Props) {
   }
 
   void Promise.allSettled(pushTasks)
+
+  // ── Notificação pós-treino agendada para 1h depois (fire-and-forget) ────
+  void (async () => {
+    try {
+      const serviceClient = createServiceClient()
+      const scheduledFor = new Date(Date.now() + 60 * 60 * 1000).toISOString() // +1h
+      await serviceClient.from('scheduled_push_notifications').insert({
+        user_id: user.id,
+        scheduled_for: scheduledFor,
+        title: '🍽️ Hora da refeição pós-treino!',
+        body: 'Registre o que você comeu para otimizar sua recuperação e manter o progresso.',
+        url: '/nutricao',
+        icon: '/icon-192.png',
+      })
+    } catch {
+      // best-effort — não bloqueia a resposta
+    }
+  })()
 
   return NextResponse.json({
     leveledUp,

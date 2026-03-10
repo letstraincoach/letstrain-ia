@@ -231,8 +231,89 @@ Deno.serve(async () => {
     }
   }
 
+  // ── Notificações agendadas (ex: lembrete pós-treino 1h depois) ─────────────
+  let scheduledSentCount = 0
+
+  const nowIso = now.toISOString()
+  const { data: scheduledNotifs } = await supabase
+    .from('scheduled_push_notifications')
+    .select('id, user_id, title, body, url, icon')
+    .eq('sent', false)
+    .lte('scheduled_for', nowIso)
+    .limit(100)
+
+  if (scheduledNotifs?.length) {
+    const sentIds: string[] = []
+    const schedExpiredEndpoints: string[] = []
+
+    await Promise.allSettled(
+      scheduledNotifs.map(async (notif) => {
+        const { data: userSubs } = await supabase
+          .from('push_subscriptions')
+          .select('endpoint, keys')
+          .eq('user_id', notif.user_id)
+          .eq('ativo', true)
+
+        if (!userSubs?.length) {
+          sentIds.push(notif.id as string)
+          return
+        }
+
+        await Promise.allSettled(
+          userSubs.map(async (sub) => {
+            try {
+              await webpush.sendNotification(
+                {
+                  endpoint: sub.endpoint as string,
+                  keys: sub.keys as { p256dh: string; auth: string },
+                },
+                JSON.stringify({
+                  title: notif.title,
+                  body: notif.body,
+                  url: notif.url ?? '/dashboard',
+                  icon: notif.icon ?? '/icon-192.png',
+                })
+              )
+              scheduledSentCount++
+            } catch (err: unknown) {
+              if (typeof err === 'object' && err !== null && 'statusCode' in err) {
+                const status = (err as { statusCode: number }).statusCode
+                if (status === 410 || status === 404) {
+                  schedExpiredEndpoints.push(sub.endpoint as string)
+                }
+              }
+            }
+          })
+        )
+
+        sentIds.push(notif.id as string)
+      })
+    )
+
+    if (sentIds.length > 0) {
+      await supabase
+        .from('scheduled_push_notifications')
+        .update({ sent: true, sent_at: nowIso })
+        .in('id', sentIds)
+    }
+
+    if (schedExpiredEndpoints.length > 0) {
+      await supabase
+        .from('push_subscriptions')
+        .update({ ativo: false })
+        .in('endpoint', schedExpiredEndpoints)
+    }
+
+    console.log(`[scheduled-push] Enviado: ${scheduledSentCount} | Processados: ${sentIds.length}`)
+  }
+
   return new Response(
-    JSON.stringify({ sent: sentCount, streak_sent: streakSentCount, expired: expiredEndpoints.length }),
+    JSON.stringify({
+      sent: sentCount,
+      streak_sent: streakSentCount,
+      scheduled_sent: scheduledSentCount,
+      expired: expiredEndpoints.length,
+    }),
     { headers: { 'Content-Type': 'application/json' } }
   )
 })

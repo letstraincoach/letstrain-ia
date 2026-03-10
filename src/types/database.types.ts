@@ -763,6 +763,45 @@ export type Database = {
         }
         Relationships: []
       }
+      scheduled_push_notifications: {
+        Row: {
+          id: string
+          user_id: string
+          scheduled_for: string
+          title: string
+          body: string
+          url: string | null
+          icon: string | null
+          sent: boolean
+          sent_at: string | null
+          criado_em: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          scheduled_for: string
+          title: string
+          body: string
+          url?: string | null
+          icon?: string | null
+          sent?: boolean
+          sent_at?: string | null
+          criado_em?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          scheduled_for?: string
+          title?: string
+          body?: string
+          url?: string | null
+          icon?: string | null
+          sent?: boolean
+          sent_at?: string | null
+          criado_em?: string
+        }
+        Relationships: []
+      }
       peso_historico: {
         Row: {
           id: string
