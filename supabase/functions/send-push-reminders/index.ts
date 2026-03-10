@@ -139,8 +139,100 @@ Deno.serve(async () => {
 
   console.log(`[send-push-reminders] Enviado: ${sentCount} | Hora: ${horaFormatada} | Dia: ${currentDay}`)
 
+  // ── Streak em risco — dispara às 19h Brasília ─────────────────────────────
+  let streakSentCount = 0
+
+  if (currentHour === 19) {
+    const hoje = brasiliaTime.toISOString().split('T')[0]
+
+    // Usuários com streak >= 3 e push ativo
+    const { data: streakSubs } = await supabase
+      .from('push_subscriptions')
+      .select('user_id, endpoint, keys')
+      .eq('ativo', true)
+
+    if (streakSubs?.length) {
+      const streakUserIds = [...new Set(streakSubs.map((s) => s.user_id as string))]
+
+      // Filtrar: assinatura ativa
+      const { data: activeSubs2 } = await supabase
+        .from('subscriptions')
+        .select('user_id')
+        .in('user_id', streakUserIds)
+        .in('status', ['ativa', 'trial'])
+
+      const activeIds2 = new Set((activeSubs2 ?? []).map((s) => s.user_id as string))
+
+      // Buscar streaks >= 3
+      const { data: streakData } = await supabase
+        .from('user_progress')
+        .select('id, streak_atual')
+        .in('id', [...activeIds2])
+        .gte('streak_atual', 3)
+
+      if (streakData?.length) {
+        const atRiskIds = new Set(streakData.map((p) => p.id as string))
+        const streakMap = new Map(streakData.map((p) => [p.id as string, p.streak_atual as number]))
+
+        // Verificar quem JÁ treinou hoje (excluir do alerta)
+        const { data: treinosHoje } = await supabase
+          .from('workouts')
+          .select('user_id')
+          .in('user_id', [...atRiskIds])
+          .eq('data', hoje)
+          .eq('status', 'executado')
+
+        const treinouHoje = new Set((treinosHoje ?? []).map((w) => w.user_id as string))
+
+        // Usuários em risco: streak >= 3 e não treinou hoje
+        const atRiskSubs = streakSubs.filter((s) =>
+          atRiskIds.has(s.user_id as string) && !treinouHoje.has(s.user_id as string)
+        )
+
+        const streakExpired: string[] = []
+
+        await Promise.allSettled(
+          atRiskSubs.map(async (sub) => {
+            const streak = streakMap.get(sub.user_id as string) ?? 3
+            try {
+              await webpush.sendNotification(
+                {
+                  endpoint: sub.endpoint as string,
+                  keys: sub.keys as { p256dh: string; auth: string },
+                },
+                JSON.stringify({
+                  title: `🔥 Streak de ${streak} dias em risco!`,
+                  body: `Você ainda não treinou hoje. Não quebre sua sequência agora — falta pouco!`,
+                  url: '/workout/checkin',
+                  icon: '/icon-192.png',
+                })
+              )
+              streakSentCount++
+            } catch (err: unknown) {
+              if (typeof err === 'object' && err !== null && 'statusCode' in err) {
+                const status = (err as { statusCode: number }).statusCode
+                if (status === 410 || status === 404) {
+                  streakExpired.push(sub.endpoint as string)
+                }
+              }
+            }
+          })
+        )
+
+        if (streakExpired.length > 0) {
+          await supabase
+            .from('push_subscriptions')
+            .update({ ativo: false })
+            .in('endpoint', streakExpired)
+        }
+
+        console.log(`[streak-risk] Enviado: ${streakSentCount} | Em risco: ${atRiskSubs.length}`)
+      }
+    }
+  }
+
   return new Response(
-    JSON.stringify({ sent: sentCount, expired: expiredEndpoints.length }),
+    JSON.stringify({ sent: sentCount, streak_sent: streakSentCount, expired: expiredEndpoints.length }),
     { headers: { 'Content-Type': 'application/json' } }
   )
 })
