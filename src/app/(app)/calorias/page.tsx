@@ -71,7 +71,7 @@ export default function NutricaoPage() {
         .single()
 
       if (profile) {
-        setMetaCalorias(calcularMetaCalorica(profile))
+        setMetaCalorias(calcularMetaCalorica({ ...profile, sexo: profile.sexo as 'masculino' | 'feminino' | null }))
         setMetaProteina(calcularMetaProteina(profile.peso))
       }
 
