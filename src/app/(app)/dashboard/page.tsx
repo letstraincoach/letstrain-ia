@@ -95,7 +95,7 @@ export default async function DashboardPage() {
     // Plano semanal ativo
     supabase
       .from('training_plans')
-      .select('id, nome_plano, total_dias, plan_workouts(dia_numero, executado)')
+      .select('id, nome_plano, total_dias, plan_workouts(dia_numero, executado, workout_id, workout_json)')
       .eq('user_id', user.id)
       .eq('status', 'ativo')
       .gte('valido_ate', hoje)
@@ -116,11 +116,12 @@ export default async function DashboardPage() {
   // Plano semanal
   const planoAtivo = activePlanResult?.data ?? null
   const planWorkoutsSorted = planoAtivo
-    ? (planoAtivo.plan_workouts as Array<{ dia_numero: number; executado: boolean }>)
+    ? (planoAtivo.plan_workouts as Array<{ dia_numero: number; executado: boolean; workout_id: string | null; workout_json: { nome?: string } | null }>)
         .sort((a, b) => a.dia_numero - b.dia_numero)
     : []
   const planDiaAtual = planWorkoutsSorted.filter((pw) => pw.executado).length + 1
   const planTemTreino = planWorkoutsSorted.some((pw) => !pw.executado)
+  const proximoDia = planWorkoutsSorted.find((pw) => !pw.executado)
 
   if (profile && !profile.onboarding_completo) redirect('/quiz')
 
@@ -184,26 +185,80 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {/* Card do plano semanal — só aparece se tem plano ativo com treinos disponíveis */}
-        {planoAtivo && planTemTreino && !treinouHoje && (
-          <div className="flex items-center gap-3 rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.05] px-4 py-3">
-            <span className="text-xl shrink-0">📋</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-[10px] text-[#FF8C00] uppercase tracking-widest font-semibold">Plano ativo</p>
-              <p className="text-sm font-semibold truncate">{planoAtivo.nome_plano}</p>
-              <p className="text-xs text-white/40">
-                Treino {planDiaAtual} de {planWorkoutsSorted.length} — Apenas 3 perguntas rápidas
-              </p>
+        {/* Plano Semanal Visual */}
+        {planoAtivo && (
+          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 pt-3 pb-2">
+              <div>
+                <p className="text-[10px] text-[#FF8C00] uppercase tracking-widest font-semibold">Plano semanal</p>
+                <p className="text-sm font-semibold truncate">{planoAtivo.nome_plano}</p>
+              </div>
+              <span className="text-xs text-white/30 tabular-nums">
+                {planWorkoutsSorted.filter(pw => pw.executado).length}/{planWorkoutsSorted.length}
+              </span>
             </div>
-            <div className="flex gap-1 shrink-0">
-              {planWorkoutsSorted.map((pw, i) => (
-                <div
-                  key={i}
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: pw.executado ? '#FF8C00' : 'rgba(255,255,255,0.15)' }}
-                />
-              ))}
+
+            {/* Scroll horizontal de dias */}
+            <div className="flex gap-2 px-4 pb-4 overflow-x-auto no-scrollbar">
+              {planWorkoutsSorted.map((pw) => {
+                const isDone    = pw.executado
+                const isNext    = !isDone && pw.dia_numero === planDiaAtual
+                const nomeTreino = pw.workout_json?.nome ?? `Treino ${pw.dia_numero}`
+                const nomeShort  = nomeTreino.replace(/treino\s+/i, '').slice(0, 18)
+
+                return (
+                  <div
+                    key={pw.dia_numero}
+                    className="flex flex-col items-center gap-1.5 shrink-0"
+                    style={{ minWidth: 60 }}
+                  >
+                    <div
+                      className="w-14 h-14 rounded-xl flex flex-col items-center justify-center gap-0.5 border transition-colors"
+                      style={{
+                        background: isDone
+                          ? 'rgba(255,140,0,0.12)'
+                          : isNext
+                          ? 'rgba(255,140,0,0.08)'
+                          : 'rgba(255,255,255,0.03)',
+                        borderColor: isDone
+                          ? 'rgba(255,140,0,0.40)'
+                          : isNext
+                          ? 'rgba(255,140,0,0.25)'
+                          : 'rgba(255,255,255,0.07)',
+                      }}
+                    >
+                      {isDone ? (
+                        <span className="text-lg">✅</span>
+                      ) : isNext ? (
+                        <span className="text-lg">🔥</span>
+                      ) : (
+                        <span className="text-[11px] font-bold text-white/25">D{pw.dia_numero}</span>
+                      )}
+                    </div>
+                    <p
+                      className="text-[9px] text-center leading-tight"
+                      style={{ color: isDone ? 'rgba(255,140,0,0.7)' : isNext ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.25)', maxWidth: 60 }}
+                    >
+                      {nomeShort}
+                    </p>
+                  </div>
+                )
+              })}
             </div>
+
+            {/* CTA — só se tem treino pendente e não treinou hoje */}
+            {planTemTreino && !treinouHoje && proximoDia && (
+              <Link
+                href="/workout/checkin"
+                className="flex items-center justify-between px-4 py-3 border-t border-white/[0.05] hover:bg-white/[0.02] transition-colors"
+              >
+                <p className="text-sm font-semibold text-[#FF8C00]">
+                  Iniciar treino {planDiaAtual} →
+                </p>
+                <p className="text-xs text-white/30">3 perguntas rápidas</p>
+              </Link>
+            )}
           </div>
         )}
 
