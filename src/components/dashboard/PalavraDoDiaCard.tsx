@@ -12,59 +12,45 @@ interface Props {
   initialPalavra: Palavra | null
 }
 
+// Data de hoje em Brasília (UTC-3)
+function hojeKey() {
+  return new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString().split('T')[0]
+}
+
 export default function PalavraDoDiaCard({ initialPalavra }: Props) {
   const [palavra, setPalavra] = useState<Palavra | null>(initialPalavra)
-  const [loading, setLoading] = useState(!initialPalavra)
+  const [loading, setLoading] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
-  const [musicOn, setMusicOn] = useState(false)
+  const [modalIn, setModalIn]   = useState(false)
+  const [musicOn, setMusicOn]   = useState(false)
 
-  const audioCtxRef = useRef<AudioContext | null>(null)
-  const masterGainRef = useRef<GainNode | null>(null)
+  const audioCtxRef    = useRef<AudioContext | null>(null)
+  const masterGainRef  = useRef<GainNode | null>(null)
+  const autoOpenedRef  = useRef(false)
 
-  // Lazy-fetch se não veio do servidor
-  useEffect(() => {
-    if (initialPalavra) return
-    fetch('/api/palavra-do-dia')
-      .then((r) => r.json())
-      .then((data: Partial<Palavra>) => {
-        if (data.versiculo_referencia) setPalavra(data as Palavra)
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false))
-  }, [initialPalavra])
-
-  // ── Gospel ambient — acorde C maior com harmônicos suaves ─────────────────
+  // ── Gospel ambient — acorde C maior com harmônicos suaves ────────────────
   const startMusic = useCallback(() => {
     if (audioCtxRef.current) return
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const AudioCtx = window.AudioContext || (window as any).webkitAudioContext
     if (!AudioCtx) return
-
     const ctx: AudioContext = new AudioCtx()
-
     const masterGain = ctx.createGain()
     masterGain.gain.setValueAtTime(0, ctx.currentTime)
-    masterGain.gain.linearRampToValueAtTime(0.09, ctx.currentTime + 4) // fade in 4s
+    masterGain.gain.linearRampToValueAtTime(0.09, ctx.currentTime + 4)
     masterGain.connect(ctx.destination)
-
-    // Acorde: C2, G2, C3, E3, G3, C4 — suave como órgão de igreja
     const freqs = [65.41, 98.0, 130.81, 164.81, 196.0, 261.63]
     freqs.forEach((freq, i) => {
       const osc = ctx.createOscillator()
       osc.type = i < 2 ? 'triangle' : 'sine'
       osc.frequency.setValueAtTime(freq, ctx.currentTime)
-      // Micro-detune para riqueza tonal
       osc.detune.setValueAtTime((i - 2.5) * 2.5, ctx.currentTime)
-
       const oscGain = ctx.createGain()
       oscGain.gain.setValueAtTime(1 / freqs.length, ctx.currentTime)
-
       osc.connect(oscGain)
       oscGain.connect(masterGain)
       osc.start()
     })
-
     audioCtxRef.current = ctx
     masterGainRef.current = masterGain
     setMusicOn(true)
@@ -73,7 +59,7 @@ export default function PalavraDoDiaCard({ initialPalavra }: Props) {
   const stopMusic = useCallback(() => {
     if (!audioCtxRef.current || !masterGainRef.current) return
     const gain = masterGainRef.current
-    const ctx = audioCtxRef.current
+    const ctx  = audioCtxRef.current
     gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5)
     setTimeout(() => {
       ctx.close().catch(() => {})
@@ -83,93 +69,107 @@ export default function PalavraDoDiaCard({ initialPalavra }: Props) {
     }, 1700)
   }, [])
 
-  const openModal = () => {
+  // ── Abrir / fechar com animação ──────────────────────────────────────────
+  const openModal = useCallback(() => {
+    // Garantir que a palavra está carregada
+    if (!palavra) {
+      setLoading(true)
+      fetch('/api/palavra-do-dia')
+        .then((r) => r.json())
+        .then((data: Partial<Palavra>) => {
+          if (data.versiculo_referencia) setPalavra(data as Palavra)
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false))
+    }
     setModalOpen(true)
     document.body.style.overflow = 'hidden'
-    // Inicia música após breve delay para não bloquear render
-    setTimeout(startMusic, 400)
-  }
+    // Entrada com pequeno delay para CSS transition funcionar
+    setTimeout(() => setModalIn(true), 20)
+    setTimeout(startMusic, 700)
+  }, [palavra, startMusic])
 
-  const closeModal = () => {
-    setModalOpen(false)
-    document.body.style.overflow = ''
+  const closeModal = useCallback(() => {
+    setModalIn(false)
     stopMusic()
-  }
+    setTimeout(() => {
+      setModalOpen(false)
+      document.body.style.overflow = ''
+    }, 500)
+  }, [stopMusic])
 
-  // Cleanup ao desmontar
+  // ── Auto-abrir na primeira visita do dia ─────────────────────────────────
+  useEffect(() => {
+    if (autoOpenedRef.current) return
+    const key = `palavraDoDia_shown_${hojeKey()}`
+    if (typeof window === 'undefined' || localStorage.getItem(key)) return
+    autoOpenedRef.current = true
+    localStorage.setItem(key, '1')
+    // Abre após a página terminar de carregar
+    const t = setTimeout(() => openModal(), 900)
+    return () => clearTimeout(t)
+  }, [openModal])
+
+  // ── Cleanup ──────────────────────────────────────────────────────────────
   useEffect(() => {
     return () => {
-      if (audioCtxRef.current) {
-        audioCtxRef.current.close().catch(() => {})
-      }
+      if (audioCtxRef.current) audioCtxRef.current.close().catch(() => {})
       document.body.style.overflow = ''
     }
   }, [])
 
-  // ── Teaser card ──────────────────────────────────────────────────────────
+  // ── Botão do pombo — pequeno e centralizado ──────────────────────────────
   return (
     <>
-      <button
-        onClick={openModal}
-        className="w-full rounded-2xl p-4 flex items-center gap-4 text-left transition-all active:scale-[0.98] hover:scale-[1.01]"
-        style={{
-          background: 'linear-gradient(135deg, rgba(255,215,0,0.09) 0%, rgba(180,130,0,0.05) 100%)',
-          border: '1px solid rgba(255,215,0,0.22)',
-          boxShadow: '0 0 32px rgba(255,215,0,0.06) inset',
-        }}
-      >
-        {/* Ícone */}
-        <div
-          className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+      <div className="flex justify-center">
+        <button
+          onClick={openModal}
+          className="flex flex-col items-center gap-1 px-5 py-2.5 rounded-full transition-all active:scale-90 hover:scale-105"
           style={{
-            background: 'radial-gradient(circle, rgba(255,215,0,0.15) 0%, rgba(255,215,0,0.05) 100%)',
-            border: '1px solid rgba(255,215,0,0.3)',
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,215,0,0.20)',
           }}
         >
-          <span className="text-2xl">✝️</span>
-        </div>
-
-        {/* Texto */}
-        <div className="flex-1 min-w-0">
-          <p
-            className="text-[10px] font-bold uppercase tracking-widest mb-1"
-            style={{ color: 'rgba(255,215,0,0.55)' }}
+          <span className="text-xl leading-none">🕊️</span>
+          <span
+            className="text-[8px] font-bold uppercase tracking-widest leading-none"
+            style={{ color: 'rgba(255,215,0,0.45)' }}
           >
             Palavra do Dia
-          </p>
-          {loading ? (
-            <div className="flex flex-col gap-1.5">
-              <div className="h-2.5 rounded-full bg-white/[0.06] animate-pulse w-3/4" />
-            </div>
-          ) : palavra ? (
-            <p className="text-sm font-semibold text-white/80 truncate">
-              {palavra.versiculo_referencia}
-            </p>
-          ) : (
-            <p className="text-xs text-white/40">Toque para receber sua palavra</p>
-          )}
-          <p className="text-[10px] text-white/30 mt-0.5">Toque e receba a mensagem de Deus</p>
-        </div>
+          </span>
+        </button>
+      </div>
 
-        <span style={{ color: 'rgba(255,215,0,0.35)' }} className="text-base shrink-0">✨</span>
-      </button>
-
-      {/* ── Modal full-screen ─────────────────────────────────────────────── */}
+      {/* ── Modal full-screen com entrada dramática ────────────────────────── */}
       {modalOpen && (
         <div
-          className="fixed inset-0 z-50 flex flex-col overflow-y-auto"
+          className="fixed inset-0 z-50 flex flex-col"
           style={{
             background: 'linear-gradient(180deg, #080604 0%, #0c0900 40%, #080604 100%)',
+            opacity: modalIn ? 1 : 0,
+            transition: 'opacity 0.5s ease',
           }}
         >
-          {/* Ambient glow */}
+          {/* Ambient glow pulsante */}
           <div
             className="fixed inset-0 pointer-events-none"
             style={{
               background:
-                'radial-gradient(ellipse 90% 60% at 50% 25%, rgba(255,215,0,0.07) 0%, transparent 65%)',
+                'radial-gradient(ellipse 90% 60% at 50% 25%, rgba(255,215,0,0.08) 0%, transparent 65%)',
+              animation: modalIn ? 'palavraGlow 3s ease-in-out infinite' : undefined,
             }}
           />
+
+          <style>{`
+            @keyframes palavraGlow {
+              0%, 100% { opacity: 0.7; }
+              50% { opacity: 1; }
+            }
+            @keyframes pomboFloat {
+              0%, 100% { transform: translateY(0px); }
+              50% { transform: translateY(-6px); }
+            }
+          `}</style>
 
           {/* Header */}
           <div className="relative flex items-center justify-between px-6 pt-14 pb-2 shrink-0">
@@ -177,10 +177,9 @@ export default function PalavraDoDiaCard({ initialPalavra }: Props) {
               className="text-[10px] font-bold uppercase tracking-widest"
               style={{ color: 'rgba(255,215,0,0.45)' }}
             >
-              ✝ Palavra do Dia
+              🕊️ Palavra do Dia
             </span>
             <div className="flex items-center gap-2">
-              {/* Toggle música */}
               <button
                 onClick={() => (musicOn ? stopMusic() : startMusic())}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all"
@@ -192,8 +191,6 @@ export default function PalavraDoDiaCard({ initialPalavra }: Props) {
               >
                 🎵 {musicOn ? 'Som ligado' : 'Som desligado'}
               </button>
-
-              {/* Fechar */}
               <button
                 onClick={closeModal}
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-white/70 transition-colors"
@@ -204,20 +201,27 @@ export default function PalavraDoDiaCard({ initialPalavra }: Props) {
             </div>
           </div>
 
-          {/* Conteúdo principal */}
-          <div className="relative flex-1 flex flex-col items-center px-7 py-8 gap-7 max-w-md mx-auto w-full">
-
-            {/* Ícone da cruz com halo */}
+          {/* Conteúdo — entra vindo de baixo */}
+          <div
+            className="relative flex-1 flex flex-col items-center px-7 py-8 gap-7 max-w-md mx-auto w-full overflow-y-auto"
+            style={{
+              transform: modalIn ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.96)',
+              opacity: modalIn ? 1 : 0,
+              transition: 'transform 0.55s cubic-bezier(0.34, 1.36, 0.64, 1), opacity 0.45s ease',
+            }}
+          >
+            {/* Pombo com halo — flutuante */}
             <div className="flex flex-col items-center gap-2">
               <div
-                className="w-20 h-20 rounded-full flex items-center justify-center"
+                className="w-24 h-24 rounded-full flex items-center justify-center"
                 style={{
                   background: 'radial-gradient(circle, rgba(255,215,0,0.14) 0%, rgba(255,215,0,0.03) 70%)',
                   border: '1px solid rgba(255,215,0,0.22)',
-                  boxShadow: '0 0 60px rgba(255,215,0,0.12)',
+                  boxShadow: '0 0 60px rgba(255,215,0,0.14)',
+                  animation: modalIn ? 'pomboFloat 4s ease-in-out infinite' : undefined,
                 }}
               >
-                <span className="text-4xl">✝️</span>
+                <span className="text-5xl">🕊️</span>
               </div>
               <p
                 className="text-[11px] font-semibold uppercase tracking-widest"
@@ -261,7 +265,7 @@ export default function PalavraDoDiaCard({ initialPalavra }: Props) {
                 </p>
               ) : (
                 <p className="text-sm text-white/30 italic">
-                  Não foi possível carregar a palavra de hoje. Tente novamente.
+                  Não foi possível carregar a palavra. Tente novamente.
                 </p>
               )}
             </div>
@@ -285,10 +289,10 @@ export default function PalavraDoDiaCard({ initialPalavra }: Props) {
               </div>
             )}
 
-            {/* CTA — Amém */}
+            {/* Amém */}
             <button
               onClick={closeModal}
-              className="w-full h-13 rounded-xl font-bold text-sm py-3.5 transition-all active:scale-[0.98]"
+              className="w-full rounded-xl font-bold text-sm py-3.5 transition-all active:scale-[0.98]"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,215,0,0.15) 0%, rgba(255,165,0,0.08) 100%)',
                 border: '1px solid rgba(255,215,0,0.30)',
@@ -299,7 +303,7 @@ export default function PalavraDoDiaCard({ initialPalavra }: Props) {
             </button>
 
             <p
-              className="text-[10px] text-center pb-4"
+              className="text-[10px] text-center pb-6"
               style={{ color: 'rgba(255,255,255,0.18)' }}
             >
               Nova palavra amanhã
