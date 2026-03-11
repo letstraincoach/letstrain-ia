@@ -1,5 +1,6 @@
 /**
  * Supabase Edge Function — send-push-reminders
+ * v2 — relatório semanal domingo 9h
  *
  * Agendamento recomendado: a cada hora (cron "0 * * * *")
  * Via Supabase Dashboard → Edge Functions → Schedules
