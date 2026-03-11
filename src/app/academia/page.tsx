@@ -4,15 +4,15 @@ import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'Lets Train para Academia — Pare de abandonar. Comece a evoluir.',
-  description: '8 em cada 10 pessoas abandonam a academia em 6 meses. Descubra como a Lets Train resolve o problema do abandono com metodologia própria, IA e gamificação.',
+  description: '8 em cada 10 pessoas abandonam a academia em 6 meses por falta de metodologia e acompanhamento. A Lets Train resolve isso com o Método Lets Train e tecnologia.',
   openGraph: {
     title: 'Lets Train para Academia — Pare de abandonar. Comece a evoluir.',
-    description: '8 em cada 10 pessoas abandonam a academia em 6 meses por falta de metodologia e acompanhamento. A Lets Train resolve isso.',
+    description: '8 em cada 10 pessoas abandonam a academia em 6 meses. Conheça o Método Lets Train com tecnologia aplicada.',
     url: 'https://letstrain.com.br/academia',
   },
   twitter: {
-    title: 'Lets Train para Academia — Metodologia + IA + Gamificação',
-    description: 'Pare de ser mais um número na academia. Treinos personalizados com IA, progressão automática e resultados reais.',
+    title: 'Lets Train para Academia — Metodologia + Tecnologia + Gamificação',
+    description: 'Pare de ser mais um número na academia. Método Lets Train com progressão automática e resultados reais.',
   },
   alternates: {
     canonical: '/academia',
@@ -52,37 +52,38 @@ export default function AcademiaPage() {
         </div>
       </nav>
 
-      {/* ── Churn Hook — seção de abertura ──────────────────── */}
+      {/* ── Churn Hook ───────────────────────────────────────── */}
       <section className="px-6 pt-16 pb-20 relative overflow-hidden">
-        {/* Glow vermelho de alerta */}
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none"
           style={{ background: 'radial-gradient(ellipse, rgba(239,68,68,0.06) 0%, transparent 70%)' }}
         />
         <div className="max-w-3xl mx-auto flex flex-col items-center text-center gap-8">
 
-          {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-full px-4 py-1.5">
             <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-[10px] text-red-400 font-bold uppercase tracking-widest">A verdade sobre as academias</span>
+            <span className="text-[10px] text-red-400 font-bold uppercase tracking-widest">A verdade sobre as academias no Brasil</span>
           </div>
 
-          {/* Stat principal */}
-          <div className="flex flex-col gap-3">
-            <p className="text-6xl sm:text-8xl font-black" style={{ color: '#EF4444' }}>8/10</p>
-            <h1 className="text-2xl sm:text-3xl font-black leading-tight text-white">
-              pessoas abandonam a academia<br />
-              em até <span className="text-red-400">6 meses.</span>
+          {/* Stat principal — mais impactante */}
+          <div className="flex flex-col gap-4">
+            <p className="text-base sm:text-lg text-white/50 font-medium">Você sabia que...</p>
+            <h1 className="text-4xl sm:text-6xl font-black leading-tight text-white">
+              <span style={{ color: '#EF4444' }}>8 em cada 10 pessoas</span><br />
+              que entram na academia hoje<br />
+              vão abandonar em menos de<br />
+              <span style={{ color: '#EF4444' }}>6 meses.</span>
             </h1>
+            <p className="text-lg sm:text-xl text-white/60 font-semibold mt-2">Sabe por quê?</p>
           </div>
 
           {/* Motivos */}
           <div className="flex flex-col sm:flex-row gap-3 w-full max-w-2xl">
             {[
               { icon: '😤', label: 'Péssimo atendimento' },
-              { icon: '🎯', label: 'Sem metodologia' },
-              { icon: '📉', label: 'Zero resultado' },
-              { icon: '👻', label: 'Ninguém te acompanha' },
+              { icon: '🎯', label: 'Falta de metodologia' },
+              { icon: '📉', label: 'Zero resultado visível' },
+              { icon: '👻', label: 'Ninguém acompanha você' },
             ].map((item) => (
               <div
                 key={item.label}
@@ -94,10 +95,9 @@ export default function AcademiaPage() {
             ))}
           </div>
 
-          {/* Transição */}
           <p className="text-lg sm:text-xl text-white/60 leading-relaxed max-w-xl">
             Você paga a mensalidade, vai animado nos primeiros dias e some em 3 meses.{' '}
-            <span className="text-white font-semibold">Não é fraqueza — é falta de sistema.</span>
+            <span className="text-white font-semibold">Não é fraqueza. É falta de sistema.</span>
           </p>
 
           <div className="w-full max-w-sm h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
@@ -116,7 +116,6 @@ export default function AcademiaPage() {
         />
         <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
 
-          {/* Texto */}
           <div className="flex flex-col items-center lg:items-start gap-6 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 bg-[#FF8C00]/10 border border-[#FF8C00]/20 rounded-full px-4 py-1.5">
               <span className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest">🏋️ Para quem treina em academia</span>
@@ -125,12 +124,12 @@ export default function AcademiaPage() {
             <h2 className="text-3xl sm:text-5xl font-black leading-tight tracking-tight">
               Metodologia real.{' '}
               <span className="text-[#FF8C00]">Progressão automática.</span>{' '}
-              Personal IA{' '}
-              <span className="text-[#FF8C00]">disponível 24h.</span>
+              Seu treino pronto{' '}
+              <span className="text-[#FF8C00]">em 3 minutos.</span>
             </h2>
 
             <p className="text-base sm:text-lg text-white/50 leading-relaxed max-w-lg">
-              A Lets Train transforma sua ida à academia em uma jornada estruturada — com treinos personalizados para os equipamentos da <em>sua</em> academia, progressão real e gamificação que mantém você voltando.
+              A Lets Train aplica o Método Lets Train nos equipamentos da sua academia e transforma cada ida em uma sessão estruturada, com progressão real e gamificação que mantém você voltando.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
@@ -239,19 +238,19 @@ export default function AcademiaPage() {
                 icon: '🎯',
                 prob: 'Sem metodologia',
                 sol: 'Método Lets Train',
-                desc: '4 blocos por treino: Preparação → Força → Circuito → Finisher. Estrutura profissional gerada por IA a cada sessão.',
+                desc: '4 blocos por treino: Preparação, Força, Circuito e Finisher. Estrutura profissional criada por um personal trainer com 15 anos de prática, aplicada no app a cada sessão.',
               },
               {
                 icon: '📈',
                 prob: 'Sem progressão',
                 sol: '15 Níveis automáticos',
-                desc: 'O app rastreia cada treino e sobe de nível quando você bate as metas. Nunca mais estagnado — a carga e o volume crescem com você.',
+                desc: 'O app rastreia cada treino e sobe de nível quando você bate as metas. Nunca mais estagnado. A carga e o volume crescem com você.',
               },
               {
                 icon: '👤',
                 prob: 'Ninguém te acompanha',
-                sol: 'Personal IA 24h',
-                desc: 'Check-in diário de disposição e energia. O treino adapta ao seu estado — treino leve quando está cansado, intenso quando está no pique.',
+                sol: 'Acompanhamento pelo app 24h',
+                desc: 'Check-in diário de disposição e energia. O treino adapta a intensidade ao seu estado: mais leve quando você está cansado, mais intenso quando está no pique.',
               },
               {
                 icon: '🏋️',
@@ -263,13 +262,13 @@ export default function AcademiaPage() {
                 icon: '🎮',
                 prob: 'Sem motivação',
                 sol: 'Gamificação real',
-                desc: '59 conquistas, Lets Coins, streak diário e rankings. Cada treino concluído gera recompensas concretas — não só "bom trabalho".',
+                desc: '59 conquistas, Lets Coins, streak diário. Cada treino concluído gera recompensas concretas. Nada de parabéns vago.',
               },
               {
                 icon: '📊',
                 prob: 'Sem resultado visível',
                 sol: 'Lets Body Score',
-                desc: 'Score 0-100 que mede sua evolução com 4 pilares e 15 indicadores. Você vê o resultado crescer — mesmo quando a balança não move.',
+                desc: 'Score 0-100 que mede sua evolução com 4 pilares e 15 indicadores. Você vê o resultado crescer, mesmo quando a balança não move.',
               },
             ].map((item) => (
               <div
@@ -288,7 +287,7 @@ export default function AcademiaPage() {
         </div>
       </section>
 
-      {/* ── App Showcase — telas ─────────────────────────────── */}
+      {/* ── App Showcase ─────────────────────────────────────── */}
       <section className="px-6 py-20 bg-white/[0.015]">
         <div className="max-w-5xl mx-auto flex flex-col gap-12">
           <div className="text-center">
@@ -338,7 +337,7 @@ export default function AcademiaPage() {
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-white/40 text-center leading-tight">Marque o que a academia tem — o treino usa exatamente isso</p>
+              <p className="text-xs text-white/40 text-center leading-tight">Marque o que a academia tem. O treino usa exatamente isso.</p>
             </div>
 
             {/* Phone 2 — Exercício com máquina */}
@@ -349,7 +348,7 @@ export default function AcademiaPage() {
                 </div>
                 <div className="p-3 flex flex-col gap-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[9px] text-[#FF8C00] font-bold uppercase">Força — 3/5</span>
+                    <span className="text-[9px] text-[#FF8C00] font-bold uppercase">Força 3/5</span>
                     <span className="text-[9px] text-white/30">4×10</span>
                   </div>
                   <p className="text-[12px] font-black leading-tight">Leg Press 45°</p>
@@ -376,7 +375,7 @@ export default function AcademiaPage() {
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-white/40 text-center leading-tight">Execute série por série — com instrução e descanso</p>
+              <p className="text-xs text-white/40 text-center leading-tight">Execute série por série com instrução e timer de descanso.</p>
             </div>
 
             {/* Phone 3 — Progressão */}
@@ -393,7 +392,7 @@ export default function AcademiaPage() {
                       🏋️
                     </div>
                     <div>
-                      <p className="text-[11px] font-black text-[#FF8C00]">Nível 7 — Intermediário Ouro</p>
+                      <p className="text-[11px] font-black text-[#FF8C00]">Nível 7 · Intermediário Ouro</p>
                       <p className="text-[9px] text-white/40">+2 níveis neste mês</p>
                     </div>
                   </div>
@@ -416,7 +415,7 @@ export default function AcademiaPage() {
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-white/40 text-center leading-tight">Acompanhe sua evolução real — nível, streak e score</p>
+              <p className="text-xs text-white/40 text-center leading-tight">Acompanhe sua evolução real: nível, streak e score.</p>
             </div>
 
             {/* Phone 4 — Conquistas */}
@@ -455,7 +454,7 @@ export default function AcademiaPage() {
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-white/40 text-center leading-tight">59 figurinhas — desbloqueie com cada conquista</p>
+              <p className="text-xs text-white/40 text-center leading-tight">59 figurinhas. Desbloqueie com cada conquista.</p>
             </div>
 
           </div>
@@ -479,13 +478,13 @@ export default function AcademiaPage() {
               },
               {
                 num: '02',
-                title: 'A IA monta seu treino do dia',
-                desc: 'Baseado no Método Lets Train, nos seus equipamentos, nível atual e disposição de hoje. Um treino único, diferente a cada sessão. Nunca mais "não sei o que fazer na academia".',
+                title: 'O Método Lets Train estrutura seu treino do dia',
+                desc: 'Baseado na metodologia criada pelo Personal Guilherme, nos seus equipamentos, nível atual e disposição de hoje. Um treino único a cada sessão. Nunca mais "não sei o que fazer na academia".',
               },
               {
                 num: '03',
                 title: 'Executa, evolui, vicia',
-                desc: 'Conclui o treino, sobe de nível, desbloqueia conquistas e acumula Lets Coins. A progressão acontece automaticamente — você não precisa pensar, só fazer.',
+                desc: 'Conclui o treino, sobe de nível, desbloqueia conquistas e acumula Lets Coins. A progressão acontece automaticamente. Você não precisa pensar, só fazer.',
               },
             ].map((step) => (
               <div
@@ -515,13 +514,13 @@ export default function AcademiaPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { title: 'Treinos Diários Personalizados', desc: 'Metodologia 4 blocos da Lets Train, adaptada aos seus equipamentos e nível.' },
-              { title: 'Progressão de 15 Níveis', desc: 'De Adaptação a Atleta Pro Max — sobe automaticamente quando bate as metas.' },
-              { title: '59 Figurinhas', desc: 'Conquistas reais por streak, diversidade de treino, jejum, body score e mais.' },
+              { title: 'Treinos Diários Personalizados', desc: 'Metodologia 4 blocos do Método Lets Train, adaptada aos seus equipamentos e nível.' },
+              { title: 'Progressão de 15 Níveis', desc: 'De Adaptação a Atleta Pro Max. Sobe automaticamente quando você bate as metas.' },
+              { title: '59 Figurinhas', desc: 'Conquistas reais por streak, diversidade de treino, jejum, body score e muito mais.' },
               { title: 'Lets Coins', desc: 'Ganhe moedas a cada treino e troque por descontos reais na plataforma.' },
               { title: 'Lets Body Score', desc: 'Score 0-100 com 4 pilares e 15 indicadores para medir evolução real.' },
               { title: 'Check-in diário de disposição', desc: 'O treino adapta a intensidade ao seu estado físico e mental do dia.' },
-              { title: 'Timer de descanso', desc: 'Cronômetro entre séries com preview do próximo exercício — sem distração.' },
+              { title: 'Timer de descanso', desc: 'Cronômetro entre séries com preview do próximo exercício, sem distração.' },
               { title: 'Palavra do Dia', desc: 'Versículo bíblico diário com interpretação motivacional. Começo de dia poderoso.' },
             ].map((f) => (
               <div
@@ -555,14 +554,14 @@ export default function AcademiaPage() {
               </div>
               <div className="flex flex-col justify-center gap-5 p-8 lg:p-12">
                 <div>
-                  <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-1">O profissional por trás da IA</p>
+                  <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-1">O profissional por trás do Método</p>
                   <p className="font-black text-2xl sm:text-3xl">Guilherme Lets</p>
                   <p className="text-sm text-white/40 mt-1">Personal Trainer · Proprietário da Academia Lets Train · Criador do Método LETS TRAIN</p>
                   <p className="text-[11px] text-white/25 font-mono mt-1">CREF 011884-G/SC</p>
                 </div>
                 <blockquote className="border-l-2 border-[#FF8C00] pl-4">
                   <p className="text-sm text-white/70 leading-relaxed italic">
-                    "Eu vi ao longo de 15 anos o mesmo padrão: a pessoa entra na academia, fica perdida, ninguém explica, o resultado não aparece e ela some. A Lets Train existe para acabar com isso. Metodologia real, para quem frequenta academia de verdade — com a estrutura que um personal daria, disponível no bolso."
+                    "Eu vi ao longo de 15 anos o mesmo padrão: a pessoa entra na academia, fica perdida, ninguém explica, o resultado não aparece e ela some. A Lets Train existe para acabar com isso. O Método Lets Train, que criei na prática treino a treino, agora está disponível no app para quem frequenta academia de verdade."
                   </p>
                 </blockquote>
                 <div className="flex flex-wrap gap-2">
@@ -596,7 +595,7 @@ export default function AcademiaPage() {
                 name: 'Marcos O.',
                 city: 'São Paulo',
                 result: 'Não abandonou mais',
-                quote: 'Passei 3 anos tentando manter frequência na academia. Pagando e não indo. Com a Lets Train, já são 4 meses sem faltar — porque chego sabendo exatamente o que fazer.',
+                quote: 'Passei 3 anos tentando manter frequência na academia. Pagando e não indo. Com a Lets Train, já são 4 meses sem faltar, porque chego sabendo exatamente o que fazer.',
                 months: '4 meses de Lets Train',
               },
               {
@@ -604,7 +603,7 @@ export default function AcademiaPage() {
                 name: 'Juliana L.',
                 city: 'Belo Horizonte',
                 result: 'Perdeu 11kg em 5 meses',
-                quote: 'A progressão automática me surpreendeu. Em 5 meses fui do nível Iniciante para Intermediário Ouro — sem ter que calcular nada. O app faz isso por mim.',
+                quote: 'A progressão automática me surpreendeu. Em 5 meses fui do nível Iniciante para Intermediário Ouro. Sem ter que calcular nada. O app faz isso por mim.',
                 months: '5 meses de Lets Train',
               },
               {
@@ -612,7 +611,7 @@ export default function AcademiaPage() {
                 name: 'Ricardo T.',
                 city: 'Porto Alegre',
                 result: 'Streak de 52 dias',
-                quote: 'Treinava sem método nenhum. Via gente malhando mas não sabia como montar um treino sério. Agora tenho 52 dias seguidos e fui para Intermediário Prata.',
+                quote: 'Treinava sem método nenhum. Via todo mundo malhando mas não sabia como montar um treino sério. Hoje tenho 52 dias seguidos e estou no Intermediário Prata.',
                 months: '3 meses de Lets Train',
               },
             ].map((t) => (
@@ -670,7 +669,7 @@ export default function AcademiaPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="font-bold text-lg">Anual</p>
-                  <p className="text-xs text-[#FF8C00] font-medium mt-0.5">Economize R$201,80 vs mensal</p>
+                  <p className="text-xs text-[#FF8C00] font-medium mt-0.5">Economize R$201,80 em relação ao mensal</p>
                 </div>
                 <div className="text-right">
                   <p className="font-black text-2xl">12x de R$37,90</p>
@@ -707,7 +706,7 @@ export default function AcademiaPage() {
 
           <div className="flex flex-col gap-2 max-w-md mx-auto w-full">
             {[
-              '✅ 3 dias grátis — sem cobranças durante o trial',
+              '✅ 3 dias grátis sem cobranças durante o trial',
               '✅ Cancele antes do trial e não paga nada',
               '✅ Acesso completo a todos os recursos',
               '✅ Sem contrato de fidelidade',
@@ -718,31 +717,31 @@ export default function AcademiaPage() {
         </div>
       </section>
 
-      {/* ── FAQ Academia ─────────────────────────────────────── */}
+      {/* ── FAQ ──────────────────────────────────────────────── */}
       <section className="px-6 py-20 bg-white/[0.015]">
         <div className="max-w-5xl mx-auto flex flex-col gap-10">
           <div className="text-center">
             <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">Dúvidas frequentes</p>
-            <h2 className="text-2xl sm:text-3xl font-black">Perguntas & Respostas.</h2>
+            <h2 className="text-2xl sm:text-3xl font-black">Perguntas e Respostas.</h2>
           </div>
 
           <div className="flex flex-col gap-2 max-w-2xl mx-auto w-full">
             {[
               {
                 q: 'Funciona para qualquer academia?',
-                a: 'Sim. Você seleciona manualmente os equipamentos disponíveis na sua academia — de leg press a smith machine, polia, halteres e mais. O treino usa exatamente o que você marcou. Não importa o tamanho da academia.',
+                a: 'Sim. Você seleciona manualmente os equipamentos disponíveis na sua academia: leg press, smith machine, polia, halteres e muito mais. O treino usa exatamente o que você marcou. Não importa o tamanho da academia.',
               },
               {
                 q: 'Sou iniciante total. Consigo usar?',
-                a: 'Esse é o perfil que mais se beneficia. O app começa no nível Adaptação — treinos técnicos, volume baixo, exercícios explicados passo a passo. Conforme você evolui, o app sobe de nível automaticamente. Você nunca fica perdido na academia de novo.',
+                a: 'Esse é o perfil que mais se beneficia. O app começa no nível Adaptação com treinos técnicos, volume baixo e exercícios explicados passo a passo. Conforme você evolui, o app sobe de nível automaticamente. Você nunca fica perdido na academia de novo.',
               },
               {
                 q: 'O que acontece se eu pular um treino?',
-                a: 'O app registra, não te pune e te manda um lembrete. Se estiver com streak em risco às 19h, você recebe uma notificação push. No dia seguinte, novo treino gerado — sem acúmulo, sem culpa.',
+                a: 'O app registra, não te pune e te manda um lembrete. Se estiver com streak em risco às 19h, você recebe uma notificação push. No dia seguinte, novo treino gerado. Sem acúmulo e sem culpa.',
               },
               {
-                q: 'A IA realmente personaliza o treino?',
-                a: 'Sim. Cada treino considera: seu nível atual, objetivo (perda de gordura, hipertrofia ou qualidade de vida), equipamentos disponíveis, disposição do dia (1-10) e histórico recente para não repetir os mesmos exercícios toda semana.',
+                q: 'Como o app monta o treino certo para mim?',
+                a: 'O Método Lets Train é aplicado considerando: seu nível atual, objetivo (perda de gordura, hipertrofia ou qualidade de vida), equipamentos disponíveis, disposição do dia e histórico recente para não repetir os mesmos exercícios toda semana.',
               },
               {
                 q: 'Posso cancelar quando quiser?',
@@ -774,15 +773,15 @@ export default function AcademiaPage() {
         />
         <div className="max-w-lg mx-auto flex flex-col items-center gap-6 relative">
           <div className="inline-flex items-center gap-2 bg-[#FF8C00]/10 border border-[#FF8C00]/20 rounded-full px-4 py-1.5">
-            <span className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest">Pare de ser mais um estatística</span>
+            <span className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest">Pare de ser mais uma estatística</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black leading-tight">
             Você não precisa de<br />um personal caro.<br />
             <span className="text-[#FF8C00]">Precisa de um sistema.</span>
           </h2>
           <p className="text-sm text-white/45 leading-relaxed">
-            Comece com 3 dias grátis — sem cartão, sem compromisso.<br />
-            Seu primeiro treino gerado em menos de 3 minutos.
+            Comece com 3 dias grátis, sem cartão e sem compromisso.<br />
+            Seu primeiro treino pronto em menos de 3 minutos.
           </p>
           <Link
             href="/cadastro"
