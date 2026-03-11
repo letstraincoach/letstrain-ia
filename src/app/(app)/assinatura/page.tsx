@@ -62,6 +62,15 @@ export default function AssinaturaPage() {
     <div className="min-h-screen bg-[#0a0a0a] px-6 py-10">
       <div className="max-w-sm mx-auto flex flex-col gap-8">
 
+        {/* Voltar */}
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="text-sm text-white/40 hover:text-white/70 transition-colors self-start"
+        >
+          ← Voltar
+        </button>
+
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-2">
