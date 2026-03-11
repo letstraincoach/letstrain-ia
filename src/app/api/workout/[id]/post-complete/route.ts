@@ -208,11 +208,12 @@ export async function POST(_request: Request, { params }: Props) {
     }
   }
 
-  // Inserir novas conquistas (ON CONFLICT garante idempotência)
+  // Inserir novas conquistas — usa service client para contornar RLS (sem política INSERT)
   let newAchievements: Pick<AchievementRow, 'codigo' | 'nome' | 'icone_emoji'>[] = []
 
   if (toUnlock.length > 0) {
-    const { data: inserted } = await supabase
+    const svc = createServiceClient()
+    const { data: inserted } = await svc
       .from('user_achievements')
       .upsert(
         toUnlock.map((a) => ({ user_id: user.id, achievement_id: a.id })),
