@@ -1,6 +1,6 @@
 # Lista de Vídeos — Exercícios Lets Train
 
-> **Total:** 109 exercícios | **Formato:** MP4 · Vertical (9:16) ou Quadrado (1:1)
+> **Total:** 140 exercícios | **Formato:** MP4 · Vertical (9:16) ou Quadrado (1:1)
 > Nomear cada arquivo com o slug do exercício (ex: `flexao-de-solo.mp4`)
 > Upload em: Supabase Storage → bucket `exercise-videos`
 
@@ -179,7 +179,7 @@
 
 ## 🔩 POLIA / CROSSOVER / CABO (12 exercícios)
 
-> Exercícios com polia alta, polia baixa ou crossover. Presentes na maioria das academias de condomínio e hotel com estação multifuncional.
+> Crossover, polia alta, polia baixa e polia ajustável. Presentes em academias de condomínio e academia convencional.
 
 | # | Exercício | Equipamento | Nível | Status |
 |---|-----------|-------------|-------|--------|
@@ -198,33 +198,98 @@
 
 ---
 
-## 🏋️ MÁQUINAS / MULTIESTAÇÃO (12 exercícios)
+## 🏋️ MÁQUINAS GUIADAS — CONDOMÍNIO / ACADEMIA (12 exercícios)
 
-> Exercícios em máquinas guiadas — extensora, flexora, leg press, supino máquina, remada máquina. Frequentes em academias de condomínio com estação completa.
+> Máquinas presentes tanto em academias de condomínio como em academias convencionais.
 
 | # | Exercício | Equipamento | Nível | Status |
 |---|-----------|-------------|-------|--------|
-| 98  | Cadeira Extensora | Extensora | Iniciante | ☐ |
-| 99  | Cadeira Flexora | Flexora | Iniciante | ☐ |
-| 100 | Leg Press 45° | Leg Press | Iniciante | ☐ |
+| 98  | Cadeira Extensora | Cadeira Extensora | Iniciante | ☐ |
+| 99  | Cadeira Flexora | Cadeira Flexora | Iniciante | ☐ |
+| 100 | Leg Press 45° | Leg Press 45° | Iniciante | ☐ |
 | 101 | Supino na Máquina (Chest Press) | Supino Máquina | Iniciante | ☐ |
-| 102 | Desenvolvimento na Máquina (Shoulder Press) | Multiestação | Iniciante | ☐ |
-| 103 | Voador / Pec Deck | Voador | Iniciante | ☐ |
+| 102 | Desenvolvimento Ombro na Máquina | Multiestação / Shoulder Press | Iniciante | ☐ |
+| 103 | Voador / Pec Deck | Fly / Pec Deck | Iniciante | ☐ |
 | 104 | Remada no Aparelho (Seated Row) | Remada Máquina | Iniciante | ☐ |
 | 105 | Cadeira Adutora | Cadeira Adutora | Iniciante | ☐ |
 | 106 | Cadeira Abdutora | Cadeira Abdutora | Iniciante | ☐ |
-| 107 | Panturrilha na Máquina | Panturrilha Máquina | Iniciante | ☐ |
-| 108 | Abdominal na Máquina | Multiestação | Iniciante | ☐ |
-| 109 | Cadeira Romana (Hiperextensão) | Cadeira Romana | Iniciante | ☐ |
+| 107 | Panturrilha em Pé na Máquina | Panturrilha em Pé | Iniciante | ☐ |
+| 108 | Crunch na Máquina (Abdominal) | Crunch Máquina | Iniciante | ☐ |
+| 109 | Cadeira Romana (Hiperextensão Lombar) | Cadeira Romana / Lombar Máquina | Iniciante | ☐ |
+
+---
+
+## 🏭 MÁQUINAS GUIADAS — ACADEMIA CONVENCIONAL (11 exercícios)
+
+> Exclusivas de academias convencionais completas. Slug do arquivo: nome da máquina/movimento.
+
+| # | Exercício | Equipamento | Nível | Status |
+|---|-----------|-------------|-------|--------|
+| 110 | Leg Press Vertical | Leg Press Vertical | Iniciante | ☐ |
+| 111 | Hack Squat na Máquina | Hack Squat | Iniciante | ☐ |
+| 112 | Panturrilha Sentado na Máquina | Panturrilha Sentado | Iniciante | ☐ |
+| 113 | Glúteo na Máquina | Glúteo Máquina | Iniciante | ☐ |
+| 114 | Hip Thrust na Máquina | Hip Thrust Máquina | Iniciante | ☐ |
+| 115 | Pull-over na Máquina | Pull-over Máquina | Intermediário | ☐ |
+| 116 | Elevação Lateral na Máquina | Elevação Lateral Máquina | Iniciante | ☐ |
+| 117 | Rosca Scott na Máquina | Rosca Scott Máquina | Iniciante | ☐ |
+| 118 | Tríceps Polia Alta na Máquina | Tríceps Polia Alta | Iniciante | ☐ |
+| 119 | Graviton (Barra Assistida) | Graviton | Intermediário | ☐ |
+| 120 | Lombar na Máquina | Lombar Máquina | Iniciante | ☐ |
+
+---
+
+## 🔱 SMITH MACHINE (5 exercícios)
+
+> Smith Machine presente em academias convencionais. Slug: `smith-agachamento`, `smith-supino`, etc.
+
+| # | Exercício | Equipamento | Nível | Status |
+|---|-----------|-------------|-------|--------|
+| 121 | Agachamento no Smith Machine | Smith Machine | Iniciante | ☐ |
+| 122 | Supino Reto no Smith Machine | Smith Machine + banco | Iniciante | ☐ |
+| 123 | Desenvolvimento no Smith Machine | Smith Machine | Iniciante | ☐ |
+| 124 | Afundo (Lunge) no Smith Machine | Smith Machine | Intermediário | ☐ |
+| 125 | Remada Curvada no Smith Machine | Smith Machine | Intermediário | ☐ |
+
+---
+
+## 🏗️ BARRA OLÍMPICA / PESO LIVRE PESADO (10 exercícios)
+
+> Exercícios com barra olímpica, power rack ou gaiola de agachamento. Exclusivos de academias convencionais com área de peso livre completa.
+
+| # | Exercício | Equipamento | Nível | Status |
+|---|-----------|-------------|-------|--------|
+| 126 | Agachamento com Barra Olímpica | Barra Olímpica + gaiola/rack | Intermediário | ☐ |
+| 127 | Agachamento Frontal com Barra | Barra Olímpica | Avançado | ☐ |
+| 128 | Supino Reto com Barra | Barra Olímpica + banco supino | Iniciante | ☐ |
+| 129 | Supino Inclinado com Barra | Barra Olímpica + banco inclinado | Intermediário | ☐ |
+| 130 | Levantamento Terra com Barra | Barra Olímpica + anilhas | Intermediário | ☐ |
+| 131 | Terra Romeno com Barra | Barra Olímpica + anilhas | Intermediário | ☐ |
+| 132 | Remada Curvada com Barra | Barra Olímpica | Intermediário | ☐ |
+| 133 | Press Militar com Barra (Desenvolvimento) | Barra Olímpica | Intermediário | ☐ |
+| 134 | Rosca Direta com Barra Reta | Barra Reta | Iniciante | ☐ |
+| 135 | Rosca com Barra EZ (W) | Barra EZ | Iniciante | ☐ |
+
+---
+
+## 🎗️ MINI BAND / CANELEIRA (5 exercícios)
+
+> Acessórios leves usados em condomínio, academia e hotel. Fáceis de incluir no Bloco 1 (preparação) ou finisher.
+
+| # | Exercício | Equipamento | Nível | Status |
+|---|-----------|-------------|-------|--------|
+| 136 | Abdução de Quadril com Mini Band | Mini Band | Iniciante | ☐ |
+| 137 | Agachamento com Mini Band | Mini Band | Iniciante | ☐ |
+| 138 | Clamshell com Mini Band | Mini Band | Iniciante | ☐ |
+| 139 | Elevação de Perna com Caneleira | Caneleira | Iniciante | ☐ |
+| 140 | Extensão de Quadril com Caneleira | Caneleira | Iniciante | ☐ |
 
 ---
 
 ## Prioridade de Gravação
 
-Para lançar o mais rápido possível, grave nesta ordem:
-
-### 🔴 Alta prioridade — mais usados nos treinos
-Exercícios compostos do Bloco 2 e de mobilidade do Bloco 1:
+### 🔴 Alta prioridade — compostos e mobilidade (condomínio + academia)
+Grave estes primeiro — são os mais usados em todos os perfis:
 1. Agachamento Livre (#40)
 2. Agachamento com Halteres (#41)
 3. Flexão de Solo (#1)
@@ -241,23 +306,38 @@ Exercícios compostos do Bloco 2 e de mobilidade do Bloco 1:
 14. Hip 90/90 (#81)
 15. Cat-Cow (#82)
 
-### 🟠 Alta prioridade — máquinas (gravar logo após os 15 acima)
-16. Puxada na Polia (#86)
+### 🟠 Alta prioridade — máquinas (condomínio e academia convencional)
+16. Puxada na Polia — Lat Pulldown (#86)
 17. Remada Baixa na Polia (#87)
 18. Tríceps Corda na Polia (#88)
-19. Cadeira Extensora (#98)
-20. Cadeira Flexora (#99)
-21. Leg Press 45° (#100)
-22. Supino na Máquina (#101)
-23. Remada no Aparelho (#104)
-24. Face Pull na Polia (#92)
-25. Voador / Pec Deck (#103)
+19. Face Pull na Polia (#92)
+20. Crucifixo no Cabo (#91)
+21. Cadeira Extensora (#98)
+22. Cadeira Flexora (#99)
+23. Leg Press 45° (#100)
+24. Supino na Máquina (#101)
+25. Remada no Aparelho (#104)
+26. Voador / Pec Deck (#103)
+27. Cadeira Abdutora (#106)
+28. Cadeira Adutora (#105)
 
-### 🟡 Média prioridade — frequentes mas não diários
-26–70: Todos os demais exercícios de iniciante/intermediário (livres + máquinas restantes)
+### 🟣 Alta prioridade — exclusivos academia convencional
+29. Leg Press Vertical (#110)
+30. Hack Squat na Máquina (#111)
+31. Hip Thrust na Máquina (#114)
+32. Glúteo na Máquina (#113)
+33. Agachamento com Barra Olímpica (#126)
+34. Supino Reto com Barra (#128)
+35. Levantamento Terra com Barra (#130)
+36. Press Militar com Barra (#133)
+37. Agachamento no Smith Machine (#121)
+38. Graviton — Barra Assistida (#119)
+
+### 🟡 Média prioridade — variações e isoladores
+39–100: Restante dos exercícios de iniciante/intermediário (polias, máquinas extras, barra EZ, mini band)
 
 ### 🟢 Baixa prioridade — avançados e atletas
-71–109: Exercícios avançados (Archer, Nordic Curl, Man Maker, Woodchopper, etc.)
+101–140: Exercícios avançados (Flexão Arqueiro, Nordic Curl, Man Maker, Agachamento Frontal com Barra, etc.)
 
 ---
 
@@ -267,8 +347,8 @@ Exercícios compostos do Bloco 2 e de mobilidade do Bloco 1:
 **Orientação:** Vertical (9:16) preferencial, ou quadrado (1:1)
 **Duração:** 20–45 segundos por vídeo (1 repetição completa em ritmo normal)
 **Ângulo:** lateral ou 3/4 frontal — o que mostrar melhor a execução
-**Sem audio:** os vídeos são exibidos sem som no app
-**Nome do arquivo:** slug do exercício (ex: `agachamento-livre.mp4`, `flexao-de-solo.mp4`)
+**Sem áudio:** os vídeos são exibidos sem som no app
+**Nome do arquivo:** slug do exercício (ex: `agachamento-livre.mp4`, `leg-press-45.mp4`, `smith-agachamento.mp4`)
 
 **Upload:** Supabase Storage > bucket `exercise-videos` > pasta raiz
 
