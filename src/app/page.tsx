@@ -37,8 +37,14 @@ export default async function LandingPage() {
           </span>
           <div className="flex items-center gap-3">
             <Link
-              href="/condominios"
+              href="/academia"
               className="text-sm text-white/40 hover:text-white/70 transition-colors hidden sm:block"
+            >
+              Para academias
+            </Link>
+            <Link
+              href="/condominios"
+              className="text-sm text-white/40 hover:text-white/70 transition-colors hidden lg:block"
             >
               Para condomínios
             </Link>
