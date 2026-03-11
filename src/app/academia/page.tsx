@@ -516,7 +516,7 @@ export default function AcademiaPage() {
             {[
               { title: 'Treinos Diários Personalizados', desc: 'Metodologia 4 blocos do Método Lets Train, adaptada aos seus equipamentos e nível.' },
               { title: 'Progressão de 15 Níveis', desc: 'De Adaptação a Atleta Pro Max. Sobe automaticamente quando você bate as metas.' },
-              { title: '59 Figurinhas', desc: 'Conquistas reais por streak, diversidade de treino, jejum, body score e muito mais.' },
+              { title: '60+ Figurinhas', desc: 'Conquistas reais por streak, diversidade de treino, jejum, body score e muito mais.' },
               { title: 'Controle Calórico Diário', desc: 'Registre sua alimentação e acompanhe calorias, proteínas, carboidratos e gorduras. Tudo integrado à sua evolução no app.' },
               { title: 'Integração com Relógio e Strava', desc: 'Conecte seu Apple Watch, Garmin ou Strava. Seus dados de treino, frequência cardíaca e distância chegam automático no app.' },
               { title: 'Lets Body Score', desc: 'Score 0-100 com 4 pilares e 15 indicadores para medir evolução real.' },
