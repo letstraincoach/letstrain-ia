@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { WorkoutSchema } from '@/lib/ai/workout-schemas'
 import { adjustWorkout, type DailyCheckin } from '@/lib/training/daily-adjustment'
+import { computeFeedbackSummary } from '@/lib/training/feedback-summary'
 import { NextResponse } from 'next/server'
 import type { Json } from '@/types/database.types'
 
@@ -75,14 +76,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Erro ao carregar treino do plano.' }, { status: 500 })
   }
 
-  const workoutAjustado = adjustWorkout(workout, checkin)
+  // ── Buscar nível do perfil + feedback recente em paralelo ────────────────
+  const [{ data: profileData }, feedbackResult] = await Promise.all([
+    supabase
+      .from('user_profiles')
+      .select('nivel_atual, local_treino')
+      .eq('id', user.id)
+      .single(),
+    supabase
+      .from('workout_evaluations')
+      .select('rating, feedback_rapido')
+      .eq('user_id', user.id)
+      .order('criado_em', { ascending: false })
+      .limit(5),
+  ])
 
-  // ── Buscar nível do perfil ────────────────────────────────────────────────
-  const { data: profileData } = await supabase
-    .from('user_profiles')
-    .select('nivel_atual, local_treino')
-    .eq('id', user.id)
-    .single()
+  const feedbackSummary = computeFeedbackSummary(feedbackResult.data ?? [])
+  const workoutAjustado = adjustWorkout(workout, {
+    ...checkin,
+    feedbackSignal: feedbackSummary.intensitySignal,
+  })
 
   // ── Salvar como workout (mesmo formato de antes) ──────────────────────────
   const { data: savedWorkout, error: saveError } = await supabase

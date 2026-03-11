@@ -4,6 +4,7 @@ export interface DailyCheckin {
   disposicao: number       // 1–10
   tempo_disponivel: number // minutos
   ultima_refeicao: string  // 'menos_1h' | '1_2h' | 'mais_2h' | 'em_jejum'
+  feedbackSignal?: 'increase' | 'maintain' | 'decrease' | null
 }
 
 /**
@@ -14,7 +15,23 @@ export function adjustWorkout(workout: GeneratedWorkout, checkin: DailyCheckin):
   // Deep clone para não mutar o original
   const w: GeneratedWorkout = JSON.parse(JSON.stringify(workout))
 
-  const { disposicao, tempo_disponivel, ultima_refeicao } = checkin
+  const { disposicao, tempo_disponivel, ultima_refeicao, feedbackSignal } = checkin
+
+  // ── Feedback histórico (ajusta baseline antes das regras do dia) ─────────
+  if (feedbackSignal === 'decrease') {
+    w.forca = w.forca?.map((e) => ({
+      ...e,
+      series: Math.max(1, e.series - 1),
+      descanso_segundos: Math.min(300, e.descanso_segundos + 15),
+    }))
+    if (w.circuito && w.circuito.length > 2) w.circuito = w.circuito.slice(0, 2)
+  } else if (feedbackSignal === 'increase') {
+    w.forca = w.forca?.map((e) => ({
+      ...e,
+      series: Math.min(5, e.series + 1),
+      descanso_segundos: Math.max(30, e.descanso_segundos - 15),
+    }))
+  }
 
   // ── Disposição ────────────────────────────────────────────────────────────
   if (disposicao <= 3) {

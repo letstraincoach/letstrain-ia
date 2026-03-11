@@ -43,7 +43,7 @@ function classificarAcademia(equipamentos: string[]): string {
   return 'compacta (peso livre / corporal)'
 }
 
-export function buildWorkoutPrompt(ctx: WorkoutContext, exerciseCatalog?: string): string {
+export function buildWorkoutPrompt(ctx: WorkoutContext, exerciseCatalog?: string, feedbackResumo?: string): string {
   const levelLabel = LEVEL_CONFIG[ctx.nivel].label
   const isHotel = ctx.local_treino === 'hotel'
   const isAcademia = ctx.local_treino === 'academia'
@@ -145,7 +145,7 @@ Disposição: ${intensidade}
 
 HISTÓRICO RECENTE (evite repetir os mesmos exercícios principais):
 ${historicoTexto}
-
+${feedbackResumo ? `\n${feedbackResumo}\n` : ''}
 METODOLOGIA LETS TRAIN — ESTRUTURA DE 4 BLOCOS OBRIGATÓRIA:
 
 BLOCO 1 — PREPARAÇÃO (3–5 min): ${blocos.preparacaoExs} exercícios

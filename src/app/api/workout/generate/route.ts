@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { buildWorkoutPrompt } from '@/lib/ai/workout-generator'
 import { fetchExerciseCatalog, formatCatalogForPrompt } from '@/lib/ai/exercise-catalog'
 import { WorkoutSchema, type GeneratedWorkout } from '@/lib/ai/workout-schemas'
+import { computeFeedbackSummary, formatFeedbackForPrompt } from '@/lib/training/feedback-summary'
 import { NextResponse } from 'next/server'
 import type { Json } from '@/types/database.types'
 
@@ -110,7 +111,7 @@ export async function POST(request: Request) {
   }
   // ─────────────────────────────────────────────────────────────────────────
 
-  const [profileResult, equipamentosResult, historicoResult] = await Promise.all([
+  const [profileResult, equipamentosResult, historicoResult, feedbackResult] = await Promise.all([
     supabase
       .from('user_profiles')
       .select('nivel_atual, objetivo, preferencia_treino, lesao_cronica, lesao_descricao, doenca_cardiaca, local_treino')
@@ -127,6 +128,12 @@ export async function POST(request: Request) {
       .eq('status', 'executado')
       .order('criado_em', { ascending: false })
       .limit(3),
+    supabase
+      .from('workout_evaluations')
+      .select('rating, feedback_rapido')
+      .eq('user_id', user.id)
+      .order('criado_em', { ascending: false })
+      .limit(5),
   ])
 
   if (profileResult.error || !profileResult.data) {
@@ -176,7 +183,9 @@ export async function POST(request: Request) {
 
   const catalogExercises = await fetchExerciseCatalog(localTreino, nivelAtual)
   const exerciseCatalog = formatCatalogForPrompt(catalogExercises)
-  const prompt = buildWorkoutPrompt(context, exerciseCatalog)
+  const feedbackSummary = computeFeedbackSummary(feedbackResult.data ?? [])
+  const feedbackText = formatFeedbackForPrompt(feedbackSummary)
+  const prompt = buildWorkoutPrompt(context, exerciseCatalog, feedbackText)
 
   // Chamar Claude via fetch direto (sem SDK) com retry
   let generatedWorkout: GeneratedWorkout | null = null
