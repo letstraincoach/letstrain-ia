@@ -518,7 +518,6 @@ export default function AcademiaPage() {
               { title: 'Progressão de 15 Níveis', desc: 'De Adaptação a Atleta Pro Max. Sobe automaticamente quando você bate as metas.' },
               { title: '60+ Figurinhas', desc: 'Conquistas reais por streak, diversidade de treino, jejum, body score e muito mais.' },
               { title: 'Controle Calórico Diário', desc: 'Registre sua alimentação e acompanhe calorias, proteínas, carboidratos e gorduras. Tudo integrado à sua evolução no app.' },
-              { title: 'Integração com Relógio e Strava', desc: 'Conecte seu Apple Watch, Garmin ou Strava. Seus dados de treino, frequência cardíaca e distância chegam automático no app.' },
               { title: 'Lets Body Score', desc: 'Score 0-100 com 4 pilares e 15 indicadores para medir evolução real.' },
               { title: 'Check-in diário de disposição', desc: 'O treino adapta a intensidade ao seu estado físico e mental do dia.' },
               { title: 'Timer de descanso', desc: 'Cronômetro entre séries com preview do próximo exercício, sem distração.' },
