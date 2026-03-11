@@ -262,7 +262,7 @@ export default function AcademiaPage() {
                 icon: '🎮',
                 prob: 'Sem motivação',
                 sol: 'Gamificação real',
-                desc: '59 conquistas, Lets Coins, streak diário. Cada treino concluído gera recompensas concretas. Nada de parabéns vago.',
+                desc: '60+ conquistas, streak diário e controle calórico integrado. Cada treino concluído gera recompensas concretas. Nada de parabéns vago.',
               },
               {
                 icon: '📊',
@@ -400,7 +400,7 @@ export default function AcademiaPage() {
                     {[
                       { label: 'Treinos', val: '23', icon: '🔥' },
                       { label: 'Streak', val: '14 dias', icon: '⚡' },
-                      { label: 'Coins', val: '340', icon: '🪙' },
+                      { label: 'Calorias', val: '1.840 kcal', icon: '🥗' },
                       { label: 'Body Score', val: '68/100', icon: '📊' },
                     ].map((stat) => (
                       <div
@@ -447,14 +447,14 @@ export default function AcademiaPage() {
                       </div>
                     ))}
                   </div>
-                  <p className="text-[9px] text-white/35 mt-1">3 de 59 figurinhas</p>
+                  <p className="text-[9px] text-white/35 mt-1">3 de 60+ figurinhas</p>
                   <div className="w-full h-7 rounded-lg mt-1 flex items-center justify-center text-[10px] font-bold text-[#FF8C00]"
                     style={{ background: 'rgba(255,140,0,0.1)', border: '1px solid rgba(255,140,0,0.2)' }}>
                     Ver álbum completo →
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-white/40 text-center leading-tight">59 figurinhas. Desbloqueie com cada conquista.</p>
+              <p className="text-xs text-white/40 text-center leading-tight">60+ figurinhas. Desbloqueie com cada conquista.</p>
             </div>
 
           </div>
@@ -484,7 +484,7 @@ export default function AcademiaPage() {
               {
                 num: '03',
                 title: 'Executa, evolui, vicia',
-                desc: 'Conclui o treino, sobe de nível, desbloqueia conquistas e acumula Lets Coins. A progressão acontece automaticamente. Você não precisa pensar, só fazer.',
+                desc: 'Conclui o treino, sobe de nível, desbloqueia conquistas e registra suas calorias. A progressão acontece automaticamente. Você não precisa pensar, só fazer.',
               },
             ].map((step) => (
               <div
@@ -517,7 +517,8 @@ export default function AcademiaPage() {
               { title: 'Treinos Diários Personalizados', desc: 'Metodologia 4 blocos do Método Lets Train, adaptada aos seus equipamentos e nível.' },
               { title: 'Progressão de 15 Níveis', desc: 'De Adaptação a Atleta Pro Max. Sobe automaticamente quando você bate as metas.' },
               { title: '59 Figurinhas', desc: 'Conquistas reais por streak, diversidade de treino, jejum, body score e muito mais.' },
-              { title: 'Lets Coins', desc: 'Ganhe moedas a cada treino e troque por descontos reais na plataforma.' },
+              { title: 'Controle Calórico Diário', desc: 'Registre sua alimentação e acompanhe calorias, proteínas, carboidratos e gorduras. Tudo integrado à sua evolução no app.' },
+              { title: 'Integração com Relógio e Strava', desc: 'Conecte seu Apple Watch, Garmin ou Strava. Seus dados de treino, frequência cardíaca e distância chegam automático no app.' },
               { title: 'Lets Body Score', desc: 'Score 0-100 com 4 pilares e 15 indicadores para medir evolução real.' },
               { title: 'Check-in diário de disposição', desc: 'O treino adapta a intensidade ao seu estado físico e mental do dia.' },
               { title: 'Timer de descanso', desc: 'Cronômetro entre séries com preview do próximo exercício, sem distração.' },

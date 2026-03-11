@@ -13,7 +13,7 @@ const SECTIONS = [
   },
   {
     title: '2. O serviço',
-    content: `A Lets Train é uma plataforma digital que utiliza inteligência artificial para gerar treinos personalizados, acompanhar sua progressão e oferecer recursos de gamificação.\n\nO serviço inclui: geração diária de treinos por IA, sistema de progressão em 15 níveis, álbum de 59 conquistas, Lets Body Score, timer de jejum intermitente, detecção de equipamentos e notificações push.\n\nA Lets Train se reserva o direito de adicionar, modificar ou descontinuar funcionalidades a qualquer tempo, com aviso prévio de 15 dias para alterações que impactem significativamente o serviço.`,
+    content: `A Lets Train é uma plataforma digital que utiliza inteligência artificial para gerar treinos personalizados, acompanhar sua progressão e oferecer recursos de gamificação.\n\nO serviço inclui: geração diária de treinos por IA, sistema de progressão em 15 níveis, álbum de 60+ conquistas, Lets Body Score, timer de jejum intermitente, detecção de equipamentos e notificações push.\n\nA Lets Train se reserva o direito de adicionar, modificar ou descontinuar funcionalidades a qualquer tempo, com aviso prévio de 15 dias para alterações que impactem significativamente o serviço.`,
   },
   {
     title: '3. Cadastro e conta',

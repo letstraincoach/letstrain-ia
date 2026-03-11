@@ -102,7 +102,7 @@ export default function OGImage() {
 
         {/* Pills */}
         <div style={{ display: 'flex', gap: 16, marginTop: 40 }}>
-          {['15 níveis', '59 conquistas', '3 dias grátis'].map((label) => (
+          {['15 níveis', '60+ conquistas', '3 dias grátis'].map((label) => (
             <div
               key={label}
               style={{

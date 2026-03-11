@@ -167,7 +167,7 @@ export default function CondominiosPage() {
               },
               {
                 title: 'Gamificação e engajamento',
-                desc: '59 conquistas desbloqueáveis, Lets Coins, streaks e o Lets Body Score mantêm o morador voltando. Engajamento que nenhum professor consegue sozinho.',
+                desc: '60+ conquistas desbloqueáveis, Lets Coins, streaks e o Lets Body Score mantêm o morador voltando. Engajamento que nenhum professor consegue sozinho.',
               },
               {
                 title: 'Funciona com qualquer equipamento',

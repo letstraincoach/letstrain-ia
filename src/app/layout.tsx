@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     default: 'Lets Train — Treino personalizado por IA',
     template: '%s | Lets Train',
   },
-  description: 'Metodologia real, resultados de verdade! Treinos diários personalizados por IA para academia, condomínio ou hotel. Progressão automática, 59 conquistas e muito mais. 3 dias grátis.',
+  description: 'Metodologia real, resultados de verdade! Treinos diários personalizados por IA para academia, condomínio ou hotel. Progressão automática, 60+ conquistas e muito mais. 3 dias grátis.',
   keywords: ['treino personalizado', 'personal trainer IA', 'academia', 'treino em casa', 'fitness', 'progressão automática', 'lets train'],
   manifest: '/manifest.json',
   metadataBase: new URL('https://letstrain.com.br'),

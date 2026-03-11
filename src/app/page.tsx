@@ -6,10 +6,10 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Lets Train — Método LETS TRAIN com suporte da Inteligência Artificial.',
-  description: 'Treinos diários com o Método LETS TRAIN e suporte da Inteligência Artificial. Progressão automática, 59 conquistas e Lets Body Score. Comece com 3 dias grátis.',
+  description: 'Treinos diários com o Método LETS TRAIN e suporte da Inteligência Artificial. Progressão automática, 60+ conquistas e Lets Body Score. Comece com 3 dias grátis.',
   openGraph: {
     title: 'Lets Train — Método LETS TRAIN + Inteligência Artificial.',
-    description: 'Treinos diários com o Método LETS TRAIN. 15 níveis de progressão, 59 conquistas, Lets Body Score. 3 dias grátis — sem cobranças durante o trial.',
+    description: 'Treinos diários com o Método LETS TRAIN. 15 níveis de progressão, 60+ conquistas, Lets Body Score. 3 dias grátis — sem cobranças durante o trial.',
     url: 'https://letstrain.com.br',
   },
   twitter: {
@@ -461,7 +461,7 @@ export default async function LandingPage() {
             {[
               { title: 'Treinos Diários', desc: 'Metodologia Time Efficient da Lets Train, com acompanhamento da Inteligência Artificial.' },
               { title: 'Progressão automática', desc: '15 níveis. Sobe quando bate as metas. Intensidade adapta sozinha.' },
-              { title: 'Álbum de conquistas', desc: '59 figurinhas para colecionar. Streak, jejum, diversidade e mais.' },
+              { title: 'Álbum de conquistas', desc: '60+ figurinhas para colecionar. Streak, jejum, diversidade e mais.' },
               { title: 'Lets Coins', desc: 'Ganhe moedas por treino e troque por descontos reais.' },
               { title: 'Jejum intermitente', desc: 'Timer ao vivo com alertas de milestone. Integrado às conquistas.' },
               { title: 'Treino 4 blocos', desc: 'Preparação → Força → Circuito → Finisher. Estrutura profissional.' },
