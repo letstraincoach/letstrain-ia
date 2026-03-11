@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Icon from '@/components/ui/Icon'
 
 interface ShareProgressButtonProps {
   nivel: string
@@ -89,7 +90,7 @@ export default function ShareProgressButton({
         disabled={sharing}
         className="w-full h-12 rounded-2xl border border-[#FF8C00]/30 bg-[#FF8C00]/[0.08] text-[#FF8C00] font-semibold text-sm flex items-center justify-center gap-2 hover:bg-[#FF8C00]/[0.14] transition-colors active:scale-[0.98] disabled:opacity-60"
       >
-        {sharing ? '...' : copied ? '✅ Link copiado!' : '📤 Compartilhar progresso'}
+        {sharing ? '...' : copied ? <><Icon name="check-circle" /> Link copiado!</> : <><Icon name="share" /> Compartilhar progresso</>}
       </button>
 
       <div className="flex gap-2">
@@ -97,13 +98,13 @@ export default function ShareProgressButton({
           onClick={handleWhatsApp}
           className="flex-1 h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/60 text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-white/[0.06] transition-colors active:scale-[0.98]"
         >
-          <span>💬</span> WhatsApp
+          <Icon name="comment" /> WhatsApp
         </button>
         <button
           onClick={handleSaveImage}
           className="flex-1 h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/60 text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-white/[0.06] transition-colors active:scale-[0.98]"
         >
-          <span>💾</span> Salvar
+          <Icon name="download" /> Salvar
         </button>
       </div>
     </div>

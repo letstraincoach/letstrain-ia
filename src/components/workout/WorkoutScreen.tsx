@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { GeneratedWorkout, WorkoutExercise } from '@/lib/ai/workout-schemas'
 import { isNewFormat } from '@/lib/ai/workout-schemas'
 import Button from '@/components/ui/Button'
+import Icon from '@/components/ui/Icon'
 import { getExerciseVideoUrl } from '@/lib/training/exercise-videos'
 
 // ---- Tipos ----
@@ -130,14 +131,14 @@ const SECAO_COLOR: Record<Secao, string> = {
 }
 
 const BLOCO_ICON: Record<string, string> = {
-  'Preparação': '🌅',
-  'Força':      '💪',
-  'Circuito Metabólico': '⚡',
-  'Cardio':     '🏃',
-  'Finisher':   '🏁',
-  'Aquecimento': '🌅',
-  'Principal':   '💪',
-  'Cooldown':    '🧘',
+  'Preparação': 'sunrise',
+  'Força':      'dumbbell',
+  'Circuito Metabólico': 'bolt',
+  'Cardio':     'running',
+  'Finisher':   'trophy',
+  'Aquecimento': 'sunrise',
+  'Principal':   'dumbbell',
+  'Cooldown':    'moon',
 }
 
 const SECAO_TO_KEY: Record<string, string> = {
@@ -227,7 +228,7 @@ function BlocoCard({ label, cor, desc, icon, exs, tempoMin, expanded, onToggle, 
         onClick={onToggle}
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          <span className="text-lg shrink-0">{icon}</span>
+          <Icon name={icon} className="text-lg shrink-0" />
           <div className="text-left min-w-0">
             <span className="text-sm font-bold block" style={{ color: cor }}>{label}</span>
             <p className="text-[11px] text-white/35 mt-0.5">{desc}</p>
@@ -486,13 +487,13 @@ function WorkoutOverview({ workout, nivel, onStart, onVideoClick }: {
             <p className="text-xs text-[#FF8C00] font-semibold uppercase tracking-widest mb-2">A Lets Train preparou para você</p>
             <h1 className="text-2xl font-bold leading-tight">{workout.nome}</h1>
             <div className="flex items-center gap-3 mt-2 text-xs text-white/40">
-              <span>⏱ {workout.duracao_estimada} min</span><span>·</span>
+              <span><Icon name="clock" className="inline" /> {workout.duracao_estimada} min</span><span>·</span>
               <span className="capitalize">{nivel.replace(/_/g, ' ')}</span><span>·</span>
               <span>{totalExs} exercícios</span>
             </div>
             {musculosPrincipais.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-3">
-                <span className="text-[11px] text-white/30 self-center mr-0.5">💪</span>
+                <Icon name="dumbbell" className="text-[11px] text-white/30 self-center mr-0.5" />
                 {musculosPrincipais.map((m) => (
                   <span key={m} className="text-[11px] px-2.5 py-1 rounded-full bg-[#FF8C00]/10 border border-[#FF8C00]/20 text-[#FF8C00]/80 font-medium capitalize">{m}</span>
                 ))}
@@ -833,7 +834,7 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
             </button>
             <h1 className="text-lg font-bold leading-tight truncate">{workout.nome}</h1>
             <div className="flex items-center gap-3 mt-1 text-xs text-white/40">
-              <span>⏱ {workout.duracao_estimada} min</span><span>·</span>
+              <span><Icon name="clock" className="inline" /> {workout.duracao_estimada} min</span><span>·</span>
               <span className="capitalize">{nivel}</span><span>·</span>
               <span>{current + 1} / {total}</span>
             </div>
@@ -873,7 +874,7 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                   {ex.setGroup && (
                     <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#FF8C00]/25 bg-[#FF8C00]/[0.06]">
                       <span className="text-[#FF8C00] text-xs font-bold shrink-0">
-                        {ex.setGroup.totalInGroup === 3 ? '🔗🔗 TRI-SET' : '🔗 BI-SET'}
+                        {ex.setGroup.totalInGroup === 3 ? <><Icon name="link" /> TRI-SET</> : <><Icon name="link" /> BI-SET</>}
                         {' '}· {ex.setGroup.position}/{ex.setGroup.totalInGroup}
                       </span>
                       {ex.setGroup.nextName
@@ -886,7 +887,7 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                   {/* Banner bi-set/tri-set legacy (sem setGroup) */}
                   {!ex.setGroup && (ex.biset || ex.triset) && (
                     <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#FF8C00]/25 bg-[#FF8C00]/[0.06]">
-                      <span className="text-[#FF8C00] text-xs font-bold">{ex.triset ? '🔗🔗 TRI-SET' : '🔗 BI-SET'}</span>
+                      <span className="text-[#FF8C00] text-xs font-bold flex items-center gap-1">{ex.triset ? <><Icon name="link" /> TRI-SET</> : <><Icon name="link" /> BI-SET</>}</span>
                       <span className="text-white/40 text-xs">Execute em seguida, sem descanso</span>
                       {flatList[current + 1] && <span className="text-white/55 text-xs font-semibold ml-auto shrink-0">→ {flatList[current + 1].nome}</span>}
                     </div>
@@ -973,7 +974,7 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                       onClick={fetchAlternatives}
                       className="self-end flex items-center gap-1.5 text-[11px] text-white/25 hover:text-white/50 transition-colors py-1"
                     >
-                      🔄 Trocar
+                      <Icon name="refresh" /> Trocar
                     </button>
                   )}
                 </div>

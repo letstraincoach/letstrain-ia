@@ -4,11 +4,12 @@ import Link from 'next/link'
 import type { GeneratedWorkout } from '@/lib/ai/workout-schemas'
 import WorkoutHeatMap from '@/components/historico/WorkoutHeatMap'
 import MuscleGroupChart from '@/components/historico/MuscleGroupChart'
+import Icon from '@/components/ui/Icon'
 
-const LOCAL_EMOJI: Record<string, string> = {
-  hotel: '✈️',
-  condominio: '🏠',
-  academia: '🏋️',
+const LOCAL_ICON: Record<string, string> = {
+  hotel: 'plane',
+  condominio: 'home',
+  academia: 'gym',
 }
 
 const RATING_EMOJI = ['😞', '😕', '😐', '😊', '🤩']
@@ -136,7 +137,7 @@ export default async function HistoricoPage() {
 
         {workouts.length === 0 && (
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-8 text-center">
-            <p className="text-4xl mb-3">🏋️</p>
+            <Icon name="gym" className="text-4xl mb-3 text-white/30" />
             <p className="text-sm text-white/50">Nenhum treino realizado ainda.</p>
             <Link href="/workout/checkin"
               className="mt-4 inline-block text-sm text-[#FF8C00] hover:text-[#E07000] transition-colors">
@@ -168,7 +169,7 @@ export default async function HistoricoPage() {
                   const dataFormatada = new Date(w.data + 'T12:00:00').toLocaleDateString('pt-BR', {
                     day: '2-digit', month: 'short',
                   })
-                  const localEmoji = LOCAL_EMOJI[w.local_treino ?? 'condominio'] ?? '🏠'
+                  const localIcon = LOCAL_ICON[w.local_treino ?? 'condominio'] ?? 'home'
                   const rating = w.workout_evaluations?.[0]?.rating ?? null
 
                   return (
@@ -178,7 +179,7 @@ export default async function HistoricoPage() {
                       href={`/workout/${w.id}`}
                       className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 flex items-center gap-3 hover:border-white/20 transition-colors active:scale-[0.99]"
                     >
-                      <div className="text-xl shrink-0">{localEmoji}</div>
+                      <Icon name={localIcon} className="text-xl shrink-0 text-white/50" />
 
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{nomeTreino}</p>

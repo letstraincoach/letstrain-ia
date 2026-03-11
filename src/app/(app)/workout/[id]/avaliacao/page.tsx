@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import Button from '@/components/ui/Button'
+import Icon from '@/components/ui/Icon'
 import LevelUpScreen from '@/components/gamification/LevelUpScreen'
 import AchievementBanner, { type NewAchievement } from '@/components/gamification/AchievementBanner'
 import type { TrainingLevel } from '@/types/database.types'
@@ -91,7 +92,7 @@ function CelebrationScreen({ onClose, shareData }: { onClose: () => void; shareD
           animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          🏆
+          <Icon name="trophy" className="text-[#FF8C00]" />
         </motion.span>
         <div>
           <h2 className="text-2xl font-bold mb-2">Treino concluído!</h2>
@@ -100,9 +101,9 @@ function CelebrationScreen({ onClose, shareData }: { onClose: () => void; shareD
           </p>
         </div>
         <motion.div className="flex gap-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-          {['🔥', '💪', '⚡', '🌟', '🔥'].map((e, i) => (
+          {['fire', 'dumbbell', 'bolt', 'star', 'fire'].map((e, i) => (
             <motion.span key={i} className="text-2xl" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 + i * 0.08 }}>
-              {e}
+              <Icon name={e} className="text-[#FF8C00]" />
             </motion.span>
           ))}
         </motion.div>
@@ -120,20 +121,20 @@ function CelebrationScreen({ onClose, shareData }: { onClose: () => void; shareD
               disabled={sharing}
               className="w-full h-11 rounded-xl border border-[#FF8C00]/30 bg-[#FF8C00]/[0.08] text-[#FF8C00] font-semibold text-sm flex items-center justify-center gap-2 hover:bg-[#FF8C00]/[0.12] transition-colors active:scale-[0.98] disabled:opacity-60"
             >
-              {sharing ? '...' : shared ? '✅ Copiado!' : '📤 Compartilhar treino'}
+              {sharing ? '...' : shared ? <><Icon name="check-circle" /> Copiado!</> : <><Icon name="share" /> Compartilhar treino</>}
             </button>
             <div className="flex gap-2">
               <button
                 onClick={handleWhatsApp}
                 className="flex-1 h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/60 text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-white/[0.06] transition-colors active:scale-[0.98]"
               >
-                <span>💬</span> WhatsApp
+                <Icon name="comment" /> WhatsApp
               </button>
               <button
                 onClick={handleSaveImage}
                 className="flex-1 h-10 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/60 text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-white/[0.06] transition-colors active:scale-[0.98]"
               >
-                <span>💾</span> Salvar
+                <Icon name="download" /> Salvar
               </button>
             </div>
           </motion.div>
@@ -321,7 +322,7 @@ export default function AvaliacaoPage() {
 
         <div>
           <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-1">
-            Treino concluído 💪
+            Treino concluído <Icon name="dumbbell" className="inline" />
           </p>
           <h1 className="text-2xl font-bold">Como foi o treino?</h1>
           <p className="mt-1 text-sm text-white/50">
@@ -501,7 +502,7 @@ export default function AvaliacaoPage() {
         <div className={`rounded-2xl border p-4 flex flex-col gap-3 transition-colors ${postWorkoutRegistered ? 'border-green-400/20 bg-green-400/5' : 'border-white/[0.07] bg-white/[0.02]'}`}>
           {postWorkoutRegistered ? (
             <div className="flex items-center gap-2">
-              <span className="text-lg">✅</span>
+              <Icon name="check-circle" className="text-lg text-green-400" />
               <p className="text-sm text-green-400 font-medium">Refeição pós-treino registrada!</p>
             </div>
           ) : (

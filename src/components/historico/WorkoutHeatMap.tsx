@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Icon from '@/components/ui/Icon'
 
 interface WorkoutDay {
   data: string          // YYYY-MM-DD
@@ -104,7 +105,7 @@ export default function WorkoutHeatMap({ workoutDates, streakAtual }: Props) {
         </span>
         <span className="text-zinc-700">·</span>
         <span className="flex items-center gap-1">
-          🔥 <span className="text-orange-400 font-semibold">{streakAtual}</span> dias
+          <Icon name="fire" className="text-[#FF8C00]" /> <span className="text-orange-400 font-semibold">{streakAtual}</span> dias
         </span>
         <span className="text-zinc-700">·</span>
         <span className="flex items-center gap-1">

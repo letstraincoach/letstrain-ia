@@ -3,15 +3,16 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import type { GeneratedWorkout } from '@/lib/ai/workout-schemas'
 import { isNewFormat } from '@/lib/ai/workout-schemas'
+import Icon from '@/components/ui/Icon'
 
 export const dynamic = 'force-dynamic'
 
 const BLOCO_ICON: Record<string, string> = {
-  preparacao: '🌅',
-  forca: '💪',
-  circuito: '⚡',
-  cardio: '🏃',
-  finisher: '🏁',
+  preparacao: 'sunrise',
+  forca: 'dumbbell',
+  circuito: 'bolt',
+  cardio: 'running',
+  finisher: 'trophy',
 }
 
 const BLOCO_LABEL: Record<string, string> = {
@@ -85,7 +86,7 @@ export default async function PlanoPage() {
             <h1 className="text-2xl font-bold">Plano Semanal</h1>
           </div>
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-8 text-center">
-            <p className="text-4xl mb-3">📋</p>
+            <Icon name="document" className="text-4xl mb-3 text-white/30" />
             <p className="text-sm text-white/50">Nenhum plano ativo.</p>
             <p className="text-xs text-white/30 mt-1">Clique em &quot;Treinar Hoje&quot; no dashboard para gerar um novo plano.</p>
             <Link href="/workout/checkin"
@@ -166,9 +167,9 @@ export default async function PlanoPage() {
                     }}
                   >
                     {isDone ? (
-                      <span className="text-lg">✅</span>
+                      <Icon name="check-circle" className="text-lg text-green-400" />
                     ) : isNext ? (
-                      <span className="text-lg">🔥</span>
+                      <Icon name="fire" className="text-lg text-[#FF8C00]" />
                     ) : (
                       <span className="text-xs font-bold text-white/25">D{pw.dia_numero}</span>
                     )}
@@ -206,7 +207,7 @@ export default async function PlanoPage() {
                 <div className="px-4 pb-3 flex flex-col gap-1.5">
                   {blocos.map((bloco) => (
                     <div key={bloco.key} className="flex items-center gap-2">
-                      <span className="text-xs shrink-0">{BLOCO_ICON[bloco.key] ?? '📋'}</span>
+                      <Icon name={BLOCO_ICON[bloco.key] ?? 'document'} className="text-xs shrink-0" />
                       <span
                         className="text-[10px] font-semibold shrink-0 w-16"
                         style={{ color: BLOCO_COR[bloco.key] ?? '#888' }}

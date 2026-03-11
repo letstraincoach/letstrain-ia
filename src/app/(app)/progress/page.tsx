@@ -7,6 +7,7 @@ import AlbumConquistas from '@/components/gamification/AlbumConquistas'
 import LetsCoinsSection from '@/components/dashboard/LetsCoinsSection'
 import WeightChart from '@/components/progress/WeightChart'
 import ShareProgressButton from '@/components/progress/ShareProgressButton'
+import Icon from '@/components/ui/Icon'
 
 type Sexo = 'masculino' | 'feminino'
 
@@ -73,9 +74,9 @@ function riscoClassif(imc: number, gordura: number, idade: number) {
   if (imc >= 30) score += 2; else if (imc >= 25) score += 1
   if (gordura >= 30) score += 2; else if (gordura >= 25) score += 1
   if (idade >= 50) score += 1; else if (idade >= 40) score += 0.5
-  if (score >= 4) return { label: 'Alto',     cor: '#EF4444', emoji: '⚠️' }
-  if (score >= 2) return { label: 'Moderado', cor: '#FBBF24', emoji: '⚡' }
-  return               { label: 'Baixo',     cor: '#4ADE80', emoji: '✅' }
+  if (score >= 4) return { label: 'Alto',     cor: '#EF4444', icon: 'triangle-warning' }
+  if (score >= 2) return { label: 'Moderado', cor: '#FBBF24', icon: 'bolt' }
+  return               { label: 'Baixo',     cor: '#4ADE80', icon: 'check-circle' }
 }
 
 // ── Lets Body Score ───────────────────────────────────────────────────────────
@@ -553,14 +554,14 @@ export default async function ProgressPage() {
         {/* Stats grid */}
         <div className="grid grid-cols-2 gap-3">
           {[
-            { label: 'Treinos totais',   value: String(progress?.treinos_totais ?? 0) },
-            { label: 'Sequência atual',  value: `🔥 ${progress?.streak_atual ?? 0}`  },
-            { label: 'Melhor sequência', value: `⚡ ${progress?.streak_maximo ?? 0}` },
-            { label: 'Conquistas',       value: `${unlockedCount} / ${allAchievements.length}` },
+            { label: 'Treinos totais',   value: <>{progress?.treinos_totais ?? 0}</> },
+            { label: 'Sequência atual',  value: <><Icon name="fire" className="text-[#FF8C00]" /> {progress?.streak_atual ?? 0}</>  },
+            { label: 'Melhor sequência', value: <><Icon name="bolt" className="text-[#FBBF24]" /> {progress?.streak_maximo ?? 0}</> },
+            { label: 'Conquistas',       value: <>{unlockedCount} / {allAchievements.length}</> },
           ].map((stat) => (
             <div key={stat.label}
               className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-1">
-              <p className="text-2xl font-bold">{stat.value}</p>
+              <p className="text-2xl font-bold flex items-center gap-1">{stat.value}</p>
               <p className="text-xs text-white/50">{stat.label}</p>
             </div>
           ))}
@@ -678,7 +679,7 @@ export default async function ProgressPage() {
                     border: 'border-white/10',
                   },
                   {
-                    label: '💚 Saúde',
+                    label: 'Saúde', icon: 'heart',
                     value: `${meta.pesosIdeais.saude} kg`,
                     sub: profile!.sexo === 'feminino' ? 'meta 28% gordura' : 'meta 18% gordura',
                     cor: '#4ADE80',
@@ -686,7 +687,7 @@ export default async function ProgressPage() {
                     border: 'border-[#4ADE80]/25',
                   },
                   {
-                    label: '🔥 Fitness',
+                    label: 'Fitness', icon: 'fire',
                     value: `${meta.pesosIdeais.fitness} kg`,
                     sub: profile!.sexo === 'feminino' ? 'meta 24% gordura' : 'meta 15% gordura',
                     cor: '#FF8C00',
@@ -694,7 +695,7 @@ export default async function ProgressPage() {
                     border: 'border-[#FF8C00]/25',
                   },
                   {
-                    label: '⚡ Atlético',
+                    label: 'Atlético', icon: 'bolt',
                     value: `${meta.pesosIdeais.atletico} kg`,
                     sub: profile!.sexo === 'feminino' ? 'meta 20% gordura' : 'meta 10% gordura',
                     cor: '#8B5CF6',
@@ -704,7 +705,7 @@ export default async function ProgressPage() {
                 ].map(cell => (
                   <div key={cell.label}
                     className={`rounded-2xl border ${cell.border} ${cell.bg || 'bg-white/[0.02]'} p-4 flex flex-col gap-1`}>
-                    <p className="text-[10px] text-white/40 font-medium">{cell.label}</p>
+                    <p className="text-[10px] text-white/40 font-medium flex items-center gap-1">{'icon' in cell && <Icon name={cell.icon as string} />} {cell.label}</p>
                     <p className="text-xl font-bold" style={{ color: cell.cor }}>{cell.value}</p>
                     <p className="text-[10px] text-white/30">{cell.sub}</p>
                   </div>
@@ -821,7 +822,7 @@ export default async function ProgressPage() {
                   <div className="rounded-2xl border p-4 flex flex-col gap-1.5"
                     style={{ borderColor: '#F9731630', backgroundColor: '#F9731608' }}>
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-bold">🔥 Emagrecimento</p>
+                      <p className="text-sm font-bold flex items-center gap-1"><Icon name="fire" className="text-[#F97316]" /> Emagrecimento</p>
                       <span className="text-sm font-bold text-[#F97316]">~{meta.tdee - 400} kcal/dia</span>
                     </div>
                     <p className="text-xs text-white/45 leading-relaxed">
@@ -833,7 +834,7 @@ export default async function ProgressPage() {
                   <div className="rounded-2xl border p-4 flex flex-col gap-1.5"
                     style={{ borderColor: '#8B5CF630', backgroundColor: '#8B5CF608' }}>
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-bold">💪 Ganho de massa</p>
+                      <p className="text-sm font-bold flex items-center gap-1"><Icon name="dumbbell" className="text-[#8B5CF6]" /> Ganho de massa</p>
                       <span className="text-sm font-bold text-[#8B5CF6]">~{meta.tdee + 300} kcal/dia</span>
                     </div>
                     <p className="text-xs text-white/45 leading-relaxed">
@@ -845,7 +846,7 @@ export default async function ProgressPage() {
                   <div className="rounded-2xl border p-4 flex flex-col gap-1.5"
                     style={{ borderColor: '#4ADE8030', backgroundColor: '#4ADE8008' }}>
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-bold">🌱 Qualidade de vida</p>
+                      <p className="text-sm font-bold flex items-center gap-1"><Icon name="heart" className="text-[#4ADE80]" /> Qualidade de vida</p>
                       <span className="text-sm font-bold text-[#4ADE80]">~{meta.tdee} kcal/dia</span>
                     </div>
                     <p className="text-xs text-white/45 leading-relaxed">
@@ -856,7 +857,7 @@ export default async function ProgressPage() {
                 {meta.objetivos.length === 0 && (
                   <div className="rounded-2xl border border-white/10 p-4 flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-bold">⚡ Manutenção</p>
+                      <p className="text-sm font-bold flex items-center gap-1"><Icon name="bolt" className="text-[#FF8C00]" /> Manutenção</p>
                       <span className="text-sm font-bold text-[#FF8C00]">~{meta.tdee} kcal/dia</span>
                     </div>
                     <p className="text-xs text-white/45 leading-relaxed">
@@ -893,7 +894,7 @@ export default async function ProgressPage() {
                     <p className="text-[10px] text-white/30 mt-0.5">IMC + gordura + idade</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">{meta.risco.emoji}</span>
+                    <Icon name={meta.risco.icon} className="text-xl" />
                     <p className="text-sm font-bold" style={{ color: meta.risco.cor }}>
                       {meta.risco.label}
                     </p>

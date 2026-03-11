@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Icon from '@/components/ui/Icon'
 
 interface DailyTipCardProps {
   initialTip: { tip: string; categoria: string } | null
@@ -8,11 +9,11 @@ interface DailyTipCardProps {
   trainerNome: string
 }
 
-const CATEGORIA_CONFIG: Record<string, { label: string; cor: string; icon: string }> = {
-  treino:      { label: 'Treino',      cor: '#FF8C00', icon: '💪' },
-  nutrição:    { label: 'Nutrição',    cor: '#4ADE80', icon: '🥗' },
-  recuperacao: { label: 'Recuperação', cor: '#60A5FA', icon: '😴' },
-  mindset:     { label: 'Mindset',     cor: '#A855F7', icon: '🧠' },
+const CATEGORIA_CONFIG: Record<string, { label: string; cor: string; icon: string; isEmoji?: boolean }> = {
+  treino:      { label: 'Treino',      cor: '#FF8C00', icon: 'dumbbell' },
+  nutrição:    { label: 'Nutrição',    cor: '#4ADE80', icon: '🥗', isEmoji: true },
+  recuperacao: { label: 'Recuperação', cor: '#60A5FA', icon: 'moon' },
+  mindset:     { label: 'Mindset',     cor: '#A855F7', icon: 'brain' },
 }
 
 export default function DailyTipCard({ initialTip, trainerEmoji, trainerNome }: DailyTipCardProps) {
@@ -37,7 +38,7 @@ export default function DailyTipCard({ initialTip, trainerEmoji, trainerNome }: 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-base">{trainerEmoji}</span>
+          <Icon name={trainerEmoji} className="text-base text-[#FF8C00]" />
           <div>
             <p className="text-[10px] text-white/30 leading-none">Dica de hoje</p>
             <p className="text-xs font-semibold text-white/60 leading-tight">
@@ -50,7 +51,7 @@ export default function DailyTipCard({ initialTip, trainerEmoji, trainerNome }: 
             className="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide"
             style={{ color: catConfig.cor, backgroundColor: catConfig.cor + '18' }}
           >
-            {catConfig.icon} {catConfig.label}
+            {catConfig.isEmoji ? catConfig.icon : <Icon name={catConfig.icon} />} {catConfig.label}
           </span>
         )}
       </div>

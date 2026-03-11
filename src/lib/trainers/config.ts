@@ -6,7 +6,7 @@ export interface Trainer {
   cref: string
   estilo: string
   estiloDesc: string
-  emoji: string
+  icon: string
 }
 
 export const TRAINERS: Trainer[] = [
@@ -16,7 +16,7 @@ export const TRAINERS: Trainer[] = [
     cref: 'CREF 011884-G/SC',
     estilo: 'Metodologia Time Efficient',
     estiloDesc: 'Mais de 15 anos transformando vidas. Treinos inteligentes e eficientes para resultados reais.',
-    emoji: '🔥',
+    icon: 'fire',
   },
 ]
 

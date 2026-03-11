@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
+import Icon from '@/components/ui/Icon'
 
 // ── Milestones + benefits ────────────────────────────────────────────────────
 const MILESTONES = [
@@ -248,7 +249,7 @@ export default function JejumTimer({ jejumInicio: initialJejumInicio }: JejumTim
     return (
       <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 flex flex-col gap-4">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🌙</span>
+          <Icon name="moon" className="text-2xl text-white/50" />
           <div>
             <p className="font-semibold text-sm">Jejum Intermitente</p>
             <p className="text-xs text-white/40">Inicie e monitore sua jornada</p>
@@ -308,7 +309,7 @@ export default function JejumTimer({ jejumInicio: initialJejumInicio }: JejumTim
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xl">🌙</span>
+            <Icon name="moon" className="text-xl text-white/50" />
             <p className="font-semibold text-sm">Jejum Ativo</p>
           </div>
           <span className="flex items-center gap-1.5 text-xs font-medium text-green-400">

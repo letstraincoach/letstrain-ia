@@ -9,6 +9,7 @@ import DailyTipCard from '@/components/dashboard/DailyTipCard'
 import PalavraDoDiaCard from '@/components/dashboard/PalavraDoDiaCard'
 import { getTrainer } from '@/lib/trainers/config'
 import { calcularMetaCalorica, calcularMetaProteina } from '@/lib/nutrition/foods'
+import Icon from '@/components/ui/Icon'
 
 export const dynamic = 'force-dynamic'
 
@@ -203,7 +204,7 @@ export default async function DashboardPage() {
             href="/settings/perfil"
             className="shrink-0 flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 hover:border-white/15 transition-colors"
           >
-            <span className="text-base">{trainer.emoji}</span>
+            <Icon name={trainer.icon} className="text-base text-[#FF8C00]" />
             <div className="text-right">
               <p className="text-[10px] text-white/30 leading-none">Personal</p>
               <p className="text-xs font-semibold text-white/70 leading-tight">{trainer.nome.replace('Personal ', '')}</p>
@@ -214,7 +215,7 @@ export default async function DashboardPage() {
         {/* Dica diária do personal */}
         <DailyTipCard
           initialTip={dailyTip}
-          trainerEmoji={trainer.emoji}
+          trainerEmoji={trainer.icon}
           trainerNome={trainer.nome}
         />
 
@@ -265,9 +266,9 @@ export default async function DashboardPage() {
                       }}
                     >
                       {isDone ? (
-                        <span className="text-lg">✅</span>
+                        <Icon name="check-circle" className="text-lg text-green-400" />
                       ) : isNext ? (
-                        <span className="text-lg">🔥</span>
+                        <Icon name="fire" className="text-lg text-[#FF8C00]" />
                       ) : (
                         <span className="text-[11px] font-bold text-white/25">D{pw.dia_numero}</span>
                       )}
@@ -313,14 +314,14 @@ export default async function DashboardPage() {
             {(progress?.streak_atual ?? 0) > 0 && (
               <div className="text-right">
                 <p className="text-xs text-white/50 mb-0.5">Sequência</p>
-                <p className="text-sm font-bold">🔥 {progress!.streak_atual} dias</p>
+                <p className="text-sm font-bold flex items-center gap-1"><Icon name="fire" className="text-[#FF8C00]" /> {progress!.streak_atual} dias</p>
               </div>
             )}
           </div>
 
           {treinouHoje ? (
             <div className="flex flex-col items-center gap-2 py-2 text-center">
-              <span className="text-3xl">✅</span>
+              <Icon name="check-circle" className="text-3xl text-green-400" />
               <p className="font-semibold text-sm">Treino concluído hoje!</p>
               <p className="text-xs text-white/50">Descanse bem. Você é incrível.</p>
               {lastWorkout && (
@@ -357,7 +358,7 @@ export default async function DashboardPage() {
               href="/workout/checkin"
               className="w-full h-14 rounded-2xl bg-[#FF8C00] text-black font-bold text-base flex items-center justify-center gap-2 hover:bg-[#E07000] transition-colors active:scale-[0.98]"
             >
-              💪 Treinar Hoje
+              <Icon name="dumbbell" /> Treinar Hoje
             </Link>
           )}
         </div>
@@ -375,7 +376,7 @@ export default async function DashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-white/50 mb-0.5">
-                  {treinosRestantes === 0 ? '🔒 Plano gratuito encerrado' : '🎁 Plano gratuito'}
+                  {treinosRestantes === 0 ? <><Icon name="lock" /> Plano gratuito encerrado</> : <><Icon name="gift" /> Plano gratuito</>}
                 </p>
                 <p className={`text-sm font-semibold ${treinosRestantes === 0 ? 'text-[#FF8C00]' : 'text-white/80'}`}>
                   {treinosRestantes === 0
@@ -432,7 +433,7 @@ export default async function DashboardPage() {
 
           <p className="text-xs text-white/40">
             {metaBatida
-              ? '✅ Meta batida! Você pode descansar ou treinar extra.'
+              ? <><Icon name="check-circle" className="text-green-400" /> Meta batida! Você pode descansar ou treinar extra.</>
               : `Faltam ${metaSemanal - weeklyCount} treino${metaSemanal - weeklyCount > 1 ? 's' : ''} para bater a meta desta semana`}
           </p>
         </div>
@@ -485,7 +486,7 @@ export default async function DashboardPage() {
             <p className="text-xs text-white/50">Treinos totais</p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-1">
-            <p className="text-2xl font-bold">🔥 {progress?.streak_maximo ?? 0}</p>
+            <p className="text-2xl font-bold flex items-center gap-1"><Icon name="fire" className="text-[#FF8C00]" /> {progress?.streak_maximo ?? 0}</p>
             <p className="text-xs text-white/50">Melhor sequência</p>
           </div>
         </div>
@@ -507,7 +508,7 @@ export default async function DashboardPage() {
           className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 hover:border-white/20 transition-colors active:scale-[0.98]"
         >
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🏆</span>
+            <Icon name="trophy" className="text-2xl text-[#FF8C00]" />
             <div>
               <p className="text-sm font-semibold">Conquistas</p>
               <p className="text-xs text-white/40">Veja seu álbum de figurinhas</p>
@@ -519,16 +520,16 @@ export default async function DashboardPage() {
         {/* Nav rápida */}
         <nav className="grid grid-cols-3 gap-2 pb-8">
           {[
-            { href: '/progress', label: 'Progresso', icon: '📈' },
-            { href: '/workout/checkin', label: 'Treinar', icon: '🏋️' },
-            { href: '/settings', label: 'Perfil', icon: '⚙️' },
+            { href: '/progress', label: 'Progresso', icon: 'chart-line-up' },
+            { href: '/workout/checkin', label: 'Treinar', icon: 'gym' },
+            { href: '/settings', label: 'Perfil', icon: 'settings' },
           ].map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className="flex flex-col items-center gap-1.5 rounded-2xl border border-white/10 bg-white/[0.03] py-3 px-2 hover:border-white/20 transition-colors"
             >
-              <span className="text-xl">{item.icon}</span>
+              <Icon name={item.icon} className="text-xl text-white/60" />
               <span className="text-xs text-white/60">{item.label}</span>
             </Link>
           ))}
