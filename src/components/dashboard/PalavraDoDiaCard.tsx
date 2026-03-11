@@ -224,7 +224,7 @@ export default function PalavraDoDiaCard({ initialPalavra }: Props) {
                 color: 'rgba(255,215,0,0.9)',
               }}
             >
-              🙏 Amém — Fechar
+              🙏 Amém
             </button>
 
             <p
