@@ -231,6 +231,108 @@ Deno.serve(async () => {
     }
   }
 
+  // ── Relatório Semanal — domingo às 9h Brasília ───────────────────────────
+  let weeklyReportCount = 0
+
+  if (currentHour === 9 && currentDay === 0) {
+    const seteDiasAtras = new Date(brasiliaTime)
+    seteDiasAtras.setDate(brasiliaTime.getDate() - 7)
+    const seteDiasAtrasStr = seteDiasAtras.toISOString().split('T')[0]
+    const hojeStr = brasiliaTime.toISOString().split('T')[0]
+
+    const { data: allSubs } = await supabase
+      .from('push_subscriptions')
+      .select('user_id, endpoint, keys')
+      .eq('ativo', true)
+
+    if (allSubs?.length) {
+      const allUserIds = [...new Set(allSubs.map((s) => s.user_id as string))]
+
+      const { data: activeSubs3 } = await supabase
+        .from('subscriptions')
+        .select('user_id')
+        .in('user_id', allUserIds)
+        .in('status', ['ativa', 'trial'])
+
+      const activeIds3 = new Set((activeSubs3 ?? []).map((s) => s.user_id as string))
+
+      const { data: weeklyWorkouts } = await supabase
+        .from('workouts')
+        .select('user_id')
+        .in('user_id', [...activeIds3])
+        .eq('status', 'executado')
+        .gte('data', seteDiasAtrasStr)
+        .lte('data', hojeStr)
+
+      const workoutsPerUser = new Map<string, number>()
+      for (const w of weeklyWorkouts ?? []) {
+        workoutsPerUser.set(w.user_id as string, (workoutsPerUser.get(w.user_id as string) ?? 0) + 1)
+      }
+
+      const { data: weeklyProgress } = await supabase
+        .from('user_progress')
+        .select('id, streak_atual')
+        .in('id', [...activeIds3])
+
+      const progressMap3 = new Map(weeklyProgress?.map((p) => [p.id as string, p.streak_atual as number]) ?? [])
+
+      const weeklyExpired: string[] = []
+
+      await Promise.allSettled(
+        allSubs
+          .filter((s) => activeIds3.has(s.user_id as string))
+          .map(async (sub) => {
+            const userId = sub.user_id as string
+            const treinos = workoutsPerUser.get(userId) ?? 0
+            const streak = progressMap3.get(userId) ?? 0
+
+            let body: string
+            if (treinos === 0) {
+              body = 'Semana difícil? Tudo bem. A próxima começa agora. Vamos juntos! 💪'
+            } else if (treinos === 1) {
+              body = '1 treino concluído essa semana. Cada passo conta — bora mais na próxima! 🔥'
+            } else if (treinos >= 5) {
+              body = `${treinos} treinos essa semana! Você está voando. Sequência: ${streak} dias 🏆`
+            } else {
+              body = `${treinos} treinos concluídos · Sequência de ${streak} dias · Continue assim! 🔥`
+            }
+
+            try {
+              await webpush.sendNotification(
+                {
+                  endpoint: sub.endpoint as string,
+                  keys: sub.keys as { p256dh: string; auth: string },
+                },
+                JSON.stringify({
+                  title: '📊 Sua semana no Lets Train',
+                  body,
+                  url: '/dashboard',
+                  icon: '/icon-192.png',
+                })
+              )
+              weeklyReportCount++
+            } catch (err: unknown) {
+              if (typeof err === 'object' && err !== null && 'statusCode' in err) {
+                const status = (err as { statusCode: number }).statusCode
+                if (status === 410 || status === 404) {
+                  weeklyExpired.push(sub.endpoint as string)
+                }
+              }
+            }
+          })
+      )
+
+      if (weeklyExpired.length > 0) {
+        await supabase
+          .from('push_subscriptions')
+          .update({ ativo: false })
+          .in('endpoint', weeklyExpired)
+      }
+
+      console.log(`[weekly-report] Enviado: ${weeklyReportCount}`)
+    }
+  }
+
   // ── Notificações agendadas (ex: lembrete pós-treino 1h depois) ─────────────
   let scheduledSentCount = 0
 
@@ -312,6 +414,7 @@ Deno.serve(async () => {
       sent: sentCount,
       streak_sent: streakSentCount,
       scheduled_sent: scheduledSentCount,
+      weekly_report_sent: weeklyReportCount,
       expired: expiredEndpoints.length,
     }),
     { headers: { 'Content-Type': 'application/json' } }
