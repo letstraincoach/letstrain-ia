@@ -37,6 +37,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      palavras_do_dia: {
+        Row: {
+          id: string
+          user_id: string
+          data: string
+          versiculo_referencia: string
+          versiculo_texto: string
+          interpretacao: string
+          criado_em: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          data: string
+          versiculo_referencia: string
+          versiculo_texto: string
+          interpretacao: string
+          criado_em?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          data?: string
+          versiculo_referencia?: string
+          versiculo_texto?: string
+          interpretacao?: string
+          criado_em?: string
+        }
+        Relationships: []
+      }
       daily_tips: {
         Row: {
           id: string

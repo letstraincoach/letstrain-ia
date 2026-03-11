@@ -6,6 +6,7 @@ import type { TrainingLevel } from '@/types/database.types'
 import JejumTimer from '@/components/dashboard/JejumTimer'
 import NutritionWidget from '@/components/nutrition/NutritionWidget'
 import DailyTipCard from '@/components/dashboard/DailyTipCard'
+import PalavraDoDiaCard from '@/components/dashboard/PalavraDoDiaCard'
 import { getTrainer } from '@/lib/trainers/config'
 import { calcularMetaCalorica, calcularMetaProteina } from '@/lib/nutrition/foods'
 
@@ -36,6 +37,7 @@ export default async function DashboardPage() {
     activeSubResult,
     activePlanResult,
     dailyTipResult,
+    palavraDoDiaResult,
   ] = await Promise.all([
     supabase
       .from('user_profiles')
@@ -112,12 +114,21 @@ export default async function DashboardPage() {
       .eq('user_id', user.id)
       .eq('data', hoje)
       .maybeSingle(),
+
+    // Palavra do dia (cache do dia)
+    supabase
+      .from('palavras_do_dia')
+      .select('versiculo_referencia, versiculo_texto, interpretacao')
+      .eq('user_id', user.id)
+      .eq('data', hoje)
+      .maybeSingle(),
   ])
 
   const profile         = profileResult.data
   const progress        = progressResult.data
   const lastWorkout     = lastWorkoutResult.data
   const dailyTip        = dailyTipResult.data ?? null
+  const palavraDoDia    = palavraDoDiaResult.data ?? null
   const weeklyCount     = weeklyResult.data?.length ?? 0
   const metaSemanal     = profile?.dias_por_semana ?? 3
   const temAssinatura   = !!activeSubResult.data
@@ -195,6 +206,9 @@ export default async function DashboardPage() {
             </div>
           </Link>
         </div>
+
+        {/* Palavra do Dia — devocional */}
+        <PalavraDoDiaCard initialPalavra={palavraDoDia} />
 
         {/* Dica diária do personal */}
         <DailyTipCard
