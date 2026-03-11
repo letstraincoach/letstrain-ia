@@ -189,12 +189,16 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-[#0a0a0a] px-6 py-10">
       <div className="max-w-sm mx-auto flex flex-col gap-6">
 
-        {/* Saudação + Personal */}
-        <div className="flex items-start justify-between gap-3">
+        {/* Saudação + Pombo + Personal — mesma linha */}
+        <div className="flex items-center justify-between gap-2">
           <div>
             <p className="text-sm text-white/50">{saudacao},</p>
             <h1 className="text-2xl font-bold">{firstName} 👋</h1>
           </div>
+
+          {/* Pombo centralizado entre nome e personal */}
+          <PalavraDoDiaCard initialPalavra={palavraDoDia} />
+
           <Link
             href="/settings/perfil"
             className="shrink-0 flex items-center gap-2 rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-2 hover:border-white/15 transition-colors"
@@ -206,9 +210,6 @@ export default async function DashboardPage() {
             </div>
           </Link>
         </div>
-
-        {/* Palavra do Dia — devocional */}
-        <PalavraDoDiaCard initialPalavra={palavraDoDia} />
 
         {/* Dica diária do personal */}
         <DailyTipCard
