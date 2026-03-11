@@ -55,6 +55,7 @@ const CATEGORIES = [
       { nome: 'Caixote',         slug: 'caixote' },
       { nome: 'Banco com Ajuste', slug: 'banco-ajuste' },
       { nome: 'Banco de Supino', slug: 'banco-supino' },
+      { nome: 'Banco Scott',     slug: 'banco-scott' },
       { nome: 'Step',            slug: 'step' },
       { nome: 'Bola de Pilates', slug: 'bola-pilates' },
     ],
