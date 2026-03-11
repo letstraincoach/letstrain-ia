@@ -46,6 +46,7 @@ function classificarAcademia(equipamentos: string[]): string {
 export function buildWorkoutPrompt(ctx: WorkoutContext, exerciseCatalog?: string): string {
   const levelLabel = LEVEL_CONFIG[ctx.nivel].label
   const isHotel = ctx.local_treino === 'hotel'
+  const isAcademia = ctx.local_treino === 'academia'
   const academiaClasse = classificarAcademia(ctx.equipamentos)
 
   const intensidade =
@@ -95,6 +96,13 @@ Prefira: halteres, polia, cabos, exercícios controlados e isométricos.
 Circuito metabólico sem impacto: mountain climber (lento), kettelbell swing (se disponível), agachamento controlado, remada.`
     : ''
 
+  // Contexto de academia convencional
+  const contextoAcademia = isAcademia
+    ? `\nACADEMIA CONVENCIONAL: acesso completo a máquinas guiadas, peso livre olímpico, barras, polias e cabos.
+Priorize compostos pesados (agachamento, supino, terra, desenvolvimento, remada) e máquinas guiadas listadas.
+Sem restrições de impacto. Explore toda a variedade de equipamentos disponíveis.`
+    : ''
+
   const catalogSection = exerciseCatalog ? `${exerciseCatalog}\n` : ''
   const levelRules = getLevelRules(ctx.nivel)
 
@@ -119,7 +127,7 @@ ${isHotel ? 'Sem impacto: use mountain climber lento, agachamento, remada halter
 
   return `${catalogSection}Você é um personal trainer da academia Lets Train, especialista na metodologia Time Efficient.
 Gere um treino completo em 4 blocos para ${temMinutos} minutos. Responda APENAS com JSON válido. Sem texto extra.
-${modoSilencioso}
+${modoSilencioso}${contextoAcademia}
 PERFIL DO ALUNO:
 Nível: ${ctx.nivel} (${levelLabel})
 Objetivo: ${ctx.objetivo.split(',').map((o) => objetivoDescricao[o.trim()] ?? o.trim()).join(' + ')}
@@ -128,7 +136,7 @@ Restrições/Lesões: ${ctx.lesao_cronica && ctx.lesao_descricao ? ctx.lesao_des
 Condição cardíaca: ${ctx.doenca_cardiaca ? 'Sim — treino leve, exercícios seguros, sem alta intensidade' : 'Não'}
 
 CONTEXTO DE HOJE:
-Local: ${isHotel ? 'Academia de hotel (equipamentos limitados, similar ao condomínio)' : 'Academia de condomínio'}
+Local: ${isHotel ? 'Academia de hotel (equipamentos limitados, similar ao condomínio)' : isAcademia ? 'Academia convencional (máquinas guiadas completas, peso livre olímpico, polias)' : 'Academia de condomínio'}
 Classificação da academia: ${academiaClasse}
 Equipamentos disponíveis: ${ctx.equipamentos.length ? ctx.equipamentos.join(', ') : 'Apenas peso corporal'}
 Última refeição: ${ctx.ultima_refeicao}

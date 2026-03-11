@@ -28,6 +28,13 @@ const OPTIONS: {
     descricao: 'Estrutura básica, ideal para viagens',
     detalhe: 'Fotografe a academia do hotel e nossa equipe monta um treino completo com o que estiver disponível.',
   },
+  {
+    value: 'academia',
+    label: 'Academia Convencional',
+    emoji: '🏋️',
+    descricao: 'Academia completa com máquinas e peso livre',
+    detalhe: 'Selecione os equipamentos disponíveis e seu personal IA monta um treino com tudo que a academia oferece.',
+  },
 ]
 
 export default function LocalPage() {

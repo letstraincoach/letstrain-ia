@@ -6,7 +6,8 @@ import Button from '@/components/ui/Button'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 
-const CATEGORIES = [
+// Equipamentos para academia de condomínio (lista original)
+const CATEGORIES_CONDOMINIO = [
   {
     label: 'Cardio',
     cor: 'text-red-400',
@@ -52,12 +53,101 @@ const CATEGORIES = [
     label: 'Materiais de Apoio',
     cor: 'text-yellow-400',
     items: [
-      { nome: 'Caixote',         slug: 'caixote' },
+      { nome: 'Caixote',          slug: 'caixote' },
       { nome: 'Banco com Ajuste', slug: 'banco-ajuste' },
-      { nome: 'Banco de Supino', slug: 'banco-supino' },
-      { nome: 'Banco Scott',     slug: 'banco-scott' },
-      { nome: 'Step',            slug: 'step' },
-      { nome: 'Bola de Pilates', slug: 'bola-pilates' },
+      { nome: 'Banco de Supino',  slug: 'banco-supino' },
+      { nome: 'Banco Scott',      slug: 'banco-scott' },
+      { nome: 'Step',             slug: 'step' },
+      { nome: 'Bola de Pilates',  slug: 'bola-pilates' },
+    ],
+  },
+]
+
+// Equipamentos para academia convencional (lista completa)
+const CATEGORIES_ACADEMIA = [
+  {
+    label: 'Cardio',
+    cor: 'text-red-400',
+    items: [
+      { nome: 'Esteira',             slug: 'esteira' },
+      { nome: 'Elíptico',            slug: 'eliptico' },
+      { nome: 'Bike',                slug: 'bike' },
+      { nome: 'Ergométrica',         slug: 'ergometrica' },
+      { nome: 'Remo Ergométrico',    slug: 'remo-ergometrico' },
+      { nome: 'Stair Climber',       slug: 'stair-climber' },
+      { nome: 'Spinning',            slug: 'spinning' },
+    ],
+  },
+  {
+    label: 'Máquinas Guiadas',
+    cor: 'text-blue-400',
+    items: [
+      { nome: 'Leg Press 45°',               slug: 'leg-press' },
+      { nome: 'Leg Press Vertical',          slug: 'leg-press-vertical' },
+      { nome: 'Cadeira Extensora',           slug: 'cadeira-extensora' },
+      { nome: 'Cadeira Flexora',             slug: 'cadeira-flexora' },
+      { nome: 'Cadeira Abdutora',            slug: 'cadeira-abdutora' },
+      { nome: 'Cadeira Adutora',             slug: 'cadeira-adutora' },
+      { nome: 'Panturrilha em Pé',           slug: 'panturrilha-pe' },
+      { nome: 'Panturrilha Sentado',         slug: 'panturrilha-sentado' },
+      { nome: 'Hack Squat',                  slug: 'hack-squat' },
+      { nome: 'Smith Machine',               slug: 'smith-machine' },
+      { nome: 'Supino Máquina (Chest Press)',slug: 'supino-maquina' },
+      { nome: 'Fly / Pec Deck',             slug: 'pec-deck' },
+      { nome: 'Puxada (Lat Pulldown)',       slug: 'puxada' },
+      { nome: 'Remada Máquina',             slug: 'remada-maquina' },
+      { nome: 'Desenvolvimento Ombro Máquina', slug: 'dev-ombro-maquina' },
+      { nome: 'Elevação Lateral Máquina',   slug: 'elevacao-lateral-maquina' },
+      { nome: 'Tríceps Polia Alta',         slug: 'triceps-polia-alta' },
+      { nome: 'Rosca Scott Máquina',        slug: 'rosca-scott-maquina' },
+      { nome: 'Glúteo Máquina',             slug: 'gluteo-maquina' },
+      { nome: 'Hip Thrust Máquina',         slug: 'hip-thrust-maquina' },
+      { nome: 'Pull-over Máquina',          slug: 'pullover-maquina' },
+      { nome: 'Crunch Máquina',             slug: 'crunch-maquina' },
+      { nome: 'Lombar Máquina',             slug: 'lombar-maquina' },
+      { nome: 'Graviton (Assist.Barra)',    slug: 'graviton' },
+      { nome: 'Multi Estação',             slug: 'multi-estacao' },
+    ],
+  },
+  {
+    label: 'Polias & Cross Over',
+    cor: 'text-purple-400',
+    items: [
+      { nome: 'Cross Over / Polia Alta',  slug: 'cross-over' },
+      { nome: 'Polia Baixa',             slug: 'polia-baixa' },
+      { nome: 'Polia Ajustável',         slug: 'polia' },
+    ],
+  },
+  {
+    label: 'Peso Livre',
+    cor: 'text-green-400',
+    items: [
+      { nome: 'Halteres',                     slug: 'halteres' },
+      { nome: 'Anilhas',                      slug: 'anilhas' },
+      { nome: 'Barra Reta',                   slug: 'barra-reta' },
+      { nome: 'Barra W (EZ)',                 slug: 'barra-w' },
+      { nome: 'Barra Olímpica',               slug: 'barra-olimpica' },
+      { nome: 'Barra de Supino (Power Rack)', slug: 'power-rack' },
+      { nome: 'Gaiola de Agachamento',        slug: 'gaiola-agachamento' },
+      { nome: 'Kettlebell',                   slug: 'kettlebell' },
+      { nome: 'Mini Band',                    slug: 'mini-band' },
+      { nome: 'Caneleira',                    slug: 'caneleira' },
+      { nome: 'TRX',                          slug: 'trx' },
+    ],
+  },
+  {
+    label: 'Materiais de Apoio',
+    cor: 'text-yellow-400',
+    items: [
+      { nome: 'Banco com Ajuste',  slug: 'banco-ajuste' },
+      { nome: 'Banco de Supino',   slug: 'banco-supino' },
+      { nome: 'Banco Inclinado',   slug: 'banco-inclinado' },
+      { nome: 'Banco Scott',       slug: 'banco-scott' },
+      { nome: 'Colchonete',        slug: 'colchonete' },
+      { nome: 'Step',              slug: 'step' },
+      { nome: 'Caixote',           slug: 'caixote' },
+      { nome: 'BOSU',              slug: 'bosu' },
+      { nome: 'Bola de Pilates',   slug: 'bola-pilates' },
     ],
   },
 ]
@@ -108,10 +198,13 @@ function PhotoModal({ nome, slug, onClose }: { nome: string; slug: string; onClo
 
 interface EquipmentSelectorProps {
   userId: string
+  localTipo: 'condominio' | 'academia'
   onSaved: () => void
 }
 
-export default function EquipmentSelector({ userId, onSaved }: EquipmentSelectorProps) {
+export default function EquipmentSelector({ userId, localTipo, onSaved }: EquipmentSelectorProps) {
+  const categories = localTipo === 'academia' ? CATEGORIES_ACADEMIA : CATEGORIES_CONDOMINIO
+
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [photoItem, setPhotoItem] = useState<{ nome: string; slug: string } | null>(null)
   const [saving, setSaving] = useState(false)
@@ -175,7 +268,9 @@ export default function EquipmentSelector({ userId, onSaved }: EquipmentSelector
         <div>
           <h2 className="text-xl font-bold">Quais equipamentos você tem acesso?</h2>
           <p className="mt-1 text-sm text-white/50">
-            Selecione tudo que sua academia tem. Você pode editar depois.
+            {localTipo === 'academia'
+              ? 'Marque tudo que sua academia disponibiliza. Você pode editar depois.'
+              : 'Selecione tudo que sua academia tem. Você pode editar depois.'}
           </p>
         </div>
 
@@ -184,7 +279,7 @@ export default function EquipmentSelector({ userId, onSaved }: EquipmentSelector
         )}
 
         <div className="flex flex-col gap-6">
-          {CATEGORIES.map((cat, catIdx) => {
+          {categories.map((cat, catIdx) => {
             const allSelected = cat.items.every((i) => selected.has(i.nome))
             return (
               <div key={cat.label}>

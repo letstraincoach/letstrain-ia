@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import EquipmentDetector from '@/components/onboarding/EquipmentDetector'
 import EquipmentSelector from '@/components/onboarding/EquipmentSelector'
 
-type Local = 'condominio' | 'hotel' | null
+type Local = 'condominio' | 'hotel' | 'academia' | null
 
 export default function EquipamentosPage() {
   const router = useRouter()
@@ -60,9 +60,11 @@ export default function EquipamentosPage() {
 
   return (
     <div className="flex flex-col items-center w-full max-w-sm gap-4 pt-2">
-      {local === 'condominio' || local === 'hotel'
-        ? <EquipmentDetector userId={userId} localTipo={local} onSaved={handleSaved} />
-        : <EquipmentSelector userId={userId} onSaved={handleSaved} />
+      {local === 'academia'
+        ? <EquipmentSelector userId={userId} localTipo="academia" onSaved={handleSaved} />
+        : local === 'condominio' || local === 'hotel'
+          ? <EquipmentDetector userId={userId} localTipo={local} onSaved={handleSaved} />
+          : <EquipmentSelector userId={userId} localTipo="condominio" onSaved={handleSaved} />
       }
       <button
         type="button"
