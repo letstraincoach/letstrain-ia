@@ -345,16 +345,10 @@ interface EquipmentDetectorProps {
   onSaved: () => void
 }
 
-function formatCep(value: string) {
-  const digits = value.replace(/\D/g, '').slice(0, 8)
-  if (digits.length > 5) return `${digits.slice(0, 5)}-${digits.slice(5)}`
-  return digits
-}
-
 export default function EquipmentDetector({ userId, localTipo, onSaved }: EquipmentDetectorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const [step, setStep] = useState<'select' | 'upload' | 'condo'>('select')
+  const [step, setStep] = useState<'select' | 'upload'>('select')
 
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [photoItem, setPhotoItem] = useState<{ nome: string; slug: string } | null>(null)
@@ -365,9 +359,6 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
   const [detecting, setDetecting] = useState(false)
-
-  const [condominioNome, setCondominioNome] = useState('')
-  const [condominioCep, setCondominioCep] = useState('')
 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -487,11 +478,7 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
       return
     }
     setError(null)
-    if (localTipo === 'condominio') {
-      setStep('condo')
-    } else {
-      doSave()
-    }
+    doSave()
   }
 
   async function doSave() {
@@ -513,10 +500,8 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
       onboarding_etapa: 'completo',
     }
 
-    if (localTipo === 'condominio') {
-      profileUpdate.condominio_nome = condominioNome.trim()
-      profileUpdate.condominio_cep = condominioCep.replace(/\D/g, '')
-      if (uploadedUrls.length) profileUpdate.condominio_fotos = uploadedUrls
+    if (localTipo === 'condominio' && uploadedUrls.length) {
+      profileUpdate.condominio_fotos = uploadedUrls
     }
 
     await supabase.from('user_profiles').update(profileUpdate).eq('id', userId)
@@ -769,104 +754,4 @@ export default function EquipmentDetector({ userId, localTipo, onSaved }: Equipm
     )
   }
 
-  // ── Etapa: condo ───────────────────────────────────────────────────────────
-  const cepValido = condominioCep.replace(/\D/g, '').length === 8
-  const nomeValido = condominioNome.trim().length >= 2
-
-  return (
-    <div className="flex flex-col gap-6 w-full max-w-sm">
-      <div>
-        <p className="text-xs text-[#FF8C00] uppercase tracking-widest font-semibold mb-1">
-          Quase lá! 🏠
-        </p>
-        <h2 className="text-xl font-bold">Dados do condomínio</h2>
-        <p className="mt-1 text-sm text-white/50">
-          Ficam salvos no seu perfil junto com os equipamentos.
-        </p>
-      </div>
-
-      {/* Resumo dos equipamentos */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
-        <p className="text-xs text-white/40 mb-1.5">Equipamentos confirmados</p>
-        <div className="flex flex-wrap gap-1.5">
-          {Array.from(selected).slice(0, 8).map((nome) => (
-            <span key={nome} className="text-[11px] px-2 py-0.5 rounded-full bg-[#FF8C00]/15 text-[#FF8C00] font-medium">
-              {nome}
-            </span>
-          ))}
-          {selected.size > 8 && (
-            <span className="text-[11px] px-2 py-0.5 rounded-full bg-white/10 text-white/40">
-              +{selected.size - 8} mais
-            </span>
-          )}
-        </div>
-      </div>
-
-      {uploadedUrls.length > 0 && (
-        <div className="flex flex-col gap-1.5">
-          <p className="text-xs text-white/40">{uploadedUrls.length} foto(s) salvas ✓</p>
-          <div className="flex gap-1.5 overflow-x-auto pb-1">
-            {uploadedUrls.map((url, i) => (
-              <div key={i} className="w-14 h-14 rounded-lg overflow-hidden bg-white/5 shrink-0">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt={`foto ${i + 1}`} className="w-full h-full object-cover" />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-white/70">
-          Nome do condomínio <span className="text-[#FF8C00]">*</span>
-        </label>
-        <Input
-          placeholder="Ex: Condomínio Residencial Park"
-          value={condominioNome}
-          onChange={(e) => setCondominioNome(e.target.value)}
-          autoComplete="off"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-white/70">
-          CEP <span className="text-[#FF8C00]">*</span>
-        </label>
-        <Input
-          placeholder="00000-000"
-          value={condominioCep}
-          onChange={(e) => setCondominioCep(formatCep(e.target.value))}
-          inputMode="numeric"
-          autoComplete="postal-code"
-        />
-        {condominioCep.length > 0 && !cepValido && (
-          <p className="text-xs text-white/35">Digite os 8 dígitos do CEP</p>
-        )}
-      </div>
-
-      {error && (
-        <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-          {error}
-        </p>
-      )}
-
-      <div className="flex flex-col gap-3 pb-8">
-        <Button
-          fullWidth
-          loading={saving}
-          disabled={!nomeValido || !cepValido}
-          onClick={doSave}
-        >
-          Concluir cadastro
-        </Button>
-        <button
-          type="button"
-          onClick={() => setStep('select')}
-          className="text-sm text-white/40 hover:text-white/70 transition-colors"
-        >
-          ← Voltar aos equipamentos
-        </button>
-      </div>
-    </div>
-  )
 }
