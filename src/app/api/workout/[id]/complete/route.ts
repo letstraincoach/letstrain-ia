@@ -31,8 +31,8 @@ export async function POST(_request: Request, { params }: Props) {
     return NextResponse.json({ ok: true })
   }
 
-  // Trava: verificar se já concluiu outro treino hoje
-  const hoje = new Date().toISOString().split('T')[0]
+  // Trava: verificar se já concluiu outro treino hoje (data em horário de Brasília UTC-3)
+  const hoje = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString().split('T')[0]
   const { data: outroExecutado } = await supabase
     .from('workouts')
     .select('id')

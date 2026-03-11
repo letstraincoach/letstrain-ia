@@ -6,6 +6,7 @@ import type { TrainingLevel } from '@/types/database.types'
 import AlbumConquistas from '@/components/gamification/AlbumConquistas'
 import LetsCoinsSection from '@/components/dashboard/LetsCoinsSection'
 import WeightChart from '@/components/progress/WeightChart'
+import ShareProgressButton from '@/components/progress/ShareProgressButton'
 
 type Sexo = 'masculino' | 'feminino'
 
@@ -564,6 +565,17 @@ export default async function ProgressPage() {
             </div>
           ))}
         </div>
+
+        {/* Compartilhar */}
+        <ShareProgressButton
+          nivel={levelCfg.label}
+          emoji={levelCfg.emoji}
+          score={meta?.lbs.total ?? 0}
+          scoreLabel={meta?.lbsInfo.label ?? ''}
+          treinos={progress?.treinos_totais ?? 0}
+          streak={progress?.streak_atual ?? 0}
+          conquistas={unlockedCount}
+        />
 
         {/* ── Desempenho & Projeção ──────────────────────────────────────── */}
         {meta && (

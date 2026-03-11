@@ -37,6 +37,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_tips: {
+        Row: {
+          id: string
+          user_id: string
+          data: string
+          tip: string
+          categoria: string
+          personal_slug: string | null
+          criado_em: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          data: string
+          tip: string
+          categoria?: string
+          personal_slug?: string | null
+          criado_em?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          data?: string
+          tip?: string
+          categoria?: string
+          personal_slug?: string | null
+          criado_em?: string
+        }
+        Relationships: []
+      }
       achievements: {
         Row: {
           codigo: string

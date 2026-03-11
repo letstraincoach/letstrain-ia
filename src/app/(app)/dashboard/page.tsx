@@ -5,6 +5,7 @@ import { LEVEL_CONFIG } from '@/lib/training/levels.config'
 import type { TrainingLevel } from '@/types/database.types'
 import JejumTimer from '@/components/dashboard/JejumTimer'
 import NutritionWidget from '@/components/nutrition/NutritionWidget'
+import DailyTipCard from '@/components/dashboard/DailyTipCard'
 import { getTrainer } from '@/lib/trainers/config'
 import { calcularMetaCalorica, calcularMetaProteina } from '@/lib/nutrition/foods'
 
@@ -34,6 +35,7 @@ export default async function DashboardPage() {
     foodLogsResult,
     activeSubResult,
     activePlanResult,
+    dailyTipResult,
   ] = await Promise.all([
     supabase
       .from('user_profiles')
@@ -102,11 +104,20 @@ export default async function DashboardPage() {
       .order('criado_em', { ascending: false })
       .limit(1)
       .maybeSingle(),
+
+    // Dica diária (cache do dia)
+    supabase
+      .from('daily_tips')
+      .select('tip, categoria')
+      .eq('user_id', user.id)
+      .eq('data', hoje)
+      .maybeSingle(),
   ])
 
   const profile         = profileResult.data
   const progress        = progressResult.data
   const lastWorkout     = lastWorkoutResult.data
+  const dailyTip        = dailyTipResult.data ?? null
   const weeklyCount     = weeklyResult.data?.length ?? 0
   const metaSemanal     = profile?.dias_por_semana ?? 3
   const temAssinatura   = !!activeSubResult.data
@@ -184,6 +195,13 @@ export default async function DashboardPage() {
             </div>
           </Link>
         </div>
+
+        {/* Dica diária do personal */}
+        <DailyTipCard
+          initialTip={dailyTip}
+          trainerEmoji={trainer.emoji}
+          trainerNome={trainer.nome}
+        />
 
         {/* Plano Semanal Visual */}
         {planoAtivo && (

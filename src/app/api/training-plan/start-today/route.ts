@@ -18,8 +18,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Payload inválido' }, { status: 400 })
   }
 
-  // ── Verificar se já treinou hoje ─────────────────────────────────────────
-  const hoje = new Date().toISOString().split('T')[0]
+  // ── Verificar se já treinou hoje (data em horário de Brasília UTC-3) ─────
+  const hoje = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString().split('T')[0]
   const { data: treinoHoje } = await supabase
     .from('workouts')
     .select('id, status')

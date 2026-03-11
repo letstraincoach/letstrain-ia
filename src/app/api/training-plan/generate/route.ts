@@ -56,8 +56,8 @@ export async function POST() {
     )
   }
 
-  // ── Verificar se já tem plano ativo ──────────────────────────────────────
-  const hoje = new Date().toISOString().split('T')[0]
+  // ── Verificar se já tem plano ativo (data em horário de Brasília UTC-3) ──
+  const hoje = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString().split('T')[0]
   const { data: planoAtivo } = await supabase
     .from('training_plans')
     .select('id')

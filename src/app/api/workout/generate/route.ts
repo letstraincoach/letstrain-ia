@@ -86,8 +86,8 @@ export async function POST(request: Request) {
   }
   // ─────────────────────────────────────────────────────────────────────────
 
-  // ── Trava: 1 treino por dia ───────────────────────────────────────────────
-  const hoje = new Date().toISOString().split('T')[0]
+  // ── Trava: 1 treino por dia (data em horário de Brasília UTC-3) ──────────
+  const hoje = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString().split('T')[0]
   const { data: treinoHoje } = await supabase
     .from('workouts')
     .select('id, status')
@@ -209,7 +209,7 @@ export async function POST(request: Request) {
     .from('workouts')
     .insert([{
       user_id: user.id,
-      data: new Date().toISOString().split('T')[0],
+      data: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString().split('T')[0],
       nivel: profile.nivel_atual,
       local_treino: checkin.local_treino ?? profile.local_treino ?? 'condominio',
       duracao_estimada: generatedWorkout.duracao_estimada,
