@@ -46,7 +46,6 @@ const CATEGORIES: CategoryDef[] = [
     cor: '#FF8C00',
     corBg: 'rgba(255,140,0,0.10)',
     codigos: [
-      'boas_vindas',
       'primeiro_passo',
       'tres_dias',
       'semana_1',

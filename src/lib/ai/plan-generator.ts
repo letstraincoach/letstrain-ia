@@ -24,11 +24,11 @@ export interface PlanContext {
 }
 
 function getLevelRules(nivel: string): { series: string; reps: string; descanso: string } {
-  if (nivel.startsWith('adaptacao'))    return { series: '2',   reps: '12–15', descanso: '60–90s' }
-  if (nivel.startsWith('iniciante'))    return { series: '3',   reps: '10–15', descanso: '60–90s' }
-  if (nivel.startsWith('intermediario'))return { series: '3–4', reps: '8–12',  descanso: '60–90s' }
-  if (nivel.startsWith('avancado'))     return { series: '4',   reps: '6–12',  descanso: '90–120s após o par completo (bi-set)' }
-  /* atleta */                          return { series: '4–5', reps: '6–12',  descanso: '90–120s após o trio completo (tri-set)' }
+  if (nivel.startsWith('adaptacao'))    return { series: '2',   reps: '12–15', descanso: '60–90s entre séries' }
+  if (nivel.startsWith('iniciante'))    return { series: '3',   reps: '10–15', descanso: '60–90s entre séries' }
+  if (nivel.startsWith('intermediario'))return { series: '3–4', reps: '8–12',  descanso: '60–90s entre séries' }
+  if (nivel.startsWith('avancado'))     return { series: '4',   reps: '6–12',  descanso: '90–120s entre séries' }
+  /* atleta */                          return { series: '4–5', reps: '6–12',  descanso: '90–120s entre séries' }
 }
 
 // Rotação de grupos musculares por preferência de treino
@@ -86,11 +86,7 @@ export function buildPlanPrompt(ctx: PlanContext, exerciseCatalog?: string): str
     ? `\nMODO SILENCIOSO (hotel): Proibido saltos, burpees, box jumps, impacto. Use halteres, cabos, isométricos.`
     : ''
 
-  const biTriSetNote = ctx.nivel.startsWith('avancado')
-    ? `\nBI-SETS: organize o Bloco 2 em pares antagonistas ("biset":true no 1º, descanso_segundos:0; "biset":false no 2º com 60-90s).`
-    : ctx.nivel.startsWith('atleta')
-    ? `\nTRI-SETS: organize o Bloco 2 em trios ("triset":true nos 2 primeiros, descanso_segundos:0; "triset":false no 3º com 90-120s).`
-    : ''
+  const biTriSetNote = ''  // Bi-sets/tri-sets desabilitados — exercícios agrupados por músculo
 
   const catalogSection = exerciseCatalog ? `${exerciseCatalog}\n` : ''
 
@@ -125,8 +121,9 @@ REGRAS DE PERIODIZAÇÃO:
 - Cada treino segue a estrutura de 4 blocos: preparacao → forca → ${usaCardio ? 'cardio' : 'circuito'} → finisher
 - Séries no Bloco 2: ${levelRules.series}
 - Repetições por série: ${levelRules.reps}
-- Descanso entre séries/pares: ${levelRules.descanso}
-- instrucoes: escreva como personal trainer, imperativo, 1–2 frases corridas (SEM listas, SEM hífens)${biTriSetNote}
+- Descanso entre séries: ${levelRules.descanso}
+- instrucoes: escreva como personal trainer, imperativo, 1–2 frases corridas (SEM listas, SEM hífens)
+- AGRUPAMENTO OBRIGATÓRIO: No Bloco 2 (forca), agrupe SEMPRE os exercícios pelo mesmo grupo muscular principal. NUNCA intercale grupos diferentes. Exemplo correto: Supino, Crucifixo, Remada, Puxada. Exemplo ERRADO: Supino, Remada, Crucifixo, Puxada. Todos os "biset" e "triset" devem ser false.
 
 MAPEAMENTO EQUIPAMENTO → EXERCÍCIO:
 - Leg Press → Leg Press 45° | Extensora → Cadeira Extensora | Flexora → Cadeira Flexora

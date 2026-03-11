@@ -223,7 +223,7 @@ export async function POST(_request: Request, { params }: Props) {
 
     const insertedIds = new Set((inserted ?? []).map((r: { achievement_id: string }) => r.achievement_id))
     newAchievements = toUnlock
-      .filter((a) => insertedIds.has(a.id))
+      .filter((a) => insertedIds.has(a.id) && a.codigo !== 'boas_vindas') // boas_vindas fundido com primeiro_passo
       .map((a) => ({ codigo: a.codigo, nome: a.nome, icone_emoji: a.icone_emoji }))
   }
 
