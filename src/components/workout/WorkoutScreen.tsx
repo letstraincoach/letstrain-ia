@@ -198,9 +198,10 @@ function ExerciseVideoThumb({ nome, size = 'sm', onClick }: { nome: string; size
 }
 
 // ---- Bloco accordion ----
-function BlocoCard({ label, cor, desc, icon, exs, tempoMin, expanded, onToggle, onVideoClick }: {
+function BlocoCard({ label, cor, desc, icon, exs, tempoMin, expanded, onToggle, onVideoClick, isCardio }: {
   label: string; cor: string; desc: string; icon: string; exs: WorkoutExercise[]
   tempoMin: number; expanded: boolean; onToggle: () => void; onVideoClick: (nome: string) => void
+  isCardio?: boolean
 }) {
   if (exs.length === 0) return null
   return (
@@ -256,7 +257,9 @@ function BlocoCard({ label, cor, desc, icon, exs, tempoMin, expanded, onToggle, 
                       <p className="text-[11px] text-white/30 mt-0.5 truncate">{ex.grupo_muscular.join(' · ')}</p>
                     )}
                   </div>
-                  <span className="text-xs text-white/40 shrink-0 font-medium">{ex.series}× {ex.repeticoes}</span>
+                  <span className="text-xs text-white/40 shrink-0 font-medium">
+                    {isCardio ? ex.repeticoes : `${ex.series}× ${ex.repeticoes}`}
+                  </span>
                 </div>
               ))}
             </div>
@@ -432,6 +435,7 @@ function WorkoutOverview({ workout, nivel, onStart, onVideoClick }: {
                   expanded={expanded[bloco.label] ?? false}
                   onToggle={() => setExpanded((prev) => ({ ...prev, [bloco.label]: !prev[bloco.label] }))}
                   onVideoClick={onVideoClick}
+                  isCardio={bloco.tipo === 'cardio'}
                 />
               </motion.div>
             ))}
@@ -592,6 +596,13 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
       return
     }
 
+    // ── Cardio machine: sem séries nem descanso, avança direto ──────────────
+    if (ex.secao === 'Cardio') {
+      if (isLast) { setShowConfirm(true); return }
+      advance()
+      return
+    }
+
     // ── Exercício normal: tracking de séries ─────────────────────────────
     if (currentSet < ex.series) {
       startRest(
@@ -633,6 +644,10 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
 
   // ── Calcular label do botão ──────────────────────────────────────────
   function buttonLabel(): string {
+    if (ex.secao === 'Cardio') {
+      if (isLast) return '🏁 Concluir Treino'
+      return 'Concluído → Próximo Exercício'
+    }
     if (ex.setGroup) {
       if (!ex.setGroup.isLast) return `→ ${ex.setGroup.nextName}`
       if (isLast) return '🏁 Concluir Treino'
@@ -745,19 +760,28 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                     <ExerciseVideoThumb nome={ex.nome} size="lg" onClick={() => setVideoExercise(ex.nome)} />
                   </div>
 
-                  {/* Séries / Reps / Descanso */}
-                  <div className="grid grid-cols-3 gap-3">
-                    {[
-                      { label: 'Séries',   value: ex.setGroup ? `${ex.setGroup.totalRounds}×` : String(ex.series) },
-                      { label: 'Reps',     value: ex.repeticoes },
-                      { label: 'Descanso', value: ex.setGroup?.isLast && ex.descanso_segundos > 0 ? `${ex.descanso_segundos}s` : ex.setGroup ? '—' : ex.descanso_segundos > 0 ? `${ex.descanso_segundos}s` : '—' },
-                    ].map(({ label, value }) => (
-                      <div key={label} className="flex flex-col items-center gap-1 rounded-2xl border border-white/10 bg-white/[0.03] py-3">
-                        <span className="text-xl font-bold text-[#FF8C00]">{value}</span>
-                        <span className="text-xs text-white/40">{label}</span>
+                  {/* Séries / Reps / Descanso — cardio só mostra duração */}
+                  {ex.secao === 'Cardio' ? (
+                    <div className="flex justify-center">
+                      <div className="flex flex-col items-center gap-1 rounded-2xl border border-white/10 bg-white/[0.03] py-4 px-10">
+                        <span className="text-2xl font-bold text-[#FF8C00]">{ex.repeticoes}</span>
+                        <span className="text-xs text-white/40">Duração</span>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { label: 'Séries',   value: ex.setGroup ? `${ex.setGroup.totalRounds}×` : String(ex.series) },
+                        { label: 'Reps',     value: ex.repeticoes },
+                        { label: 'Descanso', value: ex.setGroup?.isLast && ex.descanso_segundos > 0 ? `${ex.descanso_segundos}s` : ex.setGroup ? '—' : ex.descanso_segundos > 0 ? `${ex.descanso_segundos}s` : '—' },
+                      ].map(({ label, value }) => (
+                        <div key={label} className="flex flex-col items-center gap-1 rounded-2xl border border-white/10 bg-white/[0.03] py-3">
+                          <span className="text-xl font-bold text-[#FF8C00]">{value}</span>
+                          <span className="text-xs text-white/40">{label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Progresso de rounds (setGroup) */}
                   {!jaExecutado && ex.setGroup && (
@@ -776,8 +800,8 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                     </div>
                   )}
 
-                  {/* Progresso de séries (exercício normal) */}
-                  {!jaExecutado && !ex.setGroup && ex.series > 1 && (
+                  {/* Progresso de séries (exercício normal — hidden para cardio) */}
+                  {!jaExecutado && !ex.setGroup && ex.series > 1 && ex.secao !== 'Cardio' && (
                     <div className="flex items-center justify-center gap-2">
                       {Array.from({ length: ex.series }).map((_, i) => (
                         <div
