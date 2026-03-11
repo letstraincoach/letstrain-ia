@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import type { GeneratedWorkout } from '@/lib/ai/workout-schemas'
 import WorkoutHeatMap from '@/components/historico/WorkoutHeatMap'
+import MuscleGroupChart from '@/components/historico/MuscleGroupChart'
 
 const LOCAL_EMOJI: Record<string, string> = {
   hotel: '✈️',
@@ -82,6 +83,25 @@ export default async function HistoricoPage() {
     rating: w.workout_evaluations?.[0]?.rating ?? null,
   }))
 
+  // Muscle group frequency (last 30 days)
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  const grupoContagem: Record<string, number> = {}
+  for (const w of workouts) {
+    if (w.data < thirtyDaysAgo || !w.exercicios) continue
+    const blocks = [
+      w.exercicios.preparacao, w.exercicios.forca, w.exercicios.circuito,
+      w.exercicios.cardio, w.exercicios.finisher,
+      w.exercicios.aquecimento, w.exercicios.principal, w.exercicios.cooldown,
+    ].filter(Boolean) as NonNullable<GeneratedWorkout['forca']>[]
+    for (const block of blocks) {
+      for (const ex of block) {
+        for (const g of ex.grupo_muscular ?? []) {
+          grupoContagem[g] = (grupoContagem[g] ?? 0) + 1
+        }
+      }
+    }
+  }
+
   const groups = groupByMonth(workouts)
   const monthKeys = Object.keys(groups)
 
@@ -107,6 +127,11 @@ export default async function HistoricoPage() {
             workoutDates={workoutDates}
             streakAtual={progressData?.streak_atual ?? 0}
           />
+        )}
+
+        {/* Muscle Group Distribution */}
+        {Object.keys(grupoContagem).length > 0 && (
+          <MuscleGroupChart grupoContagem={grupoContagem} />
         )}
 
         {workouts.length === 0 && (
