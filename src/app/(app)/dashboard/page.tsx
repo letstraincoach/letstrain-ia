@@ -222,15 +222,18 @@ export default async function DashboardPage() {
         {planoAtivo && (
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between px-4 pt-3 pb-2">
+            <Link href="/plano" className="flex items-center justify-between px-4 pt-3 pb-2 hover:bg-white/[0.02] transition-colors">
               <div>
                 <p className="text-[10px] text-[#FF8C00] uppercase tracking-widest font-semibold">Plano semanal</p>
                 <p className="text-sm font-semibold truncate">{planoAtivo.nome_plano}</p>
               </div>
-              <span className="text-xs text-white/30 tabular-nums">
-                {planWorkoutsSorted.filter(pw => pw.executado).length}/{planWorkoutsSorted.length}
-              </span>
-            </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-xs text-white/30 tabular-nums">
+                  {planWorkoutsSorted.filter(pw => pw.executado).length}/{planWorkoutsSorted.length}
+                </span>
+                <span className="text-white/20 text-xs">→</span>
+              </div>
+            </Link>
 
             {/* Scroll horizontal de dias */}
             <div className="flex gap-2 px-4 pb-4 overflow-x-auto no-scrollbar">
