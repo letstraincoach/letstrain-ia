@@ -140,6 +140,17 @@ const BLOCO_ICON: Record<string, string> = {
   'Cooldown':    '🧘',
 }
 
+const SECAO_TO_KEY: Record<string, string> = {
+  'Preparação': 'preparacao',
+  'Força':      'forca',
+  'Circuito':   'circuito',
+  'Cardio':     'cardio',
+  'Finisher':   'finisher',
+  'Aquecimento': 'aquecimento',
+  'Principal':   'principal',
+  'Cooldown':    'cooldown',
+}
+
 function estimarTempo(exs: WorkoutExercise[], tipo: string): number {
   if (exs.length === 0) return 0
   switch (tipo) {
@@ -316,6 +327,69 @@ function BiometricsBadge({ biometrics }: { biometrics: { fc_media?: number; fc_m
   )
 }
 
+// ---- Modal de substituição ----
+function SubstituteModal({ alternatives, loading, saving, subsRestantes, onSelect, onClose }: {
+  alternatives: { nome: string; instrucoes: string; equipamentos: string[] }[]
+  loading: boolean
+  saving: string | null
+  subsRestantes: number
+  onSelect: (alt: { nome: string; instrucoes: string }) => void
+  onClose: () => void
+}) {
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-end sm:items-center justify-center z-50 px-4 pb-6 sm:pb-0" onClick={onClose}>
+      <motion.div
+        className="bg-[#111] border border-white/10 rounded-3xl p-5 w-full max-w-sm"
+        initial={{ y: 60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-base font-bold">Trocar exercício</h3>
+          <span className="text-xs text-white/40">{subsRestantes}/3 restantes</span>
+        </div>
+
+        {loading ? (
+          <div className="flex flex-col items-center py-8 gap-3">
+            <div className="w-6 h-6 border-2 border-[#FF8C00] border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-white/40">Buscando alternativas...</p>
+          </div>
+        ) : alternatives.length === 0 ? (
+          <div className="text-center py-6">
+            <p className="text-sm text-white/50">Nenhuma alternativa disponível.</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {alternatives.map((alt) => (
+              <button
+                key={alt.nome}
+                onClick={() => onSelect(alt)}
+                disabled={saving !== null}
+                className="text-left rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 hover:border-[#FF8C00]/40 hover:bg-[#FF8C00]/[0.04] transition-all active:scale-[0.98] disabled:opacity-50"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium flex-1">{alt.nome}</span>
+                  {saving === alt.nome && (
+                    <div className="w-4 h-4 border-2 border-[#FF8C00] border-t-transparent rounded-full animate-spin shrink-0" />
+                  )}
+                </div>
+                {alt.equipamentos.length > 0 && (
+                  <p className="text-[11px] text-white/30 mt-1">{alt.equipamentos.join(' · ')}</p>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <button onClick={onClose} className="mt-4 w-full text-center text-sm text-white/30 hover:text-white/60 py-2 transition-colors">
+          Cancelar
+        </button>
+      </motion.div>
+    </div>
+  )
+}
+
 // ---- Timer de descanso ----
 function RestTimer({
   remaining, target, nextExerciseName, nextLabel, onSkip,
@@ -463,8 +537,19 @@ interface WorkoutScreenProps {
 
 export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado = false, biometrics }: WorkoutScreenProps) {
   const router = useRouter()
-  const flatList = buildFlatList(workout)
+  const [workoutData, setWorkoutData] = useState(workout)
+  const flatList = buildFlatList(workoutData)
   const total = flatList.length
+
+  // ── Substitute state ──
+  const [subModalOpen, setSubModalOpen] = useState(false)
+  const [subLoading, setSubLoading] = useState(false)
+  const [subSaving, setSubSaving] = useState<string | null>(null)
+  const [subAlternatives, setSubAlternatives] = useState<{ nome: string; instrucoes: string; equipamentos: string[] }[]>([])
+  const [subsRestantes, setSubsRestantes] = useState(() => {
+    const subs = (workout as Record<string, unknown>).substituicoes
+    return 3 - (typeof subs === 'number' ? subs : 0)
+  })
 
   const [view, setView] = useState<'overview' | 'exercise'>(jaExecutado ? 'exercise' : 'overview')
   const [current, setCurrent] = useState(jaExecutado ? total - 1 : 0)
@@ -552,7 +637,7 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
   if (view === 'overview') {
     return (
       <>
-        <WorkoutOverview workout={workout} nivel={nivel} onStart={() => setView('exercise')} onVideoClick={setVideoExercise} />
+        <WorkoutOverview workout={workoutData} nivel={nivel} onStart={() => setView('exercise')} onVideoClick={setVideoExercise} />
         <VideoModal nome={videoExercise} onClose={() => setVideoExercise(null)} />
       </>
     )
@@ -636,6 +721,58 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
     }
   }
 
+  async function fetchAlternatives() {
+    const grupoMuscular = ex.grupo_muscular?.[0]
+    if (!grupoMuscular) return
+    setSubModalOpen(true)
+    setSubLoading(true)
+    setSubAlternatives([])
+    try {
+      const res = await fetch(`/api/workout/${workoutId}/substitute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ grupoMuscular }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setSubAlternatives(data.alternatives)
+        setSubsRestantes(data.substituicoesRestantes)
+      }
+    } catch { /* ignore */ }
+    setSubLoading(false)
+  }
+
+  async function applySubstitute(alt: { nome: string; instrucoes: string }) {
+    const secaoKey = SECAO_TO_KEY[ex.secao]
+    const secaoArr = (workoutData as Record<string, unknown>)[secaoKey]
+    if (!Array.isArray(secaoArr)) return
+    const exerciseIndex = secaoArr.findIndex((e: { nome: string }) => e.nome === ex.nome)
+    if (exerciseIndex === -1) return
+
+    setSubSaving(alt.nome)
+    try {
+      const res = await fetch(`/api/workout/${workoutId}/substitute`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ secao: secaoKey, exerciseIndex, novoExercicio: alt }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setWorkoutData((prev) => {
+          const updated = JSON.parse(JSON.stringify(prev)) as GeneratedWorkout
+          const arr = (updated as Record<string, unknown>)[secaoKey]
+          if (Array.isArray(arr) && arr[exerciseIndex]) {
+            arr[exerciseIndex] = { ...arr[exerciseIndex], nome: alt.nome, instrucoes: alt.instrucoes }
+          }
+          return updated
+        })
+        setSubsRestantes(data.substituicoesRestantes)
+        setSubModalOpen(false)
+      }
+    } catch { /* ignore */ }
+    setSubSaving(null)
+  }
+
   const variants = {
     enter:  (dir: number) => ({ x: dir > 0 ?  60 : -60, opacity: 0 }),
     center: { x: 0, opacity: 1 },
@@ -661,6 +798,16 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
   return (
     <>
       {showConfirm && <ConfirmModal onConfirm={handleComplete} onCancel={() => setShowConfirm(false)} loading={completing} />}
+      {subModalOpen && (
+        <SubstituteModal
+          alternatives={subAlternatives}
+          loading={subLoading}
+          saving={subSaving}
+          subsRestantes={subsRestantes}
+          onSelect={applySubstitute}
+          onClose={() => setSubModalOpen(false)}
+        />
+      )}
 
       <AnimatePresence>
         {restActive && (
@@ -819,6 +966,16 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
 
                   {/* Instruções */}
                   {ex.instrucoes && <p className="text-sm text-white/60 leading-relaxed">{ex.instrucoes}</p>}
+
+                  {/* Botão trocar exercício */}
+                  {!jaExecutado && subsRestantes > 0 && ex.grupo_muscular && ex.grupo_muscular.length > 0 && (
+                    <button
+                      onClick={fetchAlternatives}
+                      className="self-end flex items-center gap-1.5 text-[11px] text-white/25 hover:text-white/50 transition-colors py-1"
+                    >
+                      🔄 Trocar
+                    </button>
+                  )}
                 </div>
               </motion.div>
             </AnimatePresence>
