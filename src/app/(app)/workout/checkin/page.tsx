@@ -9,6 +9,15 @@ import WorkoutGeneratingLoader from '@/components/workout/WorkoutGeneratingLoade
 
 type PageState = 'loading' | 'checkin' | 'generating_plan' | 'starting' | 'error' | 'done_today'
 
+const PLAN_STAGES = [
+  { pct: 5,  label: 'Analisando seu perfil...',        delay: 0 },
+  { pct: 20, label: 'Buscando exercícios ideais...',   delay: 2500 },
+  { pct: 40, label: 'Montando estrutura da semana...', delay: 7000 },
+  { pct: 60, label: 'Criando os treinos...',           delay: 20000 },
+  { pct: 75, label: 'Ajustando cargas e séries...',    delay: 42000 },
+  { pct: 88, label: 'Revisando e finalizando...',      delay: 70000 },
+] as const
+
 export default function CheckinPage() {
   const router = useRouter()
   const [pageState, setPageState] = useState<PageState>('loading')
@@ -17,6 +26,18 @@ export default function CheckinPage() {
   const [treinoConcluidoId, setTreinoConcluidoId] = useState<string | null>(null)
   const [hasActivePlan, setHasActivePlan] = useState(false)
   const [planPreview, setPlanPreview] = useState<{ nome_plano: string; dia: number; total: number } | null>(null)
+  const [planProgress, setPlanProgress] = useState(0)
+  const [planStageLabel, setPlanStageLabel] = useState('Iniciando...')
+
+  useEffect(() => {
+    if (pageState !== 'generating_plan') return
+    setPlanProgress(0)
+    setPlanStageLabel('Iniciando...')
+    const timers = PLAN_STAGES.map(({ pct, label, delay }) =>
+      setTimeout(() => { setPlanProgress(pct); setPlanStageLabel(label) }, delay)
+    )
+    return () => timers.forEach(clearTimeout)
+  }, [pageState])
 
   useEffect(() => {
     const supabase = createClient()
@@ -220,14 +241,36 @@ export default function CheckinPage() {
 
   if (pageState === 'generating_plan') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0a0a] px-6 text-center gap-6">
-        <div className="w-10 h-10 rounded-full border-3 border-white/20 border-t-[#FF8C00] animate-spin" />
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0a0a] px-6 text-center gap-8">
+        {/* Header */}
         <div>
-          <p className="text-sm text-[#FF8C00] font-semibold uppercase tracking-widest mb-2">Lets Train</p>
-          <h2 className="text-xl font-bold">Preparando seu plano semanal...</h2>
-          <p className="text-sm text-white/50 mt-2">
-            Isso acontece uma vez por semana. Na próxima vez será instantâneo.
+          <p className="text-sm text-[#FF8C00] font-semibold uppercase tracking-widest mb-3">Lets Train IA</p>
+          <h2 className="text-xl font-bold">Montando seu plano semanal</h2>
+          <p className="text-sm text-white/40 mt-1">Isso acontece uma vez por semana</p>
+        </div>
+
+        {/* Progress bar */}
+        <div className="w-full max-w-xs flex flex-col gap-3">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-white/50 text-left leading-snug max-w-[200px]">{planStageLabel}</span>
+            <span className="text-[#FF8C00] font-bold text-base ml-3">{planProgress}%</span>
+          </div>
+          <div className="w-full bg-white/[0.06] rounded-full h-2.5 overflow-hidden">
+            <div
+              className="h-2.5 rounded-full bg-gradient-to-r from-[#FF8C00] to-[#FFB347] transition-all duration-1000 ease-out"
+              style={{ width: `${planProgress}%` }}
+            />
+          </div>
+          <p className="text-xs text-white/25 mt-1">
+            Seu personal trainer está criando treinos personalizados para você
           </p>
+        </div>
+
+        {/* Decorative icons */}
+        <div className="flex gap-5 text-2xl opacity-20">
+          <span>🏋️</span>
+          <span>💪</span>
+          <span>🔥</span>
         </div>
       </div>
     )
