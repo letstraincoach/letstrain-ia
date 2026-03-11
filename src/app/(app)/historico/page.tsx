@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import type { GeneratedWorkout } from '@/lib/ai/workout-schemas'
+import WorkoutHeatMap from '@/components/historico/WorkoutHeatMap'
 
 const LOCAL_EMOJI: Record<string, string> = {
   hotel: '✈️',
@@ -54,19 +55,31 @@ export default async function HistoricoPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: workoutsRaw } = await supabase
-    .from('workouts')
-    .select('id, data, local_treino, duracao_estimada, exercicios, workout_evaluations(rating)')
-    .eq('user_id', user.id)
-    .eq('status', 'executado')
-    .order('data', { ascending: false })
-    .order('criado_em', { ascending: false })
-    .limit(120)
+  const [{ data: workoutsRaw }, { data: progressData }] = await Promise.all([
+    supabase
+      .from('workouts')
+      .select('id, data, local_treino, duracao_estimada, exercicios, workout_evaluations(rating)')
+      .eq('user_id', user.id)
+      .eq('status', 'executado')
+      .order('data', { ascending: false })
+      .order('criado_em', { ascending: false })
+      .limit(120),
+    supabase
+      .from('user_progress')
+      .select('streak_atual')
+      .eq('id', user.id)
+      .single(),
+  ])
 
   const workouts = (workoutsRaw ?? []).map((w) => ({
     ...w,
     exercicios: w.exercicios as GeneratedWorkout | null,
     workout_evaluations: w.workout_evaluations as { rating: number }[] | null,
+  }))
+
+  const workoutDates = workouts.map((w) => ({
+    data: w.data,
+    rating: w.workout_evaluations?.[0]?.rating ?? null,
   }))
 
   const groups = groupByMonth(workouts)
@@ -87,6 +100,14 @@ export default async function HistoricoPage() {
             {workouts.length >= 120 && ' (últimos 120)'}
           </p>
         </div>
+
+        {/* Heat Map */}
+        {workouts.length > 0 && (
+          <WorkoutHeatMap
+            workoutDates={workoutDates}
+            streakAtual={progressData?.streak_atual ?? 0}
+          />
+        )}
 
         {workouts.length === 0 && (
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-8 text-center">
@@ -128,6 +149,7 @@ export default async function HistoricoPage() {
                   return (
                     <Link
                       key={w.id}
+                      id={`workout-${w.data}`}
                       href={`/workout/${w.id}`}
                       className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 flex items-center gap-3 hover:border-white/20 transition-colors active:scale-[0.99]"
                     >
