@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 
-export type TrainingLocation = 'condominio' | 'hotel'
+export type TrainingLocation = 'condominio' | 'hotel' | 'academia'
 
 export interface CheckinData {
   local_treino: TrainingLocation
@@ -24,6 +24,7 @@ interface CheckinFormProps {
 
 const LOCAL_OPTIONS: { value: TrainingLocation; label: string; emoji: string; detail: string }[] = [
   { value: 'condominio', label: 'Condomínio / Casa', emoji: '🏠', detail: 'Treino direto com seus equipamentos' },
+  { value: 'academia', label: 'Academia Convencional', emoji: '🏋️', detail: 'Máquinas, peso livre e polias' },
   { value: 'hotel', label: 'Hotel / Viagem', emoji: '✈️', detail: 'Detectar por foto' },
 ]
 
@@ -380,6 +381,7 @@ export default function CheckinForm({ onSubmit, loading = false, userId }: Check
                   setLocal(opt.value)
                   setTimeout(() => setShowHotelDetect(true), 200)
                 } else {
+                  // academia e outros: usa equipamentos salvos no onboarding, vai para check-in normal
                   setLocal(opt.value)
                   setTimeout(() => setStep(1), 200)
                 }
@@ -396,7 +398,7 @@ export default function CheckinForm({ onSubmit, loading = false, userId }: Check
                 <p className="font-semibold text-sm">{opt.label}</p>
                 <p className="text-xs text-white/40">{opt.detail}</p>
               </div>
-              {opt.value === 'condominio' && (
+              {(opt.value === 'condominio') && (
                 <span className="text-xs text-[#FF8C00] font-semibold shrink-0">Direto →</span>
               )}
             </button>
@@ -447,6 +449,7 @@ export default function CheckinForm({ onSubmit, loading = false, userId }: Check
           if (local === 'hotel' && userId) {
             setShowHotelDetect(true)
           } else {
+            setLocal(null)
             setStep(0)
           }
         }}
