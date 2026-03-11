@@ -1,343 +1,315 @@
 # Lista de Vídeos — Exercícios Lets Train
 
-> **Total:** 140 exercícios | **Formato:** MP4 · Vertical (9:16) ou Quadrado (1:1)
-> Nomear cada arquivo com o slug do exercício (ex: `flexao-de-solo.mp4`)
+> **Total:** 164 exercícios | **Formato:** MP4 · Vertical (9:16) ou Quadrado (1:1)
+> Nomear cada arquivo com o **slug** exato (ex: `flexao-solo.mp4`, `leg-press-45.mp4`)
 > Upload em: Supabase Storage → bucket `exercise-videos`
 
-**Status de gravação:** ☐ = pendente · ✅ = gravado · 📤 = enviado
+**Status de gravação:** ☐ = pendente · ✅ = gravado · 📤 = enviado ao bucket
 
 ---
 
-## 🫁 PEITO (8 exercícios)
+## 🫁 PEITO (15 exercícios)
 
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 1 | Flexão de Solo | Peso corporal | Iniciante | ☐ |
-| 2 | Supino Reto com Halteres | Halteres + banco | Iniciante | ☐ |
-| 3 | Supino Inclinado com Halteres | Halteres + banco inclinado | Iniciante | ☐ |
-| 4 | Crucifixo com Halteres | Halteres + banco | Intermediário | ☐ |
-| 5 | Flexão Diamante | Peso corporal | Iniciante | ☐ |
-| 6 | Supino Declinado com Halteres | Halteres + banco declinado | Intermediário | ☐ |
-| 7 | Flexão Arqueiro | Peso corporal | Avançado | ☐ |
-| 8 | Mergulho nas Paralelas | Paralelas | Intermediário | ☐ |
-
----
-
-## 🔙 COSTAS (11 exercícios)
-
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 9 | Remada Curvada com Halteres | Halteres | Iniciante | ☐ |
-| 10 | Remada Unilateral com Haltere | Haltere + banco | Iniciante | ☐ |
-| 11 | Barra Fixa | Barra fixa | Intermediário | ☐ |
-| 12 | Barra Fixa Supinada (Chin-up) | Barra fixa | Intermediário | ☐ |
-| 13 | Remada Alta com Halteres | Halteres | Iniciante | ☐ |
-| 14 | Encolhimento de Ombros com Halteres | Halteres | Iniciante | ☐ |
-| 15 | Pull-over com Haltere | Haltere + banco | Intermediário | ☐ |
-| 16 | Face Pull com Elástico | Elástico | Iniciante | ☐ |
-| 17 | Serrátil Anterior — Isometria | Peso corporal | Iniciante | ☐ |
-| 18 | Remada Baixa com Elástico | Elástico | Iniciante | ☐ |
-| 19 | Superman | Peso corporal | Iniciante | ☐ |
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 1 | `flexao-solo` | Flexão de Solo | Peso corporal | Iniciante | ☐ |
+| 2 | `supino-halteres-reto` | Supino Reto com Halteres | Halteres + banco | Iniciante | ☐ |
+| 3 | `supino-halteres-inclinado` | Supino Inclinado com Halteres | Halteres + banco inclinado | Iniciante | ☐ |
+| 4 | `crucifixo-halteres` | Crucifixo com Halteres | Halteres + banco | Iniciante | ☐ |
+| 5 | `peck-deck` | Peck Deck (Voador) | Máquina peck deck | Iniciante | ☐ |
+| 6 | `supino-halteres-declinado` | Supino Declinado com Halteres | Halteres + banco declinado | Intermediário | ☐ |
+| 7 | `supino-barra-reto` | Supino Reto com Barra | Barra + rack + banco | Intermediário | ☐ |
+| 8 | `supino-barra-inclinado` | Supino Inclinado com Barra | Barra + banco inclinado + rack | Intermediário | ☐ |
+| 9 | `supino-smith` | Supino Smith Machine | Smith machine + banco | Intermediário | ☐ |
+| 10 | `crossover-polia-alta` | Crossover na Polia Alta | Polia + cabo | Intermediário | ☐ |
+| 11 | `flexao-diamante` | Flexão Diamante | Peso corporal | Intermediário | ☐ |
+| 12 | `mergulho-paralelas` | Mergulho nas Paralelas | Paralelas | Intermediário | ☐ |
+| 13 | `flexao-arqueiro` | Flexão Arqueiro | Peso corporal | Avançado | ☐ |
+| 14 | `supino-declinado-barra` | Supino Declinado com Barra | Barra + banco declinado + rack | Avançado | ☐ |
+| 15 | `mergulho-paralelas-peso` | Mergulho nas Paralelas com Peso | Paralelas + cinto de peso | Avançado | ☐ |
 
 ---
 
-## 🏔️ OMBROS (8 exercícios)
+## 🔙 COSTAS (23 exercícios)
 
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 20 | Desenvolvimento com Halteres | Halteres | Iniciante | ☐ |
-| 21 | Elevação Lateral com Halteres | Halteres | Iniciante | ☐ |
-| 22 | Elevação Frontal com Halteres | Halteres | Iniciante | ☐ |
-| 23 | Desenvolvimento Arnold | Halteres | Intermediário | ☐ |
-| 24 | Rotação Externa com Elástico | Elástico | Iniciante | ☐ |
-| 25 | Elevação Lateral Inclinada | Halteres | Intermediário | ☐ |
-| 26 | Remada ao Queixo com Halteres | Halteres | Iniciante | ☐ |
-| 27 | Press Militar com Halteres | Halteres | Iniciante | ☐ |
-
----
-
-## 💪 BÍCEPS (6 exercícios)
-
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 28 | Rosca Direta com Halteres | Halteres | Iniciante | ☐ |
-| 29 | Rosca Martelo | Halteres | Iniciante | ☐ |
-| 30 | Rosca Concentrada | Haltere | Iniciante | ☐ |
-| 31 | Rosca 21 | Halteres | Intermediário | ☐ |
-| 32 | Rosca Inversa com Halteres | Halteres | Intermediário | ☐ |
-| 33 | Rosca Isométrica no Ângulo Fraco | Haltere | Intermediário | ☐ |
-
----
-
-## 🦾 TRÍCEPS (6 exercícios)
-
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 34 | Tríceps Coice com Haltere | Haltere | Iniciante | ☐ |
-| 35 | Tríceps Testa com Halteres | Halteres + banco | Iniciante | ☐ |
-| 36 | Mergulho no Banco | Banco/cadeira | Iniciante | ☐ |
-| 37 | Extensão de Tríceps Overhead com Haltere | Haltere | Iniciante | ☐ |
-| 38 | Tríceps Francês com Halteres | Halteres + banco | Intermediário | ☐ |
-| 39 | Push-down com Elástico | Elástico | Iniciante | ☐ |
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 16 | `remada-curvada-halteres` | Remada Curvada com Halteres | Halteres | Iniciante | ☐ |
+| 17 | `remada-unilateral` | Remada Unilateral com Haltere | Haltere + banco | Iniciante | ☐ |
+| 18 | `remada-alta-halteres` | Remada Alta com Halteres | Halteres | Iniciante | ☐ |
+| 19 | `encolhimento-halteres` | Encolhimento de Ombros com Halteres | Halteres | Iniciante | ☐ |
+| 20 | `face-pull-elastico` | Face Pull com Elástico | Elástico | Iniciante | ☐ |
+| 21 | `remada-baixa-elastico` | Remada Baixa com Elástico | Elástico | Iniciante | ☐ |
+| 22 | `puxada-frontal-polia` | Puxada Frontal na Polia | Polia + barra larga | Iniciante | ☐ |
+| 23 | `puxada-neutra-polia` | Puxada Neutra (Triângulo) | Polia + triângulo | Iniciante | ☐ |
+| 24 | `remada-cabo-sentado` | Remada Baixa no Cabo | Polia + triângulo | Iniciante | ☐ |
+| 25 | `graviton` | Graviton (Barra Fixa Assistida) | Graviton | Iniciante | ☐ |
+| 26 | `superman` | Superman | Peso corporal | Iniciante | ☐ |
+| 27 | `remada-serrail` | Serrátil Anterior — Isometria | Peso corporal | Iniciante | ☐ |
+| 28 | `barra-fixa` | Barra Fixa | Barra fixa | Intermediário | ☐ |
+| 29 | `barra-fixa-supinada` | Barra Fixa Supinada (Chin-up) | Barra fixa | Intermediário | ☐ |
+| 30 | `pull-over-haltere` | Pull-over com Haltere | Haltere + banco | Intermediário | ☐ |
+| 31 | `pullover-maquina` | Pull-over Máquina | Máquina pull-over | Intermediário | ☐ |
+| 32 | `remada-barra-curvada` | Remada Curvada com Barra | Barra + anilhas | Intermediário | ☐ |
+| 33 | `remada-smith` | Remada Smith Machine | Smith machine | Intermediário | ☐ |
+| 34 | `barra-fixa-peso` | Barra Fixa com Peso Adicional | Barra fixa + cinto de peso | Avançado | ☐ |
+| 35 | `remada-pendlay` | Remada Pendlay com Barra | Barra + anilhas | Avançado | ☐ |
+| 36 | `remada-yates` | Remada Yates (Supinada com Barra) | Barra + anilhas | Avançado | ☐ |
+| 37 | `remada-barra-t` | Remada na Barra T (T-Bar Row) | Barra T + anilhas | Avançado | ☐ |
+| 38 | `clean-parcial` | Clean Parcial (Power Clean) | Barra + anilhas | Atleta | ☐ |
 
 ---
 
-## 🦵 QUADRÍCEPS (8 exercícios)
+## 🏔️ OMBROS (14 exercícios)
 
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 40 | Agachamento Livre | Peso corporal | Iniciante | ☐ |
-| 41 | Agachamento com Halteres | Halteres | Iniciante | ☐ |
-| 42 | Avanço (Lunge) | Peso corporal | Iniciante | ☐ |
-| 43 | Avanço com Halteres | Halteres | Iniciante | ☐ |
-| 44 | Agachamento Sumô | Peso corporal / haltere | Iniciante | ☐ |
-| 45 | Agachamento Búlgaro | Peso corporal / halteres | Intermediário | ☐ |
-| 46 | Step-up com Halteres | Halteres + step/banco | Iniciante | ☐ |
-| 47 | Agachamento na Parede (Wall Squat) | Peso corporal | Iniciante | ☐ |
-
----
-
-## 🦶 POSTERIOR / ISQUIOTIBIAIS (6 exercícios)
-
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 48 | Stiff com Halteres | Halteres | Iniciante | ☐ |
-| 49 | Levantamento Terra com Halteres | Halteres | Iniciante | ☐ |
-| 50 | Curl de Isquiotibial com Elástico | Elástico | Iniciante | ☐ |
-| 51 | Nordic Curl (Cadeira Nórdica) | Peso corporal + suporte | Avançado | ☐ |
-| 52 | Bom Dia com Halteres | Halteres | Intermediário | ☐ |
-| 53 | Ponte de Isquiotibial | Peso corporal | Iniciante | ☐ |
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 39 | `desenvolvimento-halteres` | Desenvolvimento com Halteres | Halteres | Iniciante | ☐ |
+| 40 | `elevacao-lateral` | Elevação Lateral com Halteres | Halteres | Iniciante | ☐ |
+| 41 | `elevacao-frontal-halteres` | Elevação Frontal com Halteres | Halteres | Iniciante | ☐ |
+| 42 | `rotacao-externa-elastico` | Rotação Externa com Elástico | Elástico | Iniciante | ☐ |
+| 43 | `elevacao-lateral-maquina` | Elevação Lateral Máquina | Máquina | Iniciante | ☐ |
+| 44 | `press-militar-halteres` | Press Militar com Halteres | Halteres | Intermediário | ☐ |
+| 45 | `desenvolvimento-arnold` | Desenvolvimento Arnold | Halteres | Intermediário | ☐ |
+| 46 | `desenvolvimento-barra` | Desenvolvimento com Barra (Military Press) | Barra + rack | Intermediário | ☐ |
+| 47 | `desenvolvimento-smith` | Desenvolvimento Smith Machine | Smith machine | Intermediário | ☐ |
+| 48 | `elevacao-lateral-inclinado` | Elevação Lateral Inclinada | Halteres | Intermediário | ☐ |
+| 49 | `elevacao-lateral-cabo` | Elevação Lateral no Cabo | Polia + cabo | Intermediário | ☐ |
+| 50 | `remada-queixo-halteres` | Remada ao Queixo com Halteres | Halteres | Intermediário | ☐ |
+| 51 | `face-pull-corda-pesado` | Face Pull com Corda Pesado | Polia + corda | Avançado | ☐ |
+| 52 | `push-press` | Push Press com Barra | Barra + rack | Avançado | ☐ |
 
 ---
 
-## 🍑 GLÚTEOS (6 exercícios)
+## 💪 BÍCEPS (13 exercícios)
 
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 54 | Hip Thrust com Haltere | Haltere + banco | Iniciante | ☐ |
-| 55 | Elevação de Quadril no Solo | Peso corporal | Iniciante | ☐ |
-| 56 | Avanço Reverso com Halteres | Halteres | Iniciante | ☐ |
-| 57 | Abdução de Quadril com Elástico | Elástico | Iniciante | ☐ |
-| 58 | Donkey Kick | Peso corporal | Iniciante | ☐ |
-| 59 | Passada Lateral com Elástico | Elástico | Iniciante | ☐ |
-
----
-
-## 🦿 PANTURRILHA (4 exercícios)
-
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 60 | Gêmeos em Pé | Peso corporal | Iniciante | ☐ |
-| 61 | Gêmeos Unipodal | Peso corporal | Intermediário | ☐ |
-| 62 | Gêmeos Sentado com Haltere | Haltere | Iniciante | ☐ |
-| 63 | Elevação de Calcanhar no Step | Step | Iniciante | ☐ |
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 53 | `rosca-direta-halteres` | Rosca Direta com Halteres | Halteres | Iniciante | ☐ |
+| 54 | `rosca-martelo` | Rosca Martelo | Halteres | Iniciante | ☐ |
+| 55 | `rosca-concentrada` | Rosca Concentrada | Haltere | Iniciante | ☐ |
+| 56 | `rosca-barra` | Rosca Direta com Barra | Barra + anilhas | Iniciante | ☐ |
+| 57 | `rosca-ez` | Rosca EZ com Barra | Barra EZ + anilhas | Iniciante | ☐ |
+| 58 | `rosca-cabo-polia` | Rosca no Cabo (Polia Baixa) | Polia + barra reta | Iniciante | ☐ |
+| 59 | `rosca-21` | Rosca 21 | Halteres | Intermediário | ☐ |
+| 60 | `rosca-inversa` | Rosca Inversa com Halteres | Halteres | Intermediário | ☐ |
+| 61 | `rosca-scott` | Rosca Scott (Preacher Curl) | Barra scott + banco scott | Intermediário | ☐ |
+| 62 | `rosca-isometrica` | Rosca Isométrica no Ângulo Fraco | Haltere | Avançado | ☐ |
+| 63 | `rosca-spider` | Rosca Spider (Banco Inclinado a 45°) | Halteres + banco inclinado | Avançado | ☐ |
+| 64 | `rosca-inclinada` | Rosca Inclinada com Halteres | Halteres + banco inclinado | Avançado | ☐ |
+| 65 | `chin-up-peso` | Chin-Up com Peso (Barra Fixa Supinada) | Barra fixa + cinto de peso | Atleta | ☐ |
 
 ---
 
-## 🧱 CORE (11 exercícios)
+## 🦾 TRÍCEPS (11 exercícios)
 
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 64 | Prancha Frontal | Peso corporal | Iniciante | ☐ |
-| 65 | Prancha Lateral | Peso corporal | Iniciante | ☐ |
-| 66 | Abdominal Supra (Crunch) | Peso corporal | Iniciante | ☐ |
-| 67 | Elevação de Pernas | Peso corporal | Iniciante | ☐ |
-| 68 | Mountain Climber | Peso corporal | Iniciante | ☐ |
-| 69 | Russian Twist | Peso corporal / medicine ball | Iniciante | ☐ |
-| 70 | Dead Bug | Peso corporal | Iniciante | ☐ |
-| 71 | Bird Dog | Peso corporal | Iniciante | ☐ |
-| 72 | Hollow Hold | Peso corporal | Intermediário | ☐ |
-| 73 | Crunch Bicicleta | Peso corporal | Iniciante | ☐ |
-| 74 | Rollout com Haltere ou Roda | Roda de rollout / haltere | Avançado | ☐ |
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 66 | `triceps-coice` | Tríceps Coice com Haltere | Haltere | Iniciante | ☐ |
+| 67 | `triceps-testa` | Tríceps Testa com Halteres | Halteres + banco | Iniciante | ☐ |
+| 68 | `mergulho-banco` | Mergulho no Banco | Banco/cadeira | Iniciante | ☐ |
+| 69 | `extensao-triceps-overhead` | Extensão de Tríceps Overhead com Haltere | Haltere | Iniciante | ☐ |
+| 70 | `pushdown-elastico` | Push-down com Elástico | Elástico | Iniciante | ☐ |
+| 71 | `pushdown-corda-polia` | Pushdown com Corda na Polia | Polia + corda | Iniciante | ☐ |
+| 72 | `triceps-frances` | Tríceps Francês com Halteres | Halteres + banco | Intermediário | ☐ |
+| 73 | `skull-crusher-barra` | Skull Crusher com Barra | Barra + banco | Intermediário | ☐ |
+| 74 | `extensao-triceps-cabo-unilateral` | Extensão de Tríceps Unilateral no Cabo | Polia + cabo | Intermediário | ☐ |
+| 75 | `supino-pegada-fechada` | Supino Pega Fechada (Close Grip Bench) | Barra + banco | Avançado | ☐ |
+| 76 | `jm-press` | JM Press com Barra | Barra + banco | Atleta | ☐ |
+
+---
+
+## 🦵 QUADRÍCEPS (22 exercícios)
+
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 77 | `agachamento-livre` | Agachamento Livre | Peso corporal | Iniciante | ☐ |
+| 78 | `agachamento-halteres` | Agachamento com Halteres | Halteres | Iniciante | ☐ |
+| 79 | `avanco` | Avanço (Lunge) | Peso corporal | Iniciante | ☐ |
+| 80 | `avanco-halteres` | Avanço com Halteres | Halteres | Iniciante | ☐ |
+| 81 | `agachamento-sumó` | Agachamento Sumô | Haltere | Iniciante | ☐ |
+| 82 | `agachamento-wall` | Agachamento na Parede (Wall Squat) | Peso corporal | Iniciante | ☐ |
+| 83 | `agachamento-miniband` | Agachamento com Mini Band | Mini band | Iniciante | ☐ |
+| 84 | `cadeira-extensora` | Cadeira Extensora | Máquina | Iniciante | ☐ |
+| 85 | `leg-press-45` | Leg Press 45° | Leg press 45° | Iniciante | ☐ |
+| 86 | `leg-press-vertical` | Leg Press Vertical | Leg press vertical | Iniciante | ☐ |
+| 87 | `step-up` | Step-up com Halteres | Halteres + step | Iniciante | ☐ |
+| 88 | `agachamento-bulgaro` | Agachamento Búlgaro | Halteres + banco | Intermediário | ☐ |
+| 89 | `agachamento-barra` | Agachamento com Barra (Low Bar) | Barra + rack | Intermediário | ☐ |
+| 90 | `agachamento-smith` | Agachamento Smith Machine | Smith machine | Intermediário | ☐ |
+| 91 | `afundo-smith` | Afundo Smith Machine | Smith machine | Intermediário | ☐ |
+| 92 | `hack-squat-maquina` | Hack Squat Máquina | Hack squat | Intermediário | ☐ |
+| 93 | `agachamento-frontal` | Agachamento Frontal com Barra | Barra + rack | Avançado | ☐ |
+| 94 | `agachamento-pausa` | Agachamento com Pausa no Fundo | Barra + rack | Avançado | ☐ |
+| 95 | `leg-press-unilateral` | Leg Press 45° Unilateral | Leg press 45° | Avançado | ☐ |
+| 96 | `pistol-squat` | Pistol Squat (Agachamento Unilateral) | Peso corporal / haltere | Atleta | ☐ |
+| 97 | `thruster` | Thruster com Barra | Barra + rack | Atleta | ☐ |
+| 98 | `agachamento-overhead` | Agachamento Overhead (OHS) | Barra + anilhas | Atleta | ☐ |
+
+---
+
+## 🦶 POSTERIOR / ISQUIOTIBIAIS (15 exercícios)
+
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 99 | `stiff-halteres` | Stiff com Halteres | Halteres | Iniciante | ☐ |
+| 100 | `ponte-isquiotibial` | Ponte de Isquiotibial | Peso corporal | Iniciante | ☐ |
+| 101 | `cadeira-flexora-elastico` | Curl de Isquiotibial com Elástico | Elástico | Iniciante | ☐ |
+| 102 | `mesa-flexora` | Mesa Flexora (Leg Curl) | Mesa flexora | Iniciante | ☐ |
+| 103 | `leg-curl-pe` | Leg Curl em Pé | Cadeira leg curl | Iniciante | ☐ |
+| 104 | `lombar-maquina` | Lombar Máquina (Extensão de Coluna) | Máquina lombar | Iniciante | ☐ |
+| 105 | `bom-dia-halteres` | Bom Dia com Halteres | Halteres | Intermediário | ☐ |
+| 106 | `levantamento-terra` | Levantamento Terra com Halteres | Halteres | Intermediário | ☐ |
+| 107 | `romeno-barra` | Stiff / Romeno com Barra | Barra + anilhas | Intermediário | ☐ |
+| 108 | `terra-romeno-barra` | Terra Romeno com Barra (RDL) | Barra + anilhas | Intermediário | ☐ |
+| 109 | `hyperextensao-banco-romano` | Hiperextensão no Banco Romano | Banco romano | Intermediário | ☐ |
+| 110 | `terra-barra` | Levantamento Terra com Barra | Barra + anilhas | Avançado | ☐ |
+| 111 | `good-morning-barra` | Good Morning com Barra | Barra + rack | Avançado | ☐ |
+| 112 | `nordic-curl` | Nordic Curl (Cadeira Nórdica) | Banco / suporte nórdico | Avançado | ☐ |
+| 113 | `terra-deficit` | Levantamento Terra com Déficit | Barra + plataforma | Atleta | ☐ |
+
+---
+
+## 🍑 GLÚTEOS (16 exercícios)
+
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 114 | `hip-thrust-banco` | Hip Thrust com Haltere | Haltere + banco | Iniciante | ☐ |
+| 115 | `elevacao-quadril-solo` | Elevação de Quadril no Solo | Peso corporal | Iniciante | ☐ |
+| 116 | `avanco-reverso` | Avanço Reverso com Halteres | Halteres | Iniciante | ☐ |
+| 117 | `abducao-quadril-elastico` | Abdução de Quadril com Elástico | Elástico | Iniciante | ☐ |
+| 118 | `donkey-kick` | Donkey Kick | Peso corporal | Iniciante | ☐ |
+| 119 | `passada-lateral-elastico` | Passada Lateral com Elástico | Elástico | Iniciante | ☐ |
+| 120 | `clamshell` | Clamshell com Mini Band | Mini band | Iniciante | ☐ |
+| 121 | `elevacao-perna-caneleira` | Elevação de Perna com Caneleira | Caneleira | Iniciante | ☐ |
+| 122 | `extensao-quadril-caneleira` | Extensão de Quadril com Caneleira | Caneleira | Iniciante | ☐ |
+| 123 | `gluteo-maquina` | Glúteo Máquina (Kickback) | Máquina glúteo | Iniciante | ☐ |
+| 124 | `hip-thrust-maquina` | Hip Thrust Máquina | Máquina hip thrust | Iniciante | ☐ |
+| 125 | `hip-thrust-barra` | Hip Thrust com Barra | Barra + anilhas + banco | Intermediário | ☐ |
+| 126 | `kickback-cabo` | Kickback no Cabo (Extensão de Quadril) | Polia + caneleira cabo | Intermediário | ☐ |
+| 127 | `agachamento-sumo-pesado` | Agachamento Sumô com Barra | Barra + rack | Intermediário | ☐ |
+| 128 | `afundo-bulgaro` | Afundo Búlgaro (Split Squat) | Halteres + banco | Avançado | ☐ |
+| 129 | `rdl-unilateral` | RDL Unilateral (Single-Leg RDL) | Halteres / barra | Avançado | ☐ |
+
+---
+
+## 🦿 PANTURRILHA (7 exercícios)
+
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 130 | `gemeos-pe` | Gêmeos em Pé | Peso corporal | Iniciante | ☐ |
+| 131 | `gemeos-sentado` | Gêmeos Sentado com Haltere | Haltere | Iniciante | ☐ |
+| 132 | `panturrilha-leg-press` | Panturrilha no Leg Press | Leg press 45° | Iniciante | ☐ |
+| 133 | `panturrilha-maquina` | Panturrilha Sentado (Máquina) | Máquina panturrilha sentado | Iniciante | ☐ |
+| 134 | `panturrilha-sentado-maquina` | Panturrilha Sentado na Máquina | Máquina panturrilha sentado | Iniciante | ☐ |
+| 135 | `elevacao-calcanhar-step` | Elevação de Calcanhar no Step | Step / degrau | Intermediário | ☐ |
+| 136 | `gemeos-unipodal` | Gêmeos Unipodal | Peso corporal | Intermediário | ☐ |
+
+---
+
+## 🧱 CORE (16 exercícios)
+
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 137 | `prancha-frente` | Prancha Frontal | Peso corporal | Iniciante | ☐ |
+| 138 | `prancha-lateral` | Prancha Lateral | Peso corporal | Iniciante | ☐ |
+| 139 | `abdominal-supra` | Abdominal Supra (Crunch) | Peso corporal | Iniciante | ☐ |
+| 140 | `abdominal-infra` | Elevação de Pernas | Peso corporal | Iniciante | ☐ |
+| 141 | `mountain-climber` | Mountain Climber | Peso corporal | Iniciante | ☐ |
+| 142 | `russian-twist` | Russian Twist | Haltere / medicine ball | Iniciante | ☐ |
+| 143 | `dead-bug` | Dead Bug | Peso corporal | Iniciante | ☐ |
+| 144 | `bird-dog` | Bird Dog | Peso corporal | Iniciante | ☐ |
+| 145 | `crunch-bicicleta` | Crunch Bicicleta | Peso corporal | Iniciante | ☐ |
+| 146 | `hollow-hold` | Hollow Hold | Peso corporal | Intermediário | ☐ |
+| 147 | `rollout-joelhos` | Rollout com Haltere ou Roda | Roda de rollout / haltere | Avançado | ☐ |
+| 148 | `pallof-press` | Pallof Press no Cabo | Polia + cabo | Avançado | ☐ |
+| 149 | `prancha-com-peso` | Prancha com Anilha nas Costas | Anilha | Avançado | ☐ |
+| 150 | `farmer-carry` | Farmer's Carry (Marcha do Agricultor) | Halteres pesados / kettlebell | Avançado | ☐ |
+| 151 | `ab-wheel-rollout-pe` | Ab Wheel Rollout em Pé | Ab wheel | Atleta | ☐ |
+| 152 | `dragon-flag` | Dragon Flag | Banco | Atleta | ☐ |
 
 ---
 
 ## ⚡ FULL BODY / METABÓLICO (6 exercícios)
 
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 75 | Burpee | Peso corporal | Iniciante | ☐ |
-| 76 | Thruster com Halteres | Halteres | Intermediário | ☐ |
-| 77 | Clean com Haltere | Haltere | Intermediário | ☐ |
-| 78 | Kettlebell Swing com Haltere | Haltere / kettlebell | Intermediário | ☐ |
-| 79 | Man Maker com Halteres | Halteres | Avançado | ☐ |
-| 80 | Complexo com Halteres (6x6) | Halteres | Avançado | ☐ |
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 153 | `burpee` | Burpee | Peso corporal | Iniciante | ☐ |
+| 154 | `swing-haltere` | Kettlebell Swing com Haltere | Haltere / kettlebell | Intermediário | ☐ |
+| 155 | `thruster-halteres` | Thruster com Halteres | Halteres | Intermediário | ☐ |
+| 156 | `clean-haltere` | Clean com Haltere | Haltere | Avançado | ☐ |
+| 157 | `man-maker` | Man Maker com Halteres | Halteres | Avançado | ☐ |
+| 158 | `complexo-halteres` | Complexo com Halteres (6x6) | Halteres | Avançado | ☐ |
 
 ---
 
-## 🧘 MOBILIDADE (5 exercícios)
+## 🧘 MOBILIDADE (6 exercícios)
 
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 81 | Hip 90/90 (Mobilidade de Quadril) | Peso corporal | Iniciante | ☐ |
-| 82 | Cat-Cow (Coluna) | Peso corporal | Iniciante | ☐ |
-| 83 | Mobilidade de Tornozelo | Peso corporal | Iniciante | ☐ |
-| 84 | Rotação Torácica em Quatro Apoios | Peso corporal | Iniciante | ☐ |
-| 85 | Pigeon Pose (Abertura de Quadril) | Peso corporal | Iniciante | ☐ |
-
----
-
-## 🔩 POLIA / CROSSOVER / CABO (12 exercícios)
-
-> Crossover, polia alta, polia baixa e polia ajustável. Presentes em academias de condomínio e academia convencional.
-
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 86 | Puxada na Polia (Lat Pulldown) | Polia / Pulldown | Iniciante | ☐ |
-| 87 | Remada Baixa na Polia | Polia / Crossover | Iniciante | ☐ |
-| 88 | Tríceps Corda na Polia | Polia | Iniciante | ☐ |
-| 89 | Tríceps Barra na Polia (Pushdown) | Polia | Iniciante | ☐ |
-| 90 | Rosca no Cabo (Polia Baixa) | Polia | Iniciante | ☐ |
-| 91 | Crucifixo no Cabo (Cable Crossover) | Crossover | Intermediário | ☐ |
-| 92 | Face Pull na Polia | Polia / Crossover | Iniciante | ☐ |
-| 93 | Elevação Lateral na Polia | Polia | Intermediário | ☐ |
-| 94 | Pull-over na Polia | Polia | Intermediário | ☐ |
-| 95 | Woodchopper na Polia (Rotação) | Polia | Intermediário | ☐ |
-| 96 | Abdução de Quadril na Polia | Polia | Iniciante | ☐ |
-| 97 | Puxada Unilateral na Polia | Polia | Intermediário | ☐ |
+| # | Slug (nome do arquivo) | Exercício | Equipamento | Nível | Status |
+|---|------------------------|-----------|-------------|-------|--------|
+| 159 | `hip-90-90` | Hip 90/90 (Mobilidade de Quadril) | Peso corporal | Iniciante | ☐ |
+| 160 | `cat-cow` | Cat-Cow (Coluna) | Peso corporal | Iniciante | ☐ |
+| 161 | `ankle-mobility` | Mobilidade de Tornozelo | Peso corporal | Iniciante | ☐ |
+| 162 | `thoracic-rotation` | Rotação Torácica em Quatro Apoios | Peso corporal | Iniciante | ☐ |
+| 163 | `pigeon-pose` | Pigeon Pose (Abertura de Quadril) | Peso corporal | Iniciante | ☐ |
+| 164 | `worlds-greatest-stretch` | World's Greatest Stretch | Peso corporal | Iniciante | ☐ |
 
 ---
 
-## 🏋️ MÁQUINAS GUIADAS — CONDOMÍNIO / ACADEMIA (12 exercícios)
+## 🎯 Prioridade de Gravação
 
-> Máquinas presentes tanto em academias de condomínio como em academias convencionais.
+### 🔴 Alta — Compostos e multiarticulares (mais usados em todos os perfis)
+Grave estes primeiro — aparecem em todos os perfis iniciante e intermediário:
 
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 98  | Cadeira Extensora | Cadeira Extensora | Iniciante | ☐ |
-| 99  | Cadeira Flexora | Cadeira Flexora | Iniciante | ☐ |
-| 100 | Leg Press 45° | Leg Press 45° | Iniciante | ☐ |
-| 101 | Supino na Máquina (Chest Press) | Supino Máquina | Iniciante | ☐ |
-| 102 | Desenvolvimento Ombro na Máquina | Multiestação / Shoulder Press | Iniciante | ☐ |
-| 103 | Voador / Pec Deck | Fly / Pec Deck | Iniciante | ☐ |
-| 104 | Remada no Aparelho (Seated Row) | Remada Máquina | Iniciante | ☐ |
-| 105 | Cadeira Adutora | Cadeira Adutora | Iniciante | ☐ |
-| 106 | Cadeira Abdutora | Cadeira Abdutora | Iniciante | ☐ |
-| 107 | Panturrilha em Pé na Máquina | Panturrilha em Pé | Iniciante | ☐ |
-| 108 | Crunch na Máquina (Abdominal) | Crunch Máquina | Iniciante | ☐ |
-| 109 | Cadeira Romana (Hiperextensão Lombar) | Cadeira Romana / Lombar Máquina | Iniciante | ☐ |
+1. `agachamento-livre` — Agachamento Livre
+2. `agachamento-halteres` — Agachamento com Halteres
+3. `flexao-solo` — Flexão de Solo
+4. `supino-halteres-reto` — Supino Reto com Halteres
+5. `remada-curvada-halteres` — Remada Curvada com Halteres
+6. `remada-unilateral` — Remada Unilateral com Haltere
+7. `hip-thrust-banco` — Hip Thrust com Haltere
+8. `stiff-halteres` — Stiff com Halteres
+9. `desenvolvimento-halteres` — Desenvolvimento com Halteres
+10. `prancha-frente` — Prancha Frontal
+11. `mountain-climber` — Mountain Climber
+12. `elevacao-quadril-solo` — Elevação de Quadril no Solo
+13. `avanco` — Avanço (Lunge)
+14. `hip-90-90` — Hip 90/90
+15. `cat-cow` — Cat-Cow
 
----
+### 🟠 Alta — Máquinas e polias (condomínio + academia)
 
-## 🏭 MÁQUINAS GUIADAS — ACADEMIA CONVENCIONAL (11 exercícios)
+16. `puxada-frontal-polia` — Puxada Frontal na Polia
+17. `remada-cabo-sentado` — Remada Baixa no Cabo
+18. `pushdown-corda-polia` — Pushdown com Corda na Polia
+19. `crossover-polia-alta` — Crossover na Polia Alta
+20. `elevacao-lateral-cabo` — Elevação Lateral no Cabo
+21. `cadeira-extensora` — Cadeira Extensora
+22. `mesa-flexora` — Mesa Flexora (Leg Curl)
+23. `leg-press-45` — Leg Press 45°
+24. `peck-deck` — Peck Deck (Voador)
+25. `hip-thrust-maquina` — Hip Thrust Máquina
+26. `gluteo-maquina` — Glúteo Máquina
+27. `graviton` — Graviton (Barra Assistida)
 
-> Exclusivas de academias convencionais completas. Slug do arquivo: nome da máquina/movimento.
+### 🟣 Alta — Exclusivos de academia convencional (barra + smith)
 
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 110 | Leg Press Vertical | Leg Press Vertical | Iniciante | ☐ |
-| 111 | Hack Squat na Máquina | Hack Squat | Iniciante | ☐ |
-| 112 | Panturrilha Sentado na Máquina | Panturrilha Sentado | Iniciante | ☐ |
-| 113 | Glúteo na Máquina | Glúteo Máquina | Iniciante | ☐ |
-| 114 | Hip Thrust na Máquina | Hip Thrust Máquina | Iniciante | ☐ |
-| 115 | Pull-over na Máquina | Pull-over Máquina | Intermediário | ☐ |
-| 116 | Elevação Lateral na Máquina | Elevação Lateral Máquina | Iniciante | ☐ |
-| 117 | Rosca Scott na Máquina | Rosca Scott Máquina | Iniciante | ☐ |
-| 118 | Tríceps Polia Alta na Máquina | Tríceps Polia Alta | Iniciante | ☐ |
-| 119 | Graviton (Barra Assistida) | Graviton | Intermediário | ☐ |
-| 120 | Lombar na Máquina | Lombar Máquina | Iniciante | ☐ |
+28. `agachamento-barra` — Agachamento com Barra
+29. `supino-barra-reto` — Supino Reto com Barra
+30. `terra-barra` — Levantamento Terra com Barra
+31. `desenvolvimento-barra` — Military Press com Barra
+32. `remada-barra-curvada` — Remada Curvada com Barra
+33. `agachamento-smith` — Agachamento Smith Machine
+34. `supino-smith` — Supino Smith Machine
+35. `leg-press-vertical` — Leg Press Vertical
+36. `hack-squat-maquina` — Hack Squat Máquina
+37. `hip-thrust-barra` — Hip Thrust com Barra
 
----
+### 🟡 Média — Variações, isoladores e acessórios
+38–130: Demais exercícios de iniciante e intermediário (elásticos, mini band, caneleira, polias extras)
 
-## 🔱 SMITH MACHINE (5 exercícios)
-
-> Smith Machine presente em academias convencionais. Slug: `smith-agachamento`, `smith-supino`, etc.
-
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 121 | Agachamento no Smith Machine | Smith Machine | Iniciante | ☐ |
-| 122 | Supino Reto no Smith Machine | Smith Machine + banco | Iniciante | ☐ |
-| 123 | Desenvolvimento no Smith Machine | Smith Machine | Iniciante | ☐ |
-| 124 | Afundo (Lunge) no Smith Machine | Smith Machine | Intermediário | ☐ |
-| 125 | Remada Curvada no Smith Machine | Smith Machine | Intermediário | ☐ |
-
----
-
-## 🏗️ BARRA OLÍMPICA / PESO LIVRE PESADO (10 exercícios)
-
-> Exercícios com barra olímpica, power rack ou gaiola de agachamento. Exclusivos de academias convencionais com área de peso livre completa.
-
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 126 | Agachamento com Barra Olímpica | Barra Olímpica + gaiola/rack | Intermediário | ☐ |
-| 127 | Agachamento Frontal com Barra | Barra Olímpica | Avançado | ☐ |
-| 128 | Supino Reto com Barra | Barra Olímpica + banco supino | Iniciante | ☐ |
-| 129 | Supino Inclinado com Barra | Barra Olímpica + banco inclinado | Intermediário | ☐ |
-| 130 | Levantamento Terra com Barra | Barra Olímpica + anilhas | Intermediário | ☐ |
-| 131 | Terra Romeno com Barra | Barra Olímpica + anilhas | Intermediário | ☐ |
-| 132 | Remada Curvada com Barra | Barra Olímpica | Intermediário | ☐ |
-| 133 | Press Militar com Barra (Desenvolvimento) | Barra Olímpica | Intermediário | ☐ |
-| 134 | Rosca Direta com Barra Reta | Barra Reta | Iniciante | ☐ |
-| 135 | Rosca com Barra EZ (W) | Barra EZ | Iniciante | ☐ |
-
----
-
-## 🎗️ MINI BAND / CANELEIRA (5 exercícios)
-
-> Acessórios leves usados em condomínio, academia e hotel. Fáceis de incluir no Bloco 1 (preparação) ou finisher.
-
-| # | Exercício | Equipamento | Nível | Status |
-|---|-----------|-------------|-------|--------|
-| 136 | Abdução de Quadril com Mini Band | Mini Band | Iniciante | ☐ |
-| 137 | Agachamento com Mini Band | Mini Band | Iniciante | ☐ |
-| 138 | Clamshell com Mini Band | Mini Band | Iniciante | ☐ |
-| 139 | Elevação de Perna com Caneleira | Caneleira | Iniciante | ☐ |
-| 140 | Extensão de Quadril com Caneleira | Caneleira | Iniciante | ☐ |
-
----
-
-## Prioridade de Gravação
-
-### 🔴 Alta prioridade — compostos e mobilidade (condomínio + academia)
-Grave estes primeiro — são os mais usados em todos os perfis:
-1. Agachamento Livre (#40)
-2. Agachamento com Halteres (#41)
-3. Flexão de Solo (#1)
-4. Supino Reto com Halteres (#2)
-5. Remada Curvada com Halteres (#9)
-6. Remada Unilateral com Haltere (#10)
-7. Hip Thrust com Haltere (#54)
-8. Stiff com Halteres (#48)
-9. Desenvolvimento com Halteres (#20)
-10. Prancha Frontal (#64)
-11. Mountain Climber (#68)
-12. Elevação de Quadril no Solo (#55)
-13. Avanço (Lunge) (#42)
-14. Hip 90/90 (#81)
-15. Cat-Cow (#82)
-
-### 🟠 Alta prioridade — máquinas (condomínio e academia convencional)
-16. Puxada na Polia — Lat Pulldown (#86)
-17. Remada Baixa na Polia (#87)
-18. Tríceps Corda na Polia (#88)
-19. Face Pull na Polia (#92)
-20. Crucifixo no Cabo (#91)
-21. Cadeira Extensora (#98)
-22. Cadeira Flexora (#99)
-23. Leg Press 45° (#100)
-24. Supino na Máquina (#101)
-25. Remada no Aparelho (#104)
-26. Voador / Pec Deck (#103)
-27. Cadeira Abdutora (#106)
-28. Cadeira Adutora (#105)
-
-### 🟣 Alta prioridade — exclusivos academia convencional
-29. Leg Press Vertical (#110)
-30. Hack Squat na Máquina (#111)
-31. Hip Thrust na Máquina (#114)
-32. Glúteo na Máquina (#113)
-33. Agachamento com Barra Olímpica (#126)
-34. Supino Reto com Barra (#128)
-35. Levantamento Terra com Barra (#130)
-36. Press Militar com Barra (#133)
-37. Agachamento no Smith Machine (#121)
-38. Graviton — Barra Assistida (#119)
-
-### 🟡 Média prioridade — variações e isoladores
-39–100: Restante dos exercícios de iniciante/intermediário (polias, máquinas extras, barra EZ, mini band)
-
-### 🟢 Baixa prioridade — avançados e atletas
-101–140: Exercícios avançados (Flexão Arqueiro, Nordic Curl, Man Maker, Agachamento Frontal com Barra, etc.)
+### 🟢 Baixa — Avançados e atleta
+131–164: Movimentos avançados e olímpicos (Pistol Squat, Nordic Curl, Dragon Flag, Thruster com Barra, Clean, OHS, etc.)
 
 ---
 
@@ -348,10 +320,10 @@ Grave estes primeiro — são os mais usados em todos os perfis:
 **Duração:** 20–45 segundos por vídeo (1 repetição completa em ritmo normal)
 **Ângulo:** lateral ou 3/4 frontal — o que mostrar melhor a execução
 **Sem áudio:** os vídeos são exibidos sem som no app
-**Nome do arquivo:** slug do exercício (ex: `agachamento-livre.mp4`, `leg-press-45.mp4`, `smith-agachamento.mp4`)
+**Nome do arquivo:** exatamente o slug da tabela (ex: `agachamento-livre.mp4`, `leg-press-45.mp4`)
 
 **Upload:** Supabase Storage > bucket `exercise-videos` > pasta raiz
 
 ---
 
-*Lets Train — Banco de Exercícios Validados pelos Professores*
+*Lets Train — Banco de 164 Exercícios Validados pelos Professores*
