@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import Icon from '@/components/ui/Icon'
 
 export const metadata: Metadata = {
   title: 'Lets Train para Academia — Pare de abandonar. Comece a evoluir.',
@@ -80,16 +81,16 @@ export default function AcademiaPage() {
           {/* Motivos */}
           <div className="flex flex-col sm:flex-row gap-3 w-full max-w-2xl">
             {[
-              { icon: '😤', label: 'Péssimo atendimento' },
-              { icon: '🎯', label: 'Falta de metodologia' },
-              { icon: '📉', label: 'Zero resultado visível' },
-              { icon: '👻', label: 'Ninguém acompanha você' },
+              { icon: 'sad-cry', label: 'Péssimo atendimento' },
+              { icon: 'target', label: 'Falta de metodologia' },
+              { icon: 'chart-line-up', label: 'Zero resultado visível' },
+              { icon: 'user', label: 'Ninguém acompanha você' },
             ].map((item) => (
               <div
                 key={item.label}
                 className="flex-1 flex flex-col items-center gap-1.5 rounded-2xl border border-red-500/15 bg-red-500/[0.04] py-4 px-3"
               >
-                <span className="text-2xl">{item.icon}</span>
+                <Icon name={item.icon} className="text-2xl" />
                 <p className="text-xs font-semibold text-red-300/80 text-center leading-tight">{item.label}</p>
               </div>
             ))}
@@ -118,7 +119,7 @@ export default function AcademiaPage() {
 
           <div className="flex flex-col items-center lg:items-start gap-6 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 bg-[#FF8C00]/10 border border-[#FF8C00]/20 rounded-full px-4 py-1.5">
-              <span className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest">🏋️ Para quem treina em academia</span>
+              <span className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest flex items-center gap-1"><Icon name="gym" /> Para quem treina em academia</span>
             </div>
 
             <h2 className="text-3xl sm:text-5xl font-black leading-tight tracking-tight">
@@ -235,37 +236,37 @@ export default function AcademiaPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               {
-                icon: '🎯',
+                icon: 'target',
                 prob: 'Sem metodologia',
                 sol: 'Método Lets Train',
                 desc: '4 blocos por treino: Preparação, Força, Circuito e Finisher. Estrutura profissional criada por um personal trainer com 15 anos de prática, aplicada no app a cada sessão.',
               },
               {
-                icon: '📈',
+                icon: 'chart-line-up',
                 prob: 'Sem progressão',
                 sol: '15 Níveis automáticos',
                 desc: 'O app rastreia cada treino e sobe de nível quando você bate as metas. Nunca mais estagnado. A carga e o volume crescem com você.',
               },
               {
-                icon: '👤',
+                icon: 'user',
                 prob: 'Ninguém te acompanha',
                 sol: 'Acompanhamento pelo app 24h',
                 desc: 'Check-in diário de disposição e energia. O treino adapta a intensidade ao seu estado: mais leve quando você está cansado, mais intenso quando está no pique.',
               },
               {
-                icon: '🏋️',
+                icon: 'gym',
                 prob: 'Treino genérico',
                 sol: 'Personalizado por equipamento',
                 desc: 'Você marca o que a sua academia tem: máquinas, polias, peso livre. O treino usa exatamente o que está disponível para você.',
               },
               {
-                icon: '🎮',
+                icon: 'trophy',
                 prob: 'Sem motivação',
                 sol: 'Gamificação real',
                 desc: '60+ conquistas, streak diário e controle calórico integrado. Cada treino concluído gera recompensas concretas. Nada de parabéns vago.',
               },
               {
-                icon: '📊',
+                icon: 'chart-histogram',
                 prob: 'Sem resultado visível',
                 sol: 'Lets Body Score',
                 desc: 'Score 0-100 que mede sua evolução com 4 pilares e 15 indicadores. Você vê o resultado crescer, mesmo quando a balança não move.',
@@ -275,7 +276,7 @@ export default function AcademiaPage() {
                 key={item.prob}
                 className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 flex flex-col gap-3"
               >
-                <span className="text-2xl">{item.icon}</span>
+                <Icon name={item.icon} className="text-2xl" />
                 <div className="flex flex-col gap-0.5">
                   <p className="text-[10px] text-red-400/70 font-semibold uppercase tracking-wide line-through">Problema: {item.prob}</p>
                   <p className="font-bold text-sm text-[#FF8C00]">Solução: {item.sol}</p>
@@ -389,7 +390,7 @@ export default function AcademiaPage() {
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base"
                       style={{ background: 'linear-gradient(135deg,rgba(255,140,0,0.3),rgba(255,200,0,0.15))', border: '1.5px solid rgba(255,140,0,0.4)' }}>
-                      🏋️
+                      <Icon name="gym" className="text-[#FF8C00]" />
                     </div>
                     <div>
                       <p className="text-[11px] font-black text-[#FF8C00]">Nível 7 · Intermediário Ouro</p>
@@ -398,17 +399,17 @@ export default function AcademiaPage() {
                   </div>
                   <div className="flex flex-col gap-1.5">
                     {[
-                      { label: 'Treinos', val: '23', icon: '🔥' },
-                      { label: 'Streak', val: '14 dias', icon: '⚡' },
-                      { label: 'Calorias', val: '1.840 kcal', icon: '🥗' },
-                      { label: 'Body Score', val: '68/100', icon: '📊' },
+                      { label: 'Treinos', val: '23', icon: 'fire' },
+                      { label: 'Streak', val: '14 dias', icon: 'bolt' },
+                      { label: 'Calorias', val: '1.840 kcal', icon: 'utensils' },
+                      { label: 'Body Score', val: '68/100', icon: 'chart-histogram' },
                     ].map((stat) => (
                       <div
                         key={stat.label}
                         className="flex items-center justify-between rounded-lg px-2.5 py-1.5"
                         style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
                       >
-                        <span className="text-[9px] text-white/50">{stat.icon} {stat.label}</span>
+                        <span className="text-[9px] text-white/50 flex items-center gap-0.5"><Icon name={stat.icon} /> {stat.label}</span>
                         <span className="text-[9px] font-bold text-white">{stat.val}</span>
                       </div>
                     ))}
@@ -706,12 +707,12 @@ export default function AcademiaPage() {
 
           <div className="flex flex-col gap-2 max-w-md mx-auto w-full">
             {[
-              '✅ 3 dias grátis sem cobranças durante o trial',
-              '✅ Cancele antes do trial e não paga nada',
-              '✅ Acesso completo a todos os recursos',
-              '✅ Sem contrato de fidelidade',
+              '3 dias grátis sem cobranças durante o trial',
+              'Cancele antes do trial e não paga nada',
+              'Acesso completo a todos os recursos',
+              'Sem contrato de fidelidade',
             ].map((item) => (
-              <p key={item} className="text-xs text-white/40">{item}</p>
+              <p key={item} className="text-xs text-white/40 flex items-center gap-1.5"><Icon name="check-circle" className="text-[#FF8C00] shrink-0" /> {item}</p>
             ))}
           </div>
         </div>

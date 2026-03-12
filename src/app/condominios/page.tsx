@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import Icon from '@/components/ui/Icon'
 
 export const metadata: Metadata = {
   title: 'Lets Train para Condomínios: Personal Trainer IA para todos os seus moradores',
@@ -247,7 +248,7 @@ export default function CondominiosPage() {
             <div className="rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.04] p-6 flex flex-col sm:flex-row gap-6">
               <div className="shrink-0">
                 <div className="w-12 h-12 rounded-xl bg-[#FF8C00]/15 border border-[#FF8C00]/25 flex items-center justify-center">
-                  <span className="text-xl">🏗️</span>
+                  <Icon name="building" className="text-xl text-[#FF8C00]" />
                 </div>
               </div>
               <div className="flex flex-col gap-3">
@@ -267,7 +268,7 @@ export default function CondominiosPage() {
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 flex flex-col sm:flex-row gap-6">
               <div className="shrink-0">
                 <div className="w-12 h-12 rounded-xl bg-[#FF8C00]/10 border border-[#FF8C00]/20 flex items-center justify-center">
-                  <span className="text-xl">🏢</span>
+                  <Icon name="building" className="text-xl" />
                 </div>
               </div>
               <div className="flex flex-col gap-3">
@@ -287,7 +288,7 @@ export default function CondominiosPage() {
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 flex flex-col sm:flex-row gap-6">
               <div className="shrink-0">
                 <div className="w-12 h-12 rounded-xl bg-[#FF8C00]/10 border border-[#FF8C00]/20 flex items-center justify-center">
-                  <span className="text-xl">🏛️</span>
+                  <Icon name="bank" className="text-xl" />
                 </div>
               </div>
               <div className="flex flex-col gap-3">
@@ -451,12 +452,12 @@ export default function CondominiosPage() {
 
           <div className="flex flex-col gap-2 max-w-md mx-auto w-full">
             {[
-              '✅ Sem taxa de setup. Implantação inclusa.',
-              '✅ Fidelidade mínima de 12 meses.',
-              '✅ Onboarding assistido para os moradores',
-              '✅ Todos os moradores com acesso ilimitado',
+              'Sem taxa de setup. Implantação inclusa.',
+              'Fidelidade mínima de 12 meses.',
+              'Onboarding assistido para os moradores',
+              'Todos os moradores com acesso ilimitado',
             ].map((item) => (
-              <p key={item} className="text-xs text-white/40">{item}</p>
+              <p key={item} className="text-xs text-white/40 flex items-center gap-1.5"><Icon name="check-circle" className="text-[#FF8C00] shrink-0" /> {item}</p>
             ))}
           </div>
         </div>

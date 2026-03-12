@@ -7,6 +7,7 @@ import PushNotificationSetup from '@/components/push/PushNotificationSetup'
 import SignOutButton from '@/components/settings/SignOutButton'
 import TelefoneInput from '@/components/settings/TelefoneInput'
 import BillingPortalButton from '@/components/settings/BillingPortalButton'
+import Icon from '@/components/ui/Icon'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -157,8 +158,8 @@ export default async function SettingsPage() {
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-4">
               {/* Nome e CEP */}
               <div className="flex flex-col gap-1.5">
-                <p className="text-sm font-semibold">
-                  🏠 {profile.condominio_nome ?? 'Condomínio'}
+                <p className="text-sm font-semibold flex items-center gap-1.5">
+                  <Icon name="home" className="text-white/50" /> {profile.condominio_nome ?? 'Condomínio'}
                 </p>
                 {profile.condominio_cep && (
                   <p className="text-xs text-white/40">
@@ -256,7 +257,7 @@ export default async function SettingsPage() {
           {isTrial ? (
             <div className="rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.04] p-4 flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-[#FF8C00]">🎁 Trial ativo</span>
+                <span className="text-sm font-semibold text-[#FF8C00] flex items-center gap-1.5"><Icon name="gift" /> Trial ativo</span>
                 <span className="text-xs text-white/50 capitalize">{subscription!.plano}</span>
               </div>
               {trialEndsFormatted && (
@@ -271,7 +272,7 @@ export default async function SettingsPage() {
           ) : subscription ? (
             <div className="rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.04] p-4 flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-[#FF8C00]">✅ Ativa</span>
+                <span className="text-sm font-semibold text-[#FF8C00] flex items-center gap-1.5"><Icon name="check-circle" /> Ativa</span>
                 <span className="text-xs text-white/50 capitalize">{subscription.plano}</span>
               </div>
               {fimFormatted && (
@@ -312,7 +313,7 @@ export default async function SettingsPage() {
         </section>
 
         <div className="pb-8 text-center">
-          <p className="text-xs text-white/20">Lets Train v0.1 · Feito com 💪</p>
+          <p className="text-xs text-white/20 flex items-center justify-center gap-1">Lets Train v0.1 · Feito com <Icon name="dumbbell" /></p>
         </div>
       </div>
     </div>

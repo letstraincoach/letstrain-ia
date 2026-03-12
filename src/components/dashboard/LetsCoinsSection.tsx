@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import GoldCoin from '@/components/ui/GoldCoin'
+import Icon from '@/components/ui/Icon'
 
 interface Resgate {
   id: string
@@ -21,7 +22,7 @@ interface LetsCoinsSectionProps {
 const OPCOES = [
   { coins: 100, valorBrl: 5,  label: 'R$5 de desconto',  desc: '100 coins' },
   { coins: 200, valorBrl: 12, label: 'R$12 de desconto', desc: '200 coins' },
-  { coins: 500, valorBrl: 35, label: 'R$35 de desconto', desc: '500 coins · Melhor custo-benefício 🔥' },
+  { coins: 500, valorBrl: 35, label: 'R$35 de desconto', desc: '500 coins · Melhor custo-benefício' },
 ]
 
 export default function LetsCoinsSection({ coins: initialCoins, resgates: initialResgates }: LetsCoinsSectionProps) {
@@ -81,9 +82,9 @@ export default function LetsCoinsSection({ coins: initialCoins, resgates: initia
         </div>
         <div className="flex flex-col gap-1 text-right">
           <p className="text-xs text-white/30">Como ganhar:</p>
-          <p className="text-xs text-white/50">+10 por treino 💪</p>
-          <p className="text-xs text-white/50">+25 a cada 7 dias 🔥</p>
-          <p className="text-xs text-white/50">+15 no 1º do mês 🌟</p>
+          <p className="text-xs text-white/50 flex items-center gap-1">+10 por treino <Icon name="dumbbell" /></p>
+          <p className="text-xs text-white/50 flex items-center gap-1">+25 a cada 7 dias <Icon name="fire" /></p>
+          <p className="text-xs text-white/50 flex items-center gap-1">+15 no 1º do mês <Icon name="star" /></p>
         </div>
       </div>
 
@@ -96,7 +97,7 @@ export default function LetsCoinsSection({ coins: initialCoins, resgates: initia
             exit={{ opacity: 0 }}
             className="rounded-2xl border border-green-400/30 bg-green-400/[0.05] p-5 flex flex-col gap-3"
           >
-            <p className="text-sm font-semibold text-green-400">✅ Cupom gerado com sucesso!</p>
+            <p className="text-sm font-semibold text-green-400 flex items-center gap-1.5"><Icon name="check-circle" /> Cupom gerado com sucesso!</p>
             <div className="rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-center">
               <p className="text-xs text-white/40 mb-1">Seu código</p>
               <p className="text-xl font-bold tracking-widest font-mono">{codigoGerado.codigo}</p>

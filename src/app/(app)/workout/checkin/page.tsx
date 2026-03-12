@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import CheckinForm, { type CheckinData } from '@/components/workout/CheckinForm'
 import WorkoutGeneratingLoader from '@/components/workout/WorkoutGeneratingLoader'
+import Icon from '@/components/ui/Icon'
 
 type PageState = 'loading' | 'checkin' | 'generating_plan' | 'starting' | 'error' | 'done_today'
 
@@ -268,9 +269,9 @@ export default function CheckinPage() {
 
         {/* Decorative icons */}
         <div className="flex gap-5 text-2xl opacity-20">
-          <span>🏋️</span>
-          <span>💪</span>
-          <span>🔥</span>
+          <Icon name="gym" />
+          <Icon name="dumbbell" />
+          <Icon name="fire" />
         </div>
       </div>
     )

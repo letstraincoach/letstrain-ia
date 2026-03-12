@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import { useOnboardingStore } from '@/stores/onboarding.store'
 import Button from '@/components/ui/Button'
+import Icon from '@/components/ui/Icon'
 
 type Sexo = 'masculino' | 'feminino'
 
@@ -361,7 +362,7 @@ export default function DesempenhoPage() {
 
         {objetivo.includes('perda_peso') && (
           <DietCard
-            titulo="🔥 Emagrecimento"
+            titulo="Emagrecimento"
             meta={`~${tdee - 400} kcal/dia`}
             dica={`Déficit de 400 kcal/dia — perca ~0,5kg/semana de forma saudável. Priorize proteínas (2g/kg do peso) para preservar massa muscular durante o processo.`}
             cor="#F97316"
@@ -369,7 +370,7 @@ export default function DesempenhoPage() {
         )}
         {objetivo.includes('ganho_massa') && (
           <DietCard
-            titulo="💪 Ganho de Massa"
+            titulo="Ganho de Massa"
             meta={`~${tdee + 300} kcal/dia`}
             dica={`Superávit de 300 kcal/dia para ganho limpo. Consuma 2,2g de proteína por kg de peso e priorize treinos progressivos com descanso adequado.`}
             cor="#8B5CF6"
@@ -377,7 +378,7 @@ export default function DesempenhoPage() {
         )}
         {objetivo.includes('qualidade_vida') && (
           <DietCard
-            titulo="🌱 Qualidade de Vida"
+            titulo="Qualidade de Vida"
             meta={`~${tdee} kcal/dia`}
             dica={`Manutenção calórica com alimentação variada e rica em nutrientes. Foque em hidratação (35ml/kg/dia), sono de qualidade e consistência nos treinos.`}
             cor="#4ADE80"
@@ -385,7 +386,7 @@ export default function DesempenhoPage() {
         )}
         {objetivo.length === 0 && (
           <DietCard
-            titulo="⚡ Equilíbrio"
+            titulo="Equilíbrio"
             meta={`~${tdee} kcal/dia`}
             dica="Mantenha uma alimentação equilibrada e use seu gasto calórico como referência. Priorize alimentos naturais e pouco processados."
             cor="#FF8C00"

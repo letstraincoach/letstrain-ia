@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import Icon from '@/components/ui/Icon'
 
 export const metadata: Metadata = {
   title: 'Lets Train — Método LETS TRAIN com suporte da Inteligência Artificial.',
@@ -270,9 +271,9 @@ export default async function LandingPage() {
                 <div className="p-3 flex flex-col items-center gap-2 text-center">
                   <p className="text-[9px] text-[#FF8C00] font-bold uppercase tracking-widest">Conquista!</p>
                   {/* Figurinha simulada */}
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl text-[#FF8C00]"
                     style={{ background: 'linear-gradient(135deg,rgba(255,140,0,0.3),rgba(255,200,0,0.15))', border: '2px solid rgba(255,140,0,0.4)' }}>
-                    🔥
+                    <Icon name="fire" />
                   </div>
                   <div>
                     <p className="text-[11px] font-black text-[#FF8C00]">Sequência de 7 dias</p>
@@ -496,7 +497,7 @@ export default async function LandingPage() {
 
           <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto w-full">
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 flex flex-col gap-4">
-              <div className="w-10 h-10 rounded-xl bg-[#FF8C00]/10 border border-[#FF8C00]/20 flex items-center justify-center text-lg">🏢</div>
+              <div className="w-10 h-10 rounded-xl bg-[#FF8C00]/10 border border-[#FF8C00]/20 flex items-center justify-center text-lg"><Icon name="building" /></div>
               <div>
                 <p className="font-bold text-base mb-1">Academia de Condomínio</p>
                 <p className="text-sm text-white/45 leading-relaxed">Tire fotos do espaço. A IA detecta os equipamentos automaticamente e monta seu treino com o que você tem — halteres, cabo, máquinas ou só peso corporal.</p>
@@ -509,7 +510,7 @@ export default async function LandingPage() {
             </div>
 
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 flex flex-col gap-4">
-              <div className="w-10 h-10 rounded-xl bg-[#FF8C00]/10 border border-[#FF8C00]/20 flex items-center justify-center text-lg">🏨</div>
+              <div className="w-10 h-10 rounded-xl bg-[#FF8C00]/10 border border-[#FF8C00]/20 flex items-center justify-center text-lg"><Icon name="plane" /></div>
               <div>
                 <p className="font-bold text-base mb-1">Hotel / Viagem</p>
                 <p className="text-sm text-white/45 leading-relaxed">Treinos silenciosos, sem impacto, adaptados ao quarto ou à academia do hotel. Você seleciona o que tem disponível e o app gera na hora.</p>
@@ -581,12 +582,12 @@ export default async function LandingPage() {
 
           <div className="flex flex-col gap-2 max-w-md mx-auto w-full">
             {[
-              '✅ 3 dias grátis — sem cobranças durante o trial',
-              '✅ Cancele antes do trial e não paga nada',
-              '✅ Acesso completo a todos os recursos',
-              '✅ Sem contrato de fidelidade',
+              '3 dias grátis — sem cobranças durante o trial',
+              'Cancele antes do trial e não paga nada',
+              'Acesso completo a todos os recursos',
+              'Sem contrato de fidelidade',
             ].map((item) => (
-              <p key={item} className="text-xs text-white/40">{item}</p>
+              <p key={item} className="text-xs text-white/40 flex items-center gap-1.5"><Icon name="check-circle" className="text-[#FF8C00] shrink-0" /> {item}</p>
             ))}
           </div>
         </div>

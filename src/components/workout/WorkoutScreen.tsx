@@ -7,7 +7,7 @@ import type { GeneratedWorkout, WorkoutExercise } from '@/lib/ai/workout-schemas
 import { isNewFormat } from '@/lib/ai/workout-schemas'
 import Button from '@/components/ui/Button'
 import Icon from '@/components/ui/Icon'
-import { getExerciseVideoUrl } from '@/lib/training/exercise-videos'
+import { getExerciseVideoUrl, initExerciseSlugMap } from '@/lib/training/exercise-videos'
 
 // ---- Tipos ----
 type SecaoNova = 'Preparação' | 'Força' | 'Circuito' | 'Cardio' | 'Finisher'
@@ -551,6 +551,9 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
     const subs = (workout as Record<string, unknown>).substituicoes
     return 3 - (typeof subs === 'number' ? subs : 0)
   })
+
+  // Carregar mapa nome→slug do catálogo para URLs de vídeo
+  useEffect(() => { initExerciseSlugMap() }, [])
 
   const [view, setView] = useState<'overview' | 'exercise'>(jaExecutado ? 'exercise' : 'overview')
   const [current, setCurrent] = useState(jaExecutado ? total - 1 : 0)

@@ -5,33 +5,34 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import Button from '@/components/ui/Button'
+import Icon from '@/components/ui/Icon'
 import type { TrainingLocation } from '@/types/database.types'
 
 const OPTIONS: {
   value: TrainingLocation
   label: string
-  emoji: string
+  icon: string
   descricao: string
   detalhe: string
 }[] = [
   {
     value: 'condominio',
     label: 'Academia de Condomínio',
-    emoji: '🏢',
+    icon: 'building',
     descricao: 'Equipamentos limitados mas suficientes',
     detalhe: 'Fotografe os aparelhos disponíveis e nossa equipe monta seu treino com o que você tem.',
   },
   {
     value: 'hotel',
     label: 'Academia de Hotel',
-    emoji: '🏨',
+    icon: 'plane',
     descricao: 'Estrutura básica, ideal para viagens',
     detalhe: 'Fotografe a academia do hotel e nossa equipe monta um treino completo com o que estiver disponível.',
   },
   {
     value: 'academia',
     label: 'Academia Convencional',
-    emoji: '🏋️',
+    icon: 'gym',
     descricao: 'Academia completa com máquinas e peso livre',
     detalhe: 'Selecione os equipamentos disponíveis e seu personal IA monta um treino com tudo que a academia oferece.',
   },
@@ -107,9 +108,7 @@ export default function LocalPage() {
                 }`}
             >
               <div className="flex items-start gap-4">
-                <span className="text-3xl leading-none mt-0.5" role="img" aria-label={opt.label}>
-                  {opt.emoji}
-                </span>
+                <Icon name={opt.icon} className="text-3xl leading-none mt-0.5 text-[#FF8C00]" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-semibold text-sm">{opt.label}</span>

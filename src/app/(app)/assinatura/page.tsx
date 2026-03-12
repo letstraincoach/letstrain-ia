@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
+import Icon from '@/components/ui/Icon'
 
 type Plano = 'mensal' | 'anual'
 
@@ -13,7 +14,7 @@ const PLANOS = [
     preco: '12x de R$37,90',
     detalhe: 'total R$397,00 cobrado anualmente',
     economia: 'Economize R$201,80 vs mensal (-34%)',
-    badge: '🔥 Melhor custo-benefício',
+    badge: 'Melhor custo-benefício',
   },
   {
     id: 'mensal' as Plano,
@@ -26,12 +27,12 @@ const PLANOS = [
 ]
 
 const FEATURES = [
-  { icone: '💪', texto: 'Treinos diários gerados pela IA, 100% personalizados' },
-  { icone: '⚡', texto: 'Metodologia Time Efficient — resultado em menos tempo' },
-  { icone: '📊', texto: 'Progressão automática de nível e carga' },
-  { icone: '🏆', texto: 'Gamificação, conquistas e álbum de figurinhas' },
-  { icone: '▶️', texto: 'Vídeos demonstrativos de todos os exercícios' },
-  { icone: '🍽', texto: 'Registro alimentar com estimativa calórica' },
+  { icone: 'dumbbell', texto: 'Treinos diários gerados pela IA, 100% personalizados' },
+  { icone: 'bolt', texto: 'Metodologia Time Efficient — resultado em menos tempo' },
+  { icone: 'chart-line-up', texto: 'Progressão automática de nível e carga' },
+  { icone: 'trophy', texto: 'Gamificação, conquistas e álbum de figurinhas' },
+  { icone: 'play', texto: 'Vídeos demonstrativos de todos os exercícios' },
+  { icone: 'utensils', texto: 'Registro alimentar com estimativa calórica' },
 ]
 
 export default function AssinaturaPage() {
@@ -93,7 +94,7 @@ export default function AssinaturaPage() {
         >
           {FEATURES.map((f) => (
             <div key={f.texto} className="flex items-start gap-2.5 text-sm text-white/70">
-              <span className="shrink-0 mt-0.5">{f.icone}</span>
+              <Icon name={f.icone} className="shrink-0 mt-0.5 text-[#FF8C00]" />
               <span>{f.texto}</span>
             </div>
           ))}
@@ -155,7 +156,8 @@ export default function AssinaturaPage() {
             {loading ? (
               <span className="inline-block w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
             ) : (
-              <>💳 Assinar {selectedPlano === 'anual' ? 'por R$397,00/ano' : 'por R$49,90/mês'}</>
+              <><Icon name="credit-card" /> Assinar {selectedPlano === 'anual' ? 'por R$397,00/ano' : 'por R$49,90/mês'}</>
+
             )}
           </button>
 
