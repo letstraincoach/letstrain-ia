@@ -77,7 +77,7 @@ export default function BoasVindasPage() {
               onEnded={() => { setVideoEnded(true); setPlaying(false) }}
               onPlay={() => setPlaying(true)}
               onPause={() => setPlaying(false)}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain"
             />
 
             {/* Overlay play/pause */}
