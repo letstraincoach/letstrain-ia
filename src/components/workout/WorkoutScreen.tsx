@@ -8,6 +8,7 @@ import { isNewFormat } from '@/lib/ai/workout-schemas'
 import Button from '@/components/ui/Button'
 import Icon from '@/components/ui/Icon'
 import { getExerciseVideoUrl, initExerciseSlugMap } from '@/lib/training/exercise-videos'
+import MuscleMap from '@/components/workout/MuscleMap'
 
 // ---- Tipos ----
 type SecaoNova = 'Preparação' | 'Força' | 'Circuito' | 'Cardio' | 'Finisher'
@@ -942,16 +943,14 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                   <div className="flex items-start gap-3">
                     <div className="flex-1 min-w-0">
                       <h2 className="text-2xl font-bold leading-tight">{ex.nome}</h2>
-                      {ex.grupo_muscular && ex.grupo_muscular.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-2">
-                          {ex.grupo_muscular.map((g) => (
-                            <span key={g} className="px-2.5 py-1 rounded-full text-xs bg-white/8 text-white/60 border border-white/10">{g}</span>
-                          ))}
-                        </div>
-                      )}
                     </div>
                     <ExerciseVideoThumb nome={ex.nome} size="lg" onClick={() => setVideoExercise(ex.nome)} />
                   </div>
+
+                  {/* Diagrama muscular */}
+                  {ex.grupo_muscular && ex.grupo_muscular.length > 0 && (
+                    <MuscleMap muscles={ex.grupo_muscular} className="py-1"/>
+                  )}
 
                   {/* Séries / Reps / Descanso — cardio só mostra duração */}
                   {ex.secao === 'Cardio' ? (
