@@ -142,7 +142,7 @@ const CATEGORIES: CategoryDef[] = [
   },
   {
     tipo: 'nutricao',
-    label: 'Nutrição',
+    label: 'Controle Alimentar e Calórico',
     emoji: '🥗',
     cor: '#22C55E',
     corBg: 'rgba(34,197,94,0.10)',
