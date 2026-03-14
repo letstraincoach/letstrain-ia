@@ -187,6 +187,11 @@ export async function POST(request: Request) {
   const feedbackText = formatFeedbackForPrompt(feedbackSummary)
   const prompt = buildWorkoutPrompt(context, exerciseCatalog, feedbackText)
 
+  // Map nome → grupo_muscular do catálogo (para enriquecer após geração)
+  const catalogMuscleMap = new Map(
+    catalogExercises.map(e => [e.nome.toLowerCase(), e.grupo_muscular])
+  )
+
   // Chamar Claude via fetch direto (sem SDK) com retry
   let generatedWorkout: GeneratedWorkout | null = null
   let lastError: unknown = null
@@ -212,6 +217,17 @@ export async function POST(request: Request) {
       { error: 'Não foi possível gerar o treino. Tente novamente.' },
       { status: 503 }
     )
+  }
+
+  // Enriquecer grupo_muscular a partir do catálogo (sem depender da IA)
+  const sections = ['preparacao', 'forca', 'circuito', 'cardio', 'finisher', 'aquecimento', 'principal', 'cooldown'] as const
+  for (const section of sections) {
+    const list = (generatedWorkout as Record<string, unknown>)[section]
+    if (!Array.isArray(list)) continue
+    for (const ex of list as { nome: string; grupo_muscular?: string[] }[]) {
+      const catalogMusculo = catalogMuscleMap.get(ex.nome.toLowerCase())
+      if (catalogMusculo) ex.grupo_muscular = [catalogMusculo]
+    }
   }
 
   const { data: savedWorkout, error: saveError } = await supabase
