@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe -Command \":*)",
+      "Bash(powershell.exe -Command '$env:PATH = \"\"C:\\\\Program Files\\\\nodejs;\"\" + $env:PATH; npm install 2>&1')",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command '$env:PATH = \"\"C:\\\\Program Files\\\\nodejs;\"\" + $env:PATH; & \"\"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\"\" install 2>&1')",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command '$env:PATH = \"\"C:\\\\Program Files\\\\nodejs;\"\" + $env:PATH; & \"\"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\"\" show next version 2>&1')",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command '$env:PATH = \"\"C:\\\\Program Files\\\\nodejs;\"\" + $env:PATH; & \"\"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\"\" install next@latest eslint-config-next@latest 2>&1')",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command '$env:PATH = \"\"C:\\\\Program Files\\\\nodejs;\"\" + $env:PATH; & \"\"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\"\" run typecheck 2>&1')",
+      "Bash(ls \"c:/Users/guilh/Desktop/coach lets train IA/src/app/\\(app\\)/\")",
+      "Bash(grep -l \"push_subscriptions\" \"c:/Users/guilh/Desktop/coach lets train IA/supabase/migrations/\"*.sql)",
+      "Bash(npm install)",
+      "Bash(cmd.exe /c \"cd \"\"c:\\\\Users\\\\guilh\\\\Desktop\\\\coach lets train IA\"\" && npm install\")",
+      "Bash(cmd.exe /c \"cd /d \"\"c:\\\\Users\\\\guilh\\\\Desktop\\\\coach lets train IA\"\" && npm install 2>&1\")",
+      "Bash(cmd.exe /c \"cd /d \"\"c:\\\\Users\\\\guilh\\\\Desktop\\\\coach lets train IA\"\" && npm install > install_log.txt 2>&1 && type install_log.txt\")",
+      "Bash(cmd.exe /c \"cd /d \"\"c:\\\\Users\\\\guilh\\\\Desktop\\\\coach lets train IA\"\" && npm install && echo DONE\")",
+      "Bash(powershell.exe -Command \"Set-Location ''c:\\\\Users\\\\guilh\\\\Desktop\\\\coach lets train IA''; npm install; Write-Host ''EXIT:'' $LASTEXITCODE\")",
+      "Bash(powershell.exe -Command \"Get-Command node -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell.exe -Command \"[System.Environment]::GetEnvironmentVariable\\(''PATH'', ''User''\\)\")",
+      "Bash(cmd.exe /c \"where node 2>&1 && where npm 2>&1\")",
+      "Bash(cmd.exe /c \"where node > C:\\\\Users\\\\guilh\\\\Desktop\\\\node_check.txt 2>&1\")",
+      "Bash(cmd.exe /c \"type C:\\\\Users\\\\guilh\\\\Desktop\\\\node_check.txt\")",
+      "Bash(powershell.exe -Command \"& {try { $n = Get-Command node -ErrorAction Stop; $n.Source } catch { ''node not found'' }; try { $npm = Get-Command npm -ErrorAction Stop; $npm.Source } catch { ''npm not found'' }} | Out-File -FilePath ''C:\\\\Users\\\\guilh\\\\Desktop\\\\check.txt'' -Encoding utf8\")",
+      "Bash(powershell.exe -Command \"& {:*)",
+      "Bash(powershell.exe -NonInteractive -Command \"Test-Path ''C:\\\\Program Files\\\\nodejs\\\\node.exe''\")",
+      "Bash(powershell.exe -NonInteractive -Command \"Test-Path ''C:\\\\Program Files\\\\nodejs\\\\npm.cmd''\")",
+      "Bash(powershell.exe -NonInteractive -Command \"& ''C:\\\\Program Files\\\\nodejs\\\\node.exe'' --version\")",
+      "Bash(powershell.exe -NonInteractive -Command \"& ''C:\\\\Program Files\\\\nodejs\\\\npm.cmd'' --version\")",
+      "Bash(powershell.exe -NonInteractive -Command \"Set-Location ''c:\\\\Users\\\\guilh\\\\Desktop\\\\coach lets train IA''; & ''C:\\\\Program Files\\\\nodejs\\\\npm.cmd'' install 2>&1\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\guilh\\.claude\\projects\\c--Users-guilh-Desktop-coach-lets-train-IA"
+    ]
+  },
+  "language": "english"
+}
