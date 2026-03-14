@@ -27,6 +27,7 @@ export default function CheckinPage() {
   const [treinoConcluidoId, setTreinoConcluidoId] = useState<string | null>(null)
   const [hasActivePlan, setHasActivePlan] = useState(false)
   const [planPreview, setPlanPreview] = useState<{ nome_plano: string; dia: number; total: number } | null>(null)
+  const [tierImage, setTierImage] = useState('/levels/intermediario.jpg')
   const [planProgress, setPlanProgress] = useState(0)
   const [planStageLabel, setPlanStageLabel] = useState('Iniciando...')
 
@@ -47,6 +48,17 @@ export default function CheckinPage() {
       setUserId(data.user.id)
 
       const hoje = new Date().toISOString().split('T')[0]
+
+      // Nível do usuário para imagem de fundo
+      supabase.from('user_profiles').select('nivel_atual').eq('id', data.user.id).single().then(({ data: p }) => {
+        const n = (p?.nivel_atual ?? 'adaptacao') as string
+        const img = n === 'adaptacao' ? '/levels/adaptacao.jpg'
+          : n.startsWith('iniciante') ? '/levels/iniciante.jpg'
+          : n.startsWith('intermediario') ? '/levels/intermediario.jpg'
+          : n.startsWith('avancado') ? '/levels/avancado.jpg'
+          : '/levels/atleta.jpg'
+        setTierImage(img)
+      })
 
       // Verificar treino do dia
       const { data: treinoHoje } = await supabase
@@ -283,90 +295,127 @@ export default function CheckinPage() {
 
   if (pageState === 'done_today') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0a0a] px-6">
-        <div className="w-full max-w-sm flex flex-col items-center gap-6 text-center">
-          <span className="text-6xl">✅</span>
-          <div>
-            <h1 className="text-2xl font-bold">Treino de hoje concluído!</h1>
-            <p className="text-sm text-white/50 mt-2 leading-relaxed">
-              Você já treinou hoje. Descanse, recupere-se e volte amanhã mais forte.
+      <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-end justify-end">
+        {/* Hero */}
+        <div className="relative overflow-hidden w-full" style={{ minHeight: '55vh' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={tierImage} alt="" className="absolute inset-0 w-full h-full object-cover" style={{ opacity: 0.55 }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,10,10,1) 0%, rgba(10,10,10,0.35) 55%, rgba(10,10,10,0.1) 100%)' }} />
+          <div className="relative z-10 flex flex-col items-center gap-4 px-6 pb-8 pt-16 text-center max-w-sm mx-auto">
+            <span
+              className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest"
+              style={{ color: '#4ADE80', backgroundColor: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)' }}
+            >
+              Treino concluído
+            </span>
+            <h1 className="text-2xl font-bold">Você já treinou hoje!</h1>
+            <p className="text-sm text-white/55 leading-relaxed max-w-xs">
+              Descanse, recupere-se e volte amanhã mais forte.
             </p>
           </div>
-          <div className="w-full rounded-2xl border border-[#FF8C00]/20 bg-[#FF8C00]/05 px-5 py-4">
-            <p className="text-xs text-white/40 leading-relaxed">
+        </div>
+
+        {/* Actions */}
+        <div className="px-5 pb-10 flex flex-col gap-3 w-full max-w-sm mx-auto bg-[#0a0a0a]">
+          <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3">
+            <p className="text-xs text-white/35 leading-relaxed">
               A trava diária garante recuperação muscular adequada e evita o overtraining. Um treino bem feito vale mais do que dois apressados.
             </p>
           </div>
-          <div className="flex flex-col gap-3 w-full">
-            {treinoConcluidoId && (
-              <Link
-                href={`/workout/${treinoConcluidoId}`}
-                className="w-full h-12 rounded-xl bg-[#FF8C00] text-black font-semibold text-sm flex items-center justify-center hover:bg-[#E07000] transition-colors"
-              >
-                Ver treino de hoje →
-              </Link>
-            )}
+          {treinoConcluidoId && (
             <Link
-              href="/dashboard"
-              className="w-full h-12 rounded-xl border border-white/10 bg-white/[0.03] text-white/70 font-medium text-sm flex items-center justify-center hover:border-white/20 transition-colors"
+              href={`/workout/${treinoConcluidoId}`}
+              className="w-full h-12 rounded-xl bg-[#FF8C00] text-black font-semibold text-sm flex items-center justify-center"
             >
-              Voltar ao Dashboard
+              Ver treino de hoje →
             </Link>
-          </div>
+          )}
+          <Link
+            href="/dashboard"
+            className="w-full h-12 rounded-xl border border-white/10 bg-white/[0.03] text-white/70 font-medium text-sm flex items-center justify-center"
+          >
+            Voltar ao Dashboard
+          </Link>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-[#0a0a0a] px-6 py-10">
-      {/* Header */}
-      <div className="w-full max-w-sm mb-8">
-        <button
-          onClick={() => router.back()}
-          className="text-sm text-white/40 hover:text-white/70 transition-colors mb-6 flex items-center gap-1"
-        >
-          ← Voltar
-        </button>
-        <h1 className="text-2xl font-bold">Check-in de hoje</h1>
-        <p className="mt-1 text-sm text-white/50">
-          {hasActivePlan
-            ? '3 perguntas rápidas — seu treino já está pronto.'
-            : '3 perguntas rápidas para personalizar seu treino.'}
-        </p>
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
 
-        {/* Preview do plano */}
-        {hasActivePlan && planPreview && (
-          <div className="mt-4 flex items-center gap-3 rounded-xl border border-[#FF8C00]/20 bg-[#FF8C00]/[0.05] px-4 py-3">
-            <span className="text-lg">📋</span>
-            <div className="min-w-0">
-              <p className="text-[10px] text-[#FF8C00] uppercase tracking-wider font-semibold">Plano ativo</p>
-              <p className="text-sm font-semibold truncate">{planPreview.nome_plano}</p>
-              <p className="text-xs text-white/40">Treino {planPreview.dia} de {planPreview.total}</p>
-            </div>
+      {/* ── Hero cinematográfico ── */}
+      <div className="relative overflow-hidden" style={{ minHeight: 200 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={tierImage}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: 0.42 }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.6) 55%, rgba(10,10,10,1) 100%)' }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse 70% 50% at 80% 20%, rgba(255,140,0,0.18) 0%, transparent 65%)' }}
+        />
+
+        <div className="relative z-10 px-5 pt-8 pb-6 max-w-sm mx-auto flex flex-col gap-4">
+          <button
+            onClick={() => router.back()}
+            className="text-sm text-white/50 hover:text-white/80 transition-colors w-fit"
+          >
+            ← Voltar
+          </button>
+          <div>
+            <p className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest mb-1">
+              {hasActivePlan ? 'Plano semanal ativo' : 'Treino personalizado'}
+            </p>
+            <h1 className="text-2xl font-bold">Check-in de hoje</h1>
+            <p className="mt-1 text-sm text-white/50">
+              {hasActivePlan
+                ? '3 perguntas rápidas — seu treino já está pronto.'
+                : '3 perguntas rápidas para personalizar seu treino.'}
+            </p>
           </div>
-        )}
+
+          {/* Preview do plano */}
+          {hasActivePlan && planPreview && (
+            <div className="flex items-center gap-3 rounded-xl border border-[#FF8C00]/25 bg-[#FF8C00]/[0.07] px-4 py-3">
+              <div className="min-w-0">
+                <p className="text-[10px] text-[#FF8C00] uppercase tracking-wider font-semibold">Plano ativo</p>
+                <p className="text-sm font-semibold truncate">{planPreview.nome_plano}</p>
+                <p className="text-xs text-white/40">Treino {planPreview.dia} de {planPreview.total}</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {pageState === 'error' && errorMsg && (
-        <div className="w-full max-w-sm mb-6">
-          <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3">
-            <p className="text-sm text-red-400">{errorMsg}</p>
+      {/* ── Conteúdo ── */}
+      <div className="px-5 pb-10 flex flex-col gap-4 max-w-sm mx-auto w-full">
+        {pageState === 'error' && errorMsg && (
+          <div>
+            <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3">
+              <p className="text-sm text-red-400">{errorMsg}</p>
+            </div>
+            <button
+              className="mt-3 text-sm text-[#FF8C00] hover:text-[#E07000] transition-colors"
+              onClick={() => setPageState('checkin')}
+            >
+              Tentar novamente
+            </button>
           </div>
-          <button
-            className="mt-3 text-sm text-[#FF8C00] hover:text-[#E07000] transition-colors"
-            onClick={() => setPageState('checkin')}
-          >
-            Tentar novamente
-          </button>
-        </div>
-      )}
+        )}
 
-      <CheckinForm
-        onSubmit={handleCheckinSubmit}
-        loading={false}
-        userId={userId}
-      />
+        <CheckinForm
+          onSubmit={handleCheckinSubmit}
+          loading={false}
+          userId={userId}
+        />
+      </div>
     </div>
   )
 }
