@@ -426,6 +426,16 @@ export default async function ProgressPage() {
   const treinos   = progress?.treinos_nivel_atual ?? 0
   const treinosNecessarios = levelCfg.treinos_necessarios ?? 1
   const progressoPct = Math.min(Math.round((treinos / treinosNecessarios) * 100), 100)
+
+  const tierImage = nivel === 'adaptacao'
+    ? '/levels/adaptacao.jpg'
+    : nivel.startsWith('iniciante')
+    ? '/levels/iniciante.jpg'
+    : nivel.startsWith('intermediario')
+    ? '/levels/intermediario.jpg'
+    : nivel.startsWith('avancado')
+    ? '/levels/avancado.jpg'
+    : '/levels/atleta.jpg'
   const executedDates = new Set(workouts.map((w) => w.data as string))
   const unlockedCount = userAchievements.length
 
@@ -495,61 +505,86 @@ export default async function ProgressPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] px-6 py-10">
-      <div className="max-w-sm mx-auto flex flex-col gap-8">
+    <div className="min-h-screen bg-[#0a0a0a]">
 
-        {/* Header */}
-        <div className="flex items-center gap-3">
+      {/* ── Hero cinematográfico ── */}
+      <div className="relative overflow-hidden" style={{ minHeight: 260 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={tierImage}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: 0.5 }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.55) 55%, rgba(10,10,10,1) 100%)',
+          }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `radial-gradient(ellipse 70% 50% at 15% 25%, ${levelCfg.cor}25 0%, transparent 65%)`,
+          }}
+        />
+
+        <div className="relative z-10 px-5 pt-8 pb-7 flex flex-col gap-5 max-w-sm mx-auto">
           <Link href="/dashboard"
-            className="text-sm text-white/40 hover:text-white/70 transition-colors flex items-center gap-1">
+            className="text-sm text-white/50 hover:text-white/80 transition-colors w-fit">
             ← Voltar
           </Link>
-        </div>
 
-        <div>
-          <h1 className="text-2xl font-bold">Meu Progresso</h1>
-          <p className="text-sm text-white/50 mt-1">Sua evolução na jornada Lets Train</p>
-        </div>
-
-        {/* Nível atual + barra */}
-        <div className="rounded-3xl border p-6 flex flex-col gap-4"
-          style={{ borderColor: levelCfg.cor + '30', backgroundColor: levelCfg.corBg }}>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3">
             <div>
-              <p className="text-xs text-white/50 mb-1">Nível atual</p>
-              <span className="text-xl font-bold flex items-center gap-2" style={{ color: levelCfg.cor }}>
-                {levelCfg.emoji} {levelCfg.label}
-              </span>
+              <p className="text-xs text-white/40 uppercase tracking-widest mb-1">Meu Progresso</p>
+              <h1 className="text-2xl font-bold">Sua evolução</h1>
             </div>
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"
-              style={{ backgroundColor: levelCfg.cor + '20' }}>
-              {levelCfg.emoji}
-            </div>
-          </div>
-          <p className="text-xs text-white/50 leading-relaxed">{levelCfg.descricao}</p>
-          {levelCfg.proximo && (
-            <>
-              <div className="flex items-center justify-between text-xs text-white/50">
-                <span>Progresso para {LEVEL_CONFIG[levelCfg.proximo].emoji} {LEVEL_CONFIG[levelCfg.proximo].label}</span>
-                <span>{treinos} / {treinosNecessarios}</span>
+
+            {/* Badge de nível */}
+            <span
+              className="inline-flex items-center gap-2 w-fit px-4 py-1.5 rounded-full text-sm font-bold"
+              style={{
+                backgroundColor: levelCfg.cor + '22',
+                color: levelCfg.cor,
+                border: `1px solid ${levelCfg.cor}40`,
+              }}
+            >
+              {levelCfg.label}
+            </span>
+
+            <p className="text-xs text-white/55 leading-relaxed max-w-xs">{levelCfg.descricao}</p>
+
+            {/* Barra de progresso */}
+            {levelCfg.proximo && (
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between text-xs text-white/40">
+                  <span>→ {LEVEL_CONFIG[levelCfg.proximo].label}</span>
+                  <span className="tabular-nums">{treinos} / {treinosNecessarios}</span>
+                </div>
+                <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                  <div
+                    className="h-full rounded-full transition-all duration-700"
+                    style={{ width: `${progressoPct}%`, backgroundColor: levelCfg.cor }}
+                  />
+                </div>
+                <p className="text-xs text-white/35">
+                  {treinosNecessarios - treinos > 0
+                    ? `Faltam ${treinosNecessarios - treinos} treinos para subir de nível`
+                    : 'Pronto para subir! Complete mais um treino'}
+                </p>
               </div>
-              <div className="h-2 w-full rounded-full bg-black/30 overflow-hidden">
-                <div className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${progressoPct}%`, backgroundColor: levelCfg.cor }} />
-              </div>
-              <p className="text-xs text-white/40">
-                {treinosNecessarios - treinos > 0
-                  ? `Faltam ${treinosNecessarios - treinos} treinos para subir de nível`
-                  : 'Pronto para subir! Complete mais um treino 🎉'}
+            )}
+            {!levelCfg.proximo && (
+              <p className="text-xs font-semibold" style={{ color: levelCfg.cor }}>
+                Nível máximo alcançado. Lendário.
               </p>
-            </>
-          )}
-          {!levelCfg.proximo && (
-            <p className="text-xs text-white/60 font-semibold">
-              Você chegou ao topo! 👑 Nível máximo alcançado.
-            </p>
-          )}
+            )}
+          </div>
         </div>
+      </div>
+
+      <div className="px-5 pb-10 flex flex-col gap-8 max-w-sm mx-auto">
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 gap-3">
