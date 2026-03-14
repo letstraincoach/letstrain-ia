@@ -169,7 +169,7 @@ function ExerciseVideoThumb({ nome, size = 'sm', onClick }: { nome: string; size
   const url = getExerciseVideoUrl(nome)
   const [status, setStatus] = useState<'loading' | 'ok' | 'error'>('loading')
   const videoRef = useRef<HTMLVideoElement>(null)
-  const dim = size === 'lg' ? 'w-20 h-20' : 'w-12 h-12'
+  const dim = size === 'lg' ? 'w-24 h-24' : 'w-12 h-12'
 
   return (
     <div
@@ -199,9 +199,9 @@ function ExerciseVideoThumb({ nome, size = 'sm', onClick }: { nome: string; size
         </div>
       )}
       {onClick && status === 'ok' && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-          <div className="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center">
-            <span className="text-black text-[9px] pl-0.5">▶</span>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/35">
+          <div className={`rounded-full bg-white/95 flex items-center justify-center ${size === 'lg' ? 'w-9 h-9' : 'w-6 h-6'}`}>
+            <span className={`text-black pl-0.5 ${size === 'lg' ? 'text-xs' : 'text-[9px]'}`}>▶</span>
           </div>
         </div>
       )}
@@ -479,42 +479,75 @@ function WorkoutOverview({ workout, nivel, onStart, onVideoClick }: {
   const initialExpanded = Object.fromEntries(blocos.map((b) => [b.label, b.tipo === 'forca']))
   const [expanded, setExpanded] = useState<Record<string, boolean>>(initialExpanded)
 
+  const tierImage = nivel.startsWith('adaptacao')     ? '/levels/adaptacao.jpg'
+    : nivel.startsWith('iniciante')                   ? '/levels/iniciante.jpg'
+    : nivel.startsWith('intermediario')               ? '/levels/intermediario.jpg'
+    : nivel.startsWith('avancado')                    ? '/levels/avancado.jpg'
+    : '/levels/atleta.jpg'
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
-      <div className="flex-1 px-6 pt-10 pb-6 overflow-y-auto">
-        <div className="max-w-sm mx-auto flex flex-col gap-5">
-          <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-            <p className="text-xs text-[#FF8C00] font-semibold uppercase tracking-widest mb-2">A Lets Train preparou para você</p>
-            <h1 className="text-2xl font-bold leading-tight">{workout.nome}</h1>
-            <div className="flex items-center gap-3 mt-2 text-xs text-white/40">
-              <span><Icon name="clock" className="inline" /> {workout.duracao_estimada} min</span><span>·</span>
-              <span className="capitalize">{nivel.replace(/_/g, ' ')}</span><span>·</span>
-              <span>{totalExs} exercícios</span>
-            </div>
-            {musculosPrincipais.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                <Icon name="dumbbell" className="text-[11px] text-white/30 self-center mr-0.5" />
-                {musculosPrincipais.map((m) => (
-                  <span key={m} className="text-[11px] px-2.5 py-1 rounded-full bg-[#FF8C00]/10 border border-[#FF8C00]/20 text-[#FF8C00]/80 font-medium capitalize">{m}</span>
-                ))}
-              </div>
-            )}
-          </motion.div>
+      <div className="flex-1 overflow-y-auto">
 
-          <div className="flex flex-col gap-3">
-            {blocos.map((bloco, i) => (
-              <motion.div key={bloco.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.08 + i * 0.07 }}>
-                <BlocoCard
-                  label={bloco.label} cor={bloco.cor} desc={bloco.desc} icon={bloco.icon}
-                  exs={bloco.exs} tempoMin={estimarTempo(bloco.exs, bloco.tipo)}
-                  expanded={expanded[bloco.label] ?? false}
-                  onToggle={() => setExpanded((prev) => ({ ...prev, [bloco.label]: !prev[bloco.label] }))}
-                  onVideoClick={onVideoClick}
-                  isCardio={bloco.tipo === 'cardio'}
-                />
-              </motion.div>
-            ))}
+        {/* ── Hero cinematográfico ── */}
+        <motion.div
+          className="relative overflow-hidden"
+          style={{ minHeight: 220 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={tierImage}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ opacity: 0.45 }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(to bottom, rgba(10,10,10,0.1) 0%, rgba(10,10,10,0.6) 55%, rgba(10,10,10,1) 100%)' }}
+          />
+
+          <div className="relative z-10 px-5 pt-10 pb-6 max-w-sm mx-auto flex flex-col gap-3">
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
+              <p className="text-[10px] text-[#FF8C00] font-bold uppercase tracking-widest mb-2">A Lets Train preparou para você</p>
+              <h1 className="text-2xl font-bold leading-tight">{workout.nome}</h1>
+              <div className="flex items-center gap-2 mt-2 text-xs text-white/45 flex-wrap">
+                <span className="flex items-center gap-1"><Icon name="clock" className="inline" /> {workout.duracao_estimada} min</span>
+                <span className="text-white/20">·</span>
+                <span className="capitalize">{nivel.replace(/_/g, ' ')}</span>
+                <span className="text-white/20">·</span>
+                <span>{totalExs} exercícios</span>
+              </div>
+              {musculosPrincipais.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {musculosPrincipais.map((m) => (
+                    <span key={m} className="text-[11px] px-2.5 py-1 rounded-full font-medium capitalize"
+                      style={{ backgroundColor: 'rgba(255,140,0,0.12)', border: '1px solid rgba(255,140,0,0.22)', color: 'rgba(255,140,0,0.85)' }}>
+                      {m}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </motion.div>
           </div>
+        </motion.div>
+
+        {/* ── Blocos accordion ── */}
+        <div className="px-5 pb-6 flex flex-col gap-3 max-w-sm mx-auto">
+          {blocos.map((bloco, i) => (
+            <motion.div key={bloco.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.08 + i * 0.07 }}>
+              <BlocoCard
+                label={bloco.label} cor={bloco.cor} desc={bloco.desc} icon={bloco.icon}
+                exs={bloco.exs} tempoMin={estimarTempo(bloco.exs, bloco.tipo)}
+                expanded={expanded[bloco.label] ?? false}
+                onToggle={() => setExpanded((prev) => ({ ...prev, [bloco.label]: !prev[bloco.label] }))}
+                onVideoClick={onVideoClick}
+                isCardio={bloco.tipo === 'cardio'}
+              />
+            </motion.div>
+          ))}
         </div>
       </div>
 
@@ -871,7 +904,16 @@ export default function WorkoutScreen({ workoutId, workout, nivel, jaExecutado =
                 </span>
 
                 {/* Card principal */}
-                <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 flex flex-col gap-4">
+                <div
+                  className="rounded-3xl overflow-hidden flex flex-col gap-4"
+                  style={{
+                    border: `1px solid ${SECAO_COLOR[ex.secao]}30`,
+                    borderTopWidth: 3,
+                    borderTopColor: SECAO_COLOR[ex.secao],
+                    background: `linear-gradient(160deg, ${SECAO_COLOR[ex.secao]}08 0%, rgba(255,255,255,0.02) 40%)`,
+                    padding: '1.5rem',
+                  }}
+                >
 
                   {/* Banner bi-set/tri-set com setGroup info */}
                   {ex.setGroup && (
