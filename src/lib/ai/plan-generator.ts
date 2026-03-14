@@ -88,55 +88,40 @@ export function buildPlanPrompt(ctx: PlanContext, exerciseCatalog?: string): str
 
   const biTriSetNote = ''  // Bi-sets/tri-sets desabilitados — exercícios agrupados por músculo
 
-  const catalogSection = exerciseCatalog ? `${exerciseCatalog}\n` : ''
+  // Catálogo resumido: só nomes agrupados por músculo (sem instruções)
+  const catalogSection = exerciseCatalog ? `EXERCÍCIOS DISPONÍVEIS (use APENAS estes nomes exatos):\n${exerciseCatalog}\n` : ''
 
   const historicoSection = ctx.historico_semanas?.length
     ? `HISTÓRICO (últimas semanas — varie metodologia, grupos musculares e nome do plano):\n${ctx.historico_semanas.map((n, i) => `  - ${i + 1} semana(s) atrás: "${n}"`).join('\n')}\n\n`
     : ''
 
-  // Template JSON do treino individual (repetido N vezes)
   const bloco3Key = usaCardio ? '"cardio"' : '"circuito"'
-  const workoutTemplate = `{ "nome": string, "duracao_estimada": number, "preparacao": [...], "forca": [...], ${bloco3Key}: [...], "finisher": [...] }`
-
   const levelRules = getLevelRules(ctx.nivel)
 
-  return `${catalogSection}${historicoSection}Você é um especialista em periodização da Lets Train. Gere um plano semanal de ${totalDias} treinos completos.
-Responda APENAS com JSON válido. Sem texto extra.${modoSilencioso}
-PERFIL:
-Nível: ${ctx.nivel} (${levelLabel})
-Objetivo: ${ctx.objetivo.split(',').map((o) => objetivoDescricao[o.trim()] ?? o.trim()).join(' + ')}
-Preferência: ${preferenciaLabel[ctx.preferencia_treino] ?? ctx.preferencia_treino}
-Restrições: ${ctx.lesao_cronica && ctx.lesao_descricao ? ctx.lesao_descricao : 'Nenhuma'}
-Condição cardíaca: ${ctx.doenca_cardiaca ? 'Sim — intensidade leve, sem alta intensidade' : 'Não'}
+  // Template de exercício sem instrucoes (não é necessário no preview do plano)
+  const exTemplate = `{ "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number }`
+  const exForcaTemplate = `{ "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "biset": false, "triset": false }`
 
-AMBIENTE:
-Local: ${isHotel ? 'Hotel (equipamentos limitados)' : 'Academia de condomínio'}
-Equipamentos: ${ctx.equipamentos.length ? ctx.equipamentos.join(', ') : 'Apenas peso corporal'}
+  return `${catalogSection}${historicoSection}Gere um plano semanal de ${totalDias} treinos. Responda APENAS com JSON válido. Sem texto extra.${modoSilencioso}
 
-ROTAÇÃO DE GRUPOS MUSCULARES (obrigatória — não repita o grupo principal em treinos consecutivos):
+PERFIL: Nível ${ctx.nivel} (${levelLabel}) | Objetivo: ${ctx.objetivo.split(',').map((o) => objetivoDescricao[o.trim()] ?? o.trim()).join(' + ')} | Preferência: ${preferenciaLabel[ctx.preferencia_treino] ?? ctx.preferencia_treino}
+Restrições: ${ctx.lesao_cronica && ctx.lesao_descricao ? ctx.lesao_descricao : 'Nenhuma'} | Cardíaco: ${ctx.doenca_cardiaca ? 'Sim' : 'Não'}
+Local: ${isHotel ? 'Hotel' : 'Academia de condomínio'} | Equipamentos: ${ctx.equipamentos.length ? ctx.equipamentos.join(', ') : 'Peso corporal'}
+
+ROTAÇÃO (não repita grupo principal em dias consecutivos):
 ${buildRotacao(ctx.preferencia_treino, totalDias)}
 
-REGRAS DE PERIODIZAÇÃO:
-- Treinos ${Math.ceil(totalDias / 2) + 1}–${totalDias} devem ter 1 série a mais que os treinos 1–${Math.ceil(totalDias / 2)} (sobrecarga progressiva)
-- Cada treino segue a estrutura de 4 blocos: preparacao → forca → ${usaCardio ? 'cardio' : 'circuito'} → finisher
-- Séries no Bloco 2: ${levelRules.series}
-- Repetições por série: ${levelRules.reps}
-- Descanso entre séries: ${levelRules.descanso}
-- instrucoes: escreva como personal trainer, imperativo, 1–2 frases corridas (SEM listas, SEM hífens)
-- AGRUPAMENTO OBRIGATÓRIO: No Bloco 2 (forca), agrupe SEMPRE os exercícios pelo mesmo grupo muscular principal. NUNCA intercale grupos diferentes. Exemplo correto: Supino, Crucifixo, Remada, Puxada. Exemplo ERRADO: Supino, Remada, Crucifixo, Puxada. Todos os "biset" e "triset" devem ser false.
+REGRAS:
+- Blocos: preparacao → forca → ${usaCardio ? 'cardio' : 'circuito'} → finisher
+- Séries bloco forca: ${levelRules.series} | Reps: ${levelRules.reps} | Descanso: ${levelRules.descanso}
+- Treinos ${Math.ceil(totalDias / 2) + 1}–${totalDias}: +1 série (sobrecarga progressiva)
+- Agrupe exercícios pelo mesmo músculo no bloco forca. biset e triset sempre false.
 
-MAPEAMENTO EQUIPAMENTO → EXERCÍCIO:
-- Leg Press → Leg Press 45° | Extensora → Cadeira Extensora | Flexora → Cadeira Flexora
-- Supino Máquina → Supino na Máquina | Voador → Voador/Pec Deck | Remada Máquina → Remada no Aparelho
-- Pulldown/Polia/Cross Over → Puxada na Polia, Remada Baixa na Polia, Tríceps Corda, Face Pull, Crucifixo no Cabo
-- Halter/Kettlebell → Supino Reto, Remada Curvada, Remada Unilateral, Desenvolvimento, Agachamento Goblet, Stiff
-- Peso corporal → Flexão, Agachamento Livre, Avanço, Dips, Prancha, Glúteo Solo
-
-Responda EXATAMENTE neste JSON:
+JSON EXATO:
 {
-  "nome_plano": "string (nome motivacional para a semana, ex: 'Semana Força Total')",
+  "nome_plano": "string",
   "treinos": [
-    ${Array.from({ length: totalDias }, (_, i) => `{ "nome": string, "duracao_estimada": number, "preparacao": [{ "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }], "forca": [{ "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string, "biset": boolean, "triset": boolean }], ${bloco3Key}: [{ "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }], "finisher": [{ "nome": string, "grupo_muscular": [string], "series": number, "repeticoes": string, "descanso_segundos": number, "instrucoes": string }] }`).join(',\n    ')}
+    ${Array.from({ length: totalDias }, () => `{ "nome": string, "duracao_estimada": number, "preparacao": [${exTemplate}], "forca": [${exForcaTemplate}], ${bloco3Key}: [${exTemplate}], "finisher": [${exTemplate}] }`).join(',\n    ')}
   ]
 }`
 }

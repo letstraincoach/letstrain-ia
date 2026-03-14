@@ -52,6 +52,19 @@ export async function fetchExerciseCatalog(
   return data ?? []
 }
 
+// Versão compacta para geração de plano — só nomes agrupados por músculo (sem instruções)
+export function formatCatalogCompact(exercises: ExerciseCatalogRow[]): string {
+  if (exercises.length === 0) return ''
+  const byGroup: Record<string, string[]> = {}
+  for (const ex of exercises) {
+    if (!byGroup[ex.grupo_muscular]) byGroup[ex.grupo_muscular] = []
+    byGroup[ex.grupo_muscular].push(ex.nome)
+  }
+  return Object.entries(byGroup)
+    .map(([grupo, nomes]) => `${grupo.toUpperCase()}: ${nomes.join(', ')}`)
+    .join('\n')
+}
+
 export function formatCatalogForPrompt(exercises: ExerciseCatalogRow[]): string {
   if (exercises.length === 0) return ''
 

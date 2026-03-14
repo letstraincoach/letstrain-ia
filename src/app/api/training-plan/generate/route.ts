@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { buildPlanPrompt, PlanSchema, type GeneratedPlan } from '@/lib/ai/plan-generator'
-import { fetchExerciseCatalog, formatCatalogForPrompt } from '@/lib/ai/exercise-catalog'
+import { fetchExerciseCatalog, formatCatalogCompact } from '@/lib/ai/exercise-catalog'
 import { NextResponse } from 'next/server'
 import type { Json } from '@/types/database.types'
 
@@ -15,8 +15,8 @@ async function callClaude(prompt: string, apiKey: string): Promise<string> {
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 5000,
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 3500,
       messages: [{ role: 'user', content: prompt }],
     }),
   })
@@ -101,7 +101,7 @@ export async function POST() {
 
   // ── Catálogo de exercícios ────────────────────────────────────────────────
   const catalogExercises = await fetchExerciseCatalog(localTreino, nivelAtual)
-  const exerciseCatalog = formatCatalogForPrompt(catalogExercises)
+  const exerciseCatalog = formatCatalogCompact(catalogExercises)
 
   const ctx = {
     nivel: nivelAtual as Parameters<typeof buildPlanPrompt>[0]['nivel'],
