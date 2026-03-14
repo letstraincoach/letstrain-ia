@@ -193,7 +193,7 @@ export default function FoodLogger({ defaultTipo, onSuccess }: Props) {
 
         {/* Preview rodapé */}
         {totalItens > 0 && (
-          <div className="fixed bottom-0 left-0 right-0 px-4 pb-6 pt-3 bg-gradient-to-t from-[#0a0a0a] to-transparent">
+          <div className="fixed bottom-0 left-0 right-0 px-4 pb-24 pt-3 bg-gradient-to-t from-[#0a0a0a] to-transparent">
             <button
               onClick={() => setPasso(3)}
               className="w-full max-w-sm mx-auto flex items-center justify-between bg-[#FF8C00] hover:bg-[#FF8C00]/90 text-black font-bold py-3.5 px-5 rounded-2xl transition-colors block"
@@ -226,7 +226,7 @@ export default function FoodLogger({ defaultTipo, onSuccess }: Props) {
   )
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pb-28">
       <button onClick={() => setPasso(2)} className="text-sm text-white/30 hover:text-white/60 self-start">
         ← Voltar
       </button>
