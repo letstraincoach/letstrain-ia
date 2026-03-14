@@ -150,30 +150,34 @@ export default async function DashboardPage() {
 
         {/* Conteúdo */}
         <div className="relative z-10 px-5 pt-8 pb-7">
-          <div className="flex items-start justify-between">
-            {/* Saudação + nível */}
+          {/* Linha 1: nome + pombo | avatar */}
+          <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-white/40 font-medium">{saudacao}</p>
-              <h1 className="text-[26px] font-bold tracking-tight mt-0.5">{firstName}</h1>
-              <span
-                className="inline-flex items-center gap-1.5 mt-2 text-xs font-bold px-3 py-1 rounded-full"
-                style={{
-                  backgroundColor: levelCfg.cor + '22',
-                  color: levelCfg.cor,
-                  border: `1px solid ${levelCfg.cor}40`,
-                }}
-              >
-                {levelCfg.label}
-              </span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <h1 className="text-[26px] font-bold tracking-tight">{firstName}</h1>
+                <PalavraDoDiaCard initialPalavra={palavraDoDia} />
+              </div>
             </div>
+            <Link href="/settings/perfil">
+              <AvatarEmotion avatarUrl={avatarUrl} diasSemTreinar={diasSemTreinar} size={44} />
+            </Link>
+          </div>
 
-            {/* Ações rápidas */}
-            <div className="flex items-center gap-2 mt-1">
-              <PalavraDoDiaCard initialPalavra={palavraDoDia} />
-              <Link href="/settings/perfil">
-                <AvatarEmotion avatarUrl={avatarUrl} diasSemTreinar={diasSemTreinar} size={40} />
-              </Link>
-            </div>
+          {/* Linha 2: nível centralizado */}
+          <div className="flex justify-center mt-3">
+            <span
+              className="inline-flex items-center gap-2 text-xs font-bold px-4 py-1.5 rounded-full"
+              style={{
+                backgroundColor: levelCfg.cor + '22',
+                color: levelCfg.cor,
+                border: `1px solid ${levelCfg.cor}40`,
+              }}
+            >
+              <span className="opacity-60">Nível {levelCfg.numero}</span>
+              <span className="w-px h-3 rounded-full opacity-30" style={{ backgroundColor: levelCfg.cor }} />
+              {levelCfg.label}
+            </span>
           </div>
         </div>
       </div>
