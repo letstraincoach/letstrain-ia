@@ -15,7 +15,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 1 — Adaptação (7 treinos) ───────────────────────────────────
   adaptacao: {
-    label: 'Adaptação',
+    label: 'Recruta',
     emoji: '🌱',
     cor: '#71717A',
     corBg: 'rgba(113,113,122,0.12)',
@@ -27,7 +27,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 2 — Iniciante Bronze (30 treinos) ───────────────────────────
   iniciante_bronze: {
-    label: 'Iniciante Bronze',
+    label: 'Aspirante',
     emoji: '🥉',
     cor: '#B45309',
     corBg: 'rgba(180,83,9,0.12)',
@@ -39,7 +39,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 3 — Iniciante Prata (30 treinos) ────────────────────────────
   iniciante_prata: {
-    label: 'Iniciante Prata',
+    label: 'Guerreiro',
     emoji: '🥈',
     cor: '#64748B',
     corBg: 'rgba(100,116,139,0.12)',
@@ -51,7 +51,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 4 — Iniciante Ouro (30 treinos) ────────────────────────────
   iniciante_ouro: {
-    label: 'Iniciante Ouro',
+    label: 'Forjado',
     emoji: '🥇',
     cor: '#CA8A04',
     corBg: 'rgba(202,138,4,0.12)',
@@ -63,7 +63,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 5 — Intermediário Bronze (30 treinos) ───────────────────────
   intermediario_bronze: {
-    label: 'Intermediário Bronze',
+    label: 'Aguerrido',
     emoji: '🔥',
     cor: '#15803D',
     corBg: 'rgba(21,128,61,0.12)',
@@ -75,7 +75,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 6 — Intermediário Prata (30 treinos) ────────────────────────
   intermediario_prata: {
-    label: 'Intermediário Prata',
+    label: 'Combatente',
     emoji: '🔥',
     cor: '#16A34A',
     corBg: 'rgba(22,163,74,0.12)',
@@ -87,7 +87,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 7 — Intermediário Ouro (30 treinos) ────────────────────────
   intermediario_ouro: {
-    label: 'Intermediário Ouro',
+    label: 'Predador',
     emoji: '⚡',
     cor: '#22C55E',
     corBg: 'rgba(34,197,94,0.12)',
@@ -99,7 +99,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 8 — Avançado Bronze (30 treinos) ───────────────────────────
   avancado_bronze: {
-    label: 'Avançado Bronze',
+    label: 'Atleta',
     emoji: '💎',
     cor: '#6D28D9',
     corBg: 'rgba(109,40,217,0.12)',
@@ -111,7 +111,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 9 — Avançado Prata (30 treinos) ────────────────────────────
   avancado_prata: {
-    label: 'Avançado Prata',
+    label: 'Capitão',
     emoji: '💎',
     cor: '#7C3AED',
     corBg: 'rgba(124,58,237,0.12)',
@@ -123,7 +123,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 10 — Avançado Ouro (30 treinos) ────────────────────────────
   avancado_ouro: {
-    label: 'Avançado Ouro',
+    label: 'Titã',
     emoji: '🔮',
     cor: '#8B5CF6',
     corBg: 'rgba(139,92,246,0.12)',
@@ -135,7 +135,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 11 — Atleta Bronze (30 treinos) ────────────────────────────
   atleta_bronze: {
-    label: 'Atleta Bronze',
+    label: 'Mestre',
     emoji: '🏅',
     cor: '#9A3412',
     corBg: 'rgba(154,52,18,0.12)',
@@ -147,7 +147,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 12 — Atleta Prata (30 treinos) ─────────────────────────────
   atleta_prata: {
-    label: 'Atleta Prata',
+    label: 'Gladiador',
     emoji: '🏆',
     cor: '#EA580C',
     corBg: 'rgba(234,88,12,0.12)',
@@ -159,7 +159,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 13 — Atleta Ouro (30 treinos) ──────────────────────────────
   atleta_ouro: {
-    label: 'Atleta Ouro',
+    label: 'General',
     emoji: '🌟',
     cor: '#F97316',
     corBg: 'rgba(249,115,22,0.12)',
@@ -171,7 +171,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 14 — Atleta PRÓ (30 treinos) ───────────────────────────────
   atleta_pro: {
-    label: 'Atleta PRÓ',
+    label: 'Lendário',
     emoji: '👑',
     cor: '#BE185D',
     corBg: 'rgba(190,24,93,0.12)',
@@ -183,7 +183,7 @@ export const LEVEL_CONFIG: Record<TrainingLevel, LevelConfig> = {
 
   // ── Nível 15 — Atleta PRÓ MAX (topo máximo) ──────────────────────────
   atleta_pro_max: {
-    label: 'Atleta PRÓ MAX',
+    label: 'Máximus',
     emoji: '🦅',
     cor: '#FF8C00',
     corBg: 'rgba(255,140,0,0.12)',
