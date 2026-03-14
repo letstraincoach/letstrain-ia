@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
-import { getNivelAcesso } from '@/lib/ai/exercise-catalog'
 import { NextResponse } from 'next/server'
 import type { Json } from '@/types/database.types'
 
@@ -61,20 +60,33 @@ export async function POST(
   }
 
   // Buscar alternativas do catálogo
-  const nivel = (profile?.nivel_atual ?? workout.nivel ?? 'iniciante') as string
   const local = (profile?.local_treino ?? workout.local_treino ?? 'condominio') as string
   const localNorm = local === 'hotel' ? 'condominio' : local
-  const niveisAcesso = getNivelAcesso(nivel)
+
+  // Normaliza grupo muscular: lowercase + pega só a primeira palavra (IA pode gerar "Peito e Ombros")
+  const grupoNorm = grupoMuscular.toLowerCase().split(/\s+e\s+|\s*[,/]\s*/)[0].trim()
 
   const serviceClient = createServiceClient()
-  const { data: catalogExercises } = await serviceClient
+
+  // Tenta buscar por grupo muscular exato (case-insensitive) com filtro de local
+  let { data: catalogExercises } = await serviceClient
     .from('exercise_catalog')
     .select('nome, instrucoes, equipamentos, grupo_muscular')
     .eq('ativo', true)
-    .eq('grupo_muscular', grupoMuscular)
+    .ilike('grupo_muscular', grupoNorm)
     .contains('locais', [localNorm])
-    .in('nivel_grupo', niveisAcesso)
     .limit(20)
+
+  // Fallback: se não encontrou, busca sem filtro de grupo (mesmo local)
+  if (!catalogExercises || catalogExercises.length === 0) {
+    const { data: fallback } = await serviceClient
+      .from('exercise_catalog')
+      .select('nome, instrucoes, equipamentos, grupo_muscular')
+      .eq('ativo', true)
+      .contains('locais', [localNorm])
+      .limit(20)
+    catalogExercises = fallback
+  }
 
   // Filtrar os que já estão no treino e pegar 5
   const alternatives = (catalogExercises ?? [])
